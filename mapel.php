@@ -24,7 +24,7 @@ if (isset($_POST['tambah'])) {
     $namaMapel = $_POST['namaMapel'];
 
     // Insert data ke database
-    $sql = "INSERT INTO mapel (namaMapel) VALUES ('$namaMapel')";
+    $sql = "INSERT INTO mapel (KodeMapel, namaMapel) VALUES ('$kodeMapel', '$namaMapel')";
 
     if (mysqli_query($conn, $sql)) {
         // Jika berhasil
@@ -322,6 +322,21 @@ if (isset($_POST['tambah'])) {
                 "responsive": true,
             });
         });
+
+        $(document).on('click', '.btn-outline-warning', function() {
+            var id = $(this).data('id');
+            var kodeMapel = $(this).data('kode');
+            var namaMapel = $(this).data('nama');
+
+            // Set form values ke modal
+            $('#kodeMapel').val(kodeMapel);
+            $('#namaMapel').val(namaMapel);
+            $('#editModal').modal('show');
+
+            // Set ID hidden di form agar nanti dikirim saat submit
+            $('#editMapelForm').data('id', id);
+        });
+
 
         // Open modal and fill data when clicking "Edit" button
         $(document).on('click', '.btn-outline-success', function() {
