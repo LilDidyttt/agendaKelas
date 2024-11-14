@@ -21,14 +21,56 @@
                  </li>
                  <li class="nav-item">
                      <a href="index.php" class="nav-link">
-                         <i class="nav-icon fas fa-th"></i>
+                         <i class="nav-icon fas fa-tachometer-alt"></i>
+                        
                          <p>
                              Dashboard
                          </p>
                      </a>
                  </li>
+                 <li class="nav-item">
+                     <a href="list-guru.php" class="nav-link">
+                         <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                         <p>
+                             Guru
+                         </p>
+                     </a>
+                 </li>
+                 <li class="nav-item">
+                     <a href="mapel.php" class="nav-link">
+                         <i class="nav-icon fas fa-th"></i>
+                         <p>
+                             Mapel
+                         </p>
+                     </a>
+                 </li>
                  
-                              </ul>
+                 <li class="nav-item">
+                     <a href="siswa.php" class="nav-link">
+                         <i class="nav-icon fas fa-graduation-cap"></i>
+                         <p>
+                             Siswa
+                         </p>
+                     </a>
+                 </li>
+                 <li class="nav-item">
+                     <a href="user.php" class="nav-link">
+                         <i class="nav-icon fas fa-user"></i>
+                         <p>
+                             User
+                         </p>
+                     </a>
+                 </li>
+                 <li class="nav-item">
+                     <a href="logout.php" class="nav-link">
+                         <i class="nav-icon fas fa-sign-out-alt"></i>
+                         <p>
+                             Logout
+                         </p>
+                     </a>
+                 </li>
+                 
+                 </ul>
          </nav>
          <!-- /.sidebar-menu -->
      </div>
