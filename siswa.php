@@ -2,39 +2,6 @@
 
 include 'function.php';
 
-if (isset($_POST['edit'])) {
-    // Ambil data yang dikirim dari form
-    $kodeMapel = $_POST['kodeMapel'];
-    $namaMapel = $_POST['namaMapel'];
-
-    // Update data di database
-    $sql = "UPDATE mapel SET namaMapel = '$namaMapel' WHERE KodeMapel = $kodeMapel";
-
-    if (mysqli_query($conn, $sql)) {
-        // Jika berhasil
-        echo "<script>alert('Data berhasil diupdate'); window.location.href='mapel.php';</script>";
-    } else {
-        // Jika gagal
-        echo "<script>alert('Gagal memperbarui data');</script>";
-    }
-}
-
-if (isset($_POST['tambah'])) {
-    // Ambil data dari form
-    $namaMapel = $_POST['namaMapel'];
-
-    // Insert data ke database
-    $sql = "INSERT INTO mapel (KodeMapel, namaMapel) VALUES ('$kodeMapel', '$namaMapel')";
-
-    if (mysqli_query($conn, $sql)) {
-        // Jika berhasil
-        echo "<script>alert('Mata Pelajaran berhasil ditambahkan'); window.location.href='mapel.php';</script>";
-    } else {
-        // Jika gagal
-        echo "<script>alert('Gagal menambahkan mata pelajaran');</script>";
-    }
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +10,7 @@ if (isset($_POST['tambah'])) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mapel | AgendaKelas</title>
+    <title>Siswa Kelas | AgendaKelas</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -74,12 +41,12 @@ if (isset($_POST['tambah'])) {
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Mata Pelajaran</h1>
+                            <h1 class="m-0">Dashboard</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                                <li class="breadcrumb-item active">Mata Pelajaran</li>
+                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item active">Data Siswa</li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -157,36 +124,44 @@ if (isset($_POST['tambah'])) {
                     <!-- tabel kehadiran -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Data Mata Pelajaran</h3>
+                            <h3 class="card-title">Data Siswa</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#tambahModal"><button class="btn btn-outline-success mb-2">+ Tambah Mapel</button></a>
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Kode Mapel</th>
-                                        <th>Nama Mapel</th>
+                                        <th>ID Siswa</th>
+                                        <th>Nama Siswa</th>
+                                        <th>NISN</th>
+                                        <th>NIPD</th>
+                                        <th>Jk</th>
+                                        <th>Kelas</th>
+                                        <th>Keterangan</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql = getAllMapel();
+                                    $sql = getAllSiswaFromKelas();
                                     $no = 0;
                                     while ($row = mysqli_fetch_array($sql)) {
+                                        $idsiswa = $row['siswaID'];
+                                        $ambilnama = mysqli_query($conn, "SELECT * FROM kehadiran WHERE siswaID = '$idsiswa' AND DATE(jamHadir) = CURDATE()");
+                                        $s = mysqli_fetch_array($ambilnama);
                                         $no++
                                     ?>
                                         <tr>
                                             <td><?= $no; ?></td>
-                                            <td><?= $row['KodeMapel']; ?></td>
-                                            <td><?= $row['namaMapel']; ?></td>
-                                            <td>
-                                                <a href="hapusmapel.php?mapel=<?= $row['KodeMapel'] ?>" onclick="return confirm('Menghapus mapel <?= $row['namaMapel'] ?> ')"><button class="btn btn-outline-danger">Hapus</button></a>
-                                                <button class="btn btn-outline-warning" data-id="<?= $row['id']; ?>" data-kode="<?= $row['KodeMapel']; ?>" data-nama="<?= $row['namaMapel']; ?>">Edit</button>
-                                            </td>
-
+                                            <td><?= $row['siswaID']; ?></td>
+                                            <td><?= $row['nama']; ?></td>
+                                            <td><?= $row['nisn']; ?></td>
+                                            <td><?= $row['nipd']; ?></td>
+                                            <td><?= $row['jk']; ?></td>
+                                            <td><?= $row['kelas']; ?></td>
+                                            <td><?= (isset($s['keterangan'])) ? $s['keterangan'] : "Tidak Ada" ?></td>
+                                            <td><button class="btn btn-outline-warning">Tambah Ket</button></td>
                                         </tr>
                                     <?php
                                     }
@@ -203,57 +178,6 @@ if (isset($_POST['tambah'])) {
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
-
-        <!-- Edit Modal -->
-        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Edit Mata Pelajaran</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editMapelForm" action="" method="post">
-                            <div class="mb-3">
-                                <label for="kodeMapel" class="form-label">Kode Mapel</label>
-                                <input type="text" class="form-control" id="kodeMapel" name="kodeMapel" readonly required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="namaMapel" class="form-label">Nama Mapel</label>
-                                <input type="text" class="form-control" id="namaMapel" name="namaMapel" required>
-                            </div>
-                            <div class="mb-3">
-                                <button type="submit" name="edit" class="btn btn-primary">Simpan Perubahan</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal untuk Tambah Mata Pelajaran -->
-        <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="tambahModalLabel">Tambah Mata Pelajaran</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="tambahMapelForm" action="" method="post">
-                            <div class="mb-3">
-                                <label for="namaMapel" class="form-label">Nama Mapel</label>
-                                <input type="text" class="form-control" id="namaMapel" name="namaMapel" required>
-                            </div>
-                            <div class="mb-3">
-                                <button type="submit" name="tambah" class="btn btn-primary">Tambah Mata Pelajaran</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
@@ -321,29 +245,6 @@ if (isset($_POST['tambah'])) {
                 "autoWidth": false,
                 "responsive": true,
             });
-        });
-
-        $(document).on('click', '.btn-outline-warning', function() {
-            var id = $(this).data('id');
-            var kodeMapel = $(this).data('kode');
-            var namaMapel = $(this).data('nama');
-
-            // Set form values ke modal
-            $('#kodeMapel').val(kodeMapel);
-            $('#namaMapel').val(namaMapel);
-            $('#editModal').modal('show');
-
-            // Set ID hidden di form agar nanti dikirim saat submit
-            $('#editMapelForm').data('id', id);
-        });
-
-
-        // Open modal and fill data when clicking "Edit" button
-        $(document).on('click', '.btn-outline-success', function() {
-            // Set form values ke modal
-            $('#tambahModal').modal('show');
-
-            // Set ID hidden di form agar nanti dikirim saat submit
         });
     </script>
 </body>
