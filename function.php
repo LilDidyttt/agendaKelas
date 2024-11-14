@@ -13,3 +13,9 @@ function getAllKehadiran()
     $sql = mysqli_query($conn, "SELECT * from kehadiran");
     return $sql;
 }
+function getAllMapel()
+{
+    global $conn;
+    $sql = mysqli_query($conn, "SELECT * from mapel");
+    return $sql;
+}
