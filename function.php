@@ -13,7 +13,6 @@ function getAllKehadiran()
     $sql = mysqli_query($conn, "SELECT * from kehadiran");
     return $sql;
 }
-<<<<<<< HEAD
 
 function getAllGuru()
 {
@@ -47,17 +46,18 @@ function hapusGuru($id)
 {
     global $conn;
     $sql = mysqli_query($conn, "DELETE FROM guru WHERE guruID=$id");
-=======
+}
+
 function getAllSiswaFromKelas()
 {
     global $conn;
     $sql = mysqli_query($conn, "SELECT * from siswa WHERE kelas = '12 RPL 1'");
     return $sql;
 }
+
 function getAllMapel()
 {
     global $conn;
     $sql = mysqli_query($conn, "SELECT * from mapel");
->>>>>>> cfeaf59fee0523f7318fc0bf7d662c90062b7d86
     return $sql;
 }
