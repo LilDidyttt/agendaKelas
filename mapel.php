@@ -2,14 +2,13 @@
 
 include 'function.php';
 
-if (isset($_POST['kodeMapel']) && isset($_POST['namaMapel'])) {
+if (isset($_POST['edit'])) {
     // Ambil data yang dikirim dari form
-    $id = $_POST['id']; // ID mapel yang akan diupdate
     $kodeMapel = $_POST['kodeMapel'];
     $namaMapel = $_POST['namaMapel'];
 
     // Update data di database
-    $sql = "UPDATE mapel SET namaMapel = '$namaMapel' WHERE KodeMapel = $id";
+    $sql = "UPDATE mapel SET namaMapel = '$namaMapel' WHERE KodeMapel = $kodeMapel";
 
     if (mysqli_query($conn, $sql)) {
         // Jika berhasil
@@ -17,6 +16,22 @@ if (isset($_POST['kodeMapel']) && isset($_POST['namaMapel'])) {
     } else {
         // Jika gagal
         echo "<script>alert('Gagal memperbarui data');</script>";
+    }
+}
+
+if (isset($_POST['tambah'])) {
+    // Ambil data dari form
+    $namaMapel = $_POST['namaMapel'];
+
+    // Insert data ke database
+    $sql = "INSERT INTO mapel (namaMapel) VALUES ('$namaMapel')";
+
+    if (mysqli_query($conn, $sql)) {
+        // Jika berhasil
+        echo "<script>alert('Mata Pelajaran berhasil ditambahkan'); window.location.href='mapel.php';</script>";
+    } else {
+        // Jika gagal
+        echo "<script>alert('Gagal menambahkan mata pelajaran');</script>";
     }
 }
 
@@ -146,6 +161,7 @@ if (isset($_POST['kodeMapel']) && isset($_POST['namaMapel'])) {
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#tambahModal"><button class="btn btn-outline-success mb-2">+ Tambah Mapel</button></a>
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
@@ -167,7 +183,7 @@ if (isset($_POST['kodeMapel']) && isset($_POST['namaMapel'])) {
                                             <td><?= $row['KodeMapel']; ?></td>
                                             <td><?= $row['namaMapel']; ?></td>
                                             <td>
-                                                <button class="btn btn-outline-danger">Hapus</button>
+                                                <a href="hapusmapel.php?mapel=<?= $row['KodeMapel'] ?>" onclick="return confirm('Menghapus mapel <?= $row['namaMapel'] ?> ')"><button class="btn btn-outline-danger">Hapus</button></a>
                                                 <button class="btn btn-outline-warning" data-id="<?= $row['id']; ?>" data-kode="<?= $row['KodeMapel']; ?>" data-nama="<?= $row['namaMapel']; ?>">Edit</button>
                                             </td>
 
@@ -215,6 +231,29 @@ if (isset($_POST['kodeMapel']) && isset($_POST['namaMapel'])) {
             </div>
         </div>
 
+        <!-- Modal untuk Tambah Mata Pelajaran -->
+        <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tambahModalLabel">Tambah Mata Pelajaran</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="tambahMapelForm" action="" method="post">
+                            <div class="mb-3">
+                                <label for="namaMapel" class="form-label">Nama Mapel</label>
+                                <input type="text" class="form-control" id="namaMapel" name="namaMapel" required>
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" name="tambah" class="btn btn-primary">Tambah Mata Pelajaran</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
@@ -249,6 +288,9 @@ if (isset($_POST['kodeMapel']) && isset($_POST['namaMapel'])) {
     <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
     <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
     <!-- PAGE PLUGINS -->
     <!-- jQuery Mapael -->
@@ -282,18 +324,11 @@ if (isset($_POST['kodeMapel']) && isset($_POST['namaMapel'])) {
         });
 
         // Open modal and fill data when clicking "Edit" button
-        $(document).on('click', '.btn-outline-warning', function() {
-            var id = $(this).data('id');
-            var kodeMapel = $(this).data('kode');
-            var namaMapel = $(this).data('nama');
-
+        $(document).on('click', '.btn-outline-success', function() {
             // Set form values ke modal
-            $('#kodeMapel').val(kodeMapel);
-            $('#namaMapel').val(namaMapel);
-            $('#editModal').modal('show');
+            $('#tambahModal').modal('show');
 
             // Set ID hidden di form agar nanti dikirim saat submit
-            $('#editMapelForm').data('id', id);
         });
     </script>
 </body>
