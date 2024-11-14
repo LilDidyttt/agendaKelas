@@ -184,7 +184,7 @@ if (isset($_POST['tambah'])) {
                                             <td><?= $row['namaMapel']; ?></td>
                                             <td>
                                                 <a href="hapusmapel.php?mapel=<?= $row['KodeMapel'] ?>" onclick="return confirm('Menghapus mapel <?= $row['namaMapel'] ?> ')"><button class="btn btn-outline-danger">Hapus</button></a>
-                                                <button class="btn btn-outline-warning" data-id="<?= $row['id']; ?>" data-kode="<?= $row['KodeMapel']; ?>" data-nama="<?= $row['namaMapel']; ?>">Edit</button>
+                                                <button class="btn btn-outline-warning" data-kode="<?= $row['KodeMapel']; ?>" data-nama="<?= $row['namaMapel']; ?>">Edit</button>
                                             </td>
 
                                         </tr>
