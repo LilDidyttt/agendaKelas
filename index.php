@@ -70,15 +70,24 @@ if ($_SESSION['level'] == 'Sekretaris') {
           <div class="row">
             <div class="col-12 col-sm-6 col-md-3">
               <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-stopwatch"></i></span>
 
                 <div class="info-box-content">
-                  <span class="info-box-text">CPU Traffic</span>
-                  <span class="info-box-number">
-                    10
-                    <small>%</small>
-                  </span>
+                  <span class="info-box-text">Set Waktu Pulang</span>
+                  <form action="" method="post">
+                    <div class="input-group">
+                      <input type="time" name="waktu" class="form-control">
+                    </div>
+                    <button class="btn mt-1 btn-primary" name="set">Set</button>
+                  </form>
+
                 </div>
+                <?php
+                if (isset($_POST['set'])) {
+                  $jam = $_POST["waktu"];
+                  $sql = mysqli_query($conn, "UPDATE setjam SET jamPulang = '$jam' WHERE jamID =1 ");
+                }
+                ?>
                 <!-- /.info-box-content -->
               </div>
               <!-- /.info-box -->
