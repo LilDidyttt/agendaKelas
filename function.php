@@ -119,3 +119,32 @@ function selectKelas()
     $sql = mysqli_query($conn, "SELECT kelas from siswa group by kelas");
     return $sql;
 }
+
+function getAllSiswaTerlambat()
+{
+    global $conn;
+    $sql = mysqli_query($conn, "SELECT k.*, s.nama 
+                                FROM kehadiran k
+                                INNER JOIN siswa s ON k.siswaID = s.siswaID
+                                WHERE TIME(k.jamHadir) > '07:00:00' 
+                                AND DATE(k.jamHadir) = CURDATE()
+                                ORDER BY k.jamHadir DESC");
+    return $sql;
+}
+
+function getWaktuAntara($waktuA, $waktuB)
+{
+    global $conn;
+    $waktuawal = $waktuA;
+    $waktuakhir = $waktuB;
+    $sql = mysqli_query($conn, "SELECT k.*, s.nama
+                                FROM kehadiran k
+                                INNER JOIN siswa s ON k.siswaID = s.siswaID
+                                WHERE 
+                                    (TIME(k.jamHadir) > '07:00:00')
+                                    AND
+                                    (DATE(k.jamHadir) BETWEEN '$waktuawal' AND '$waktuakhir')
+                                ORDER BY k.jamHadir DESC
+                                ");
+    return $sql;
+}
