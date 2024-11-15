@@ -159,16 +159,16 @@ if (isset($_POST['tambah'])) {
           <!-- /.row -->
 
           <!-- tabel kehadiran -->
-          <button type="button"
-            class="btn btn-outline-success"
-            data-toggle="modal"
-            data-target="#modal-tambah"> tambah user</button>
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Data Kehadiran Siswa</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
+              <button type="button"
+                class="btn btn-outline-success mb-2"
+                data-toggle="modal"
+                data-target="#modal-tambah">[+] Tambah User</button>
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                   <tr>
@@ -260,20 +260,21 @@ if (isset($_POST['tambah'])) {
                 <div class="card-body">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Username</label>
-                    <input type="text" class="form-control" id="username" name="username">
+                    <input type="text" class="form-control" name="username">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputEmail1">password</label>
-                    <input type="text" class="form-control" id="password" name="password">
+                    <input type="text" class="form-control" name="password">
                   </div>
                   <div class=" form-group">
                     <label for="level">Level</label>
-                    <select name="level" id="level" class="form-control">
+                    <select name="level" class="form-control">
                       <option value=""></option>
-                      <option value="Kepala Sekolah" id="kepalasekolah">Kepala Sekolah</option>
-                      <option value="Admin" id="admin">Admin</option>
-                      <option value="Sekretaris" id="sek">Sekretaris</option>
-                      <option value="Guru" id="guru">Guru</option>
+                      <option value="Kepala Sekolah">Kepala Sekolah</option>
+                      <option value="Admin">Admin</option>
+                      <option value="Sekretaris">Sekretaris</option>
+                      <option value="Wakil Kepala Sekolah">Wakil Kepala Sekolah</option>
+                      <option value="Guru">Guru</option>
                     </select>
                   </div>
 
@@ -328,6 +329,7 @@ if (isset($_POST['tambah'])) {
                       <option value="Kepala Sekolah" id="kepalasekolah">Kepala Sekolah</option>
                       <option value="Admin" id="admin">Admin</option>
                       <option value="Sekretaris" id="sek">Sekretaris</option>
+                      <option value="Wakil Kepala Sekolah" id="waka">Wakil Kepala Sekolah</option>
                       <option value="Guru" id="guru">Guru</option>
                     </select>
                   </div>
@@ -414,7 +416,7 @@ if (isset($_POST['tambah'])) {
     });
 
     $(document).on('click', '.btn-outline-warning', function() {
-      var username = $(this).data('username');
+      var nama = $(this).data('username');
       var iduser = $(this).data('userid');
       var level = $(this).data('level');
 
@@ -424,11 +426,13 @@ if (isset($_POST['tambah'])) {
         $('#admin').prop('selected', true);
       } else if (level == 'Guru') {
         $('#guru').prop('selected', true);
+      } else if (level == 'Wakil Kepala Sekolah') {
+        $('#waka').prop('selected', true);
       } else {
         $('#sek').prop('selected', true);
       }
       // Set form values ke modal
-      $('#username').val(username);
+      $('#username').val(nama);
       $('#iduser').val(iduser);
       $('#modal-default').modal('show');
 

@@ -130,7 +130,7 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                     <!-- tabel kehadiran -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Data Kehadiran Siswa</h3>
+                            <h3 class="card-title">Data Agenda Kelas <?= $_SESSION['kelas'] ?></h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
