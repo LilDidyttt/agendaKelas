@@ -9,10 +9,10 @@ if (isset($_GET['guruID'])) {
 
     if ($result) {
         // Jika berhasil dihapus, redirect ke list-guru.php dengan pesan sukses
-        header("Location: list-guru.php?status=success&message=Data guru berhasil dihapus");
+        header("Location: list-guru.php?status=successHapus");
     } else {
         // Jika gagal, redirect ke list-guru.php dengan pesan error
-        header("Location: list-guru.php?status=error&message=Gagal menghapus data guru");
+        header("Location: list-guru.php?status=errorHapus");
     }
 } else {
     // Jika tidak ada guruID, redirect ke list-guru.php

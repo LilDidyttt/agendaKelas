@@ -45,6 +45,7 @@ function hapusGuru($id)
 {
     global $conn;
     $sql = mysqli_query($conn, "DELETE FROM guru WHERE guruID=$id");
+    return $sql;
 }
 
 function getAllSiswaFromKelas()
@@ -60,4 +61,3 @@ function getAllMapel()
     $sql = mysqli_query($conn, "SELECT * from mapel");
     return $sql;
 }
-
