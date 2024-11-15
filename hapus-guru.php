@@ -1,21 +1,17 @@
 <?php
 include 'function.php';
 
+
 if (isset($_GET['guruID'])) {
-    $guruID = $_GET['guruID'];
+    $id = $_GET['guruID'];
 
-    // Panggil fungsi hapusGuru
-    $result = hapusGuru($guruID);
+    $sql = "DELETE FROM guru where guruID = '$id'";
 
-    if ($result) {
-        // Jika berhasil dihapus, redirect ke list-guru.php dengan pesan sukses
-        header("Location: list-guru.php?status=successHapus");
+    if (mysqli_query($conn, $sql)) {
+        // Jika berhasil
+        echo "<script>alert('Data berhasil dihapus'); window.location.href='list-guru.php';</script>";
     } else {
-        // Jika gagal, redirect ke list-guru.php dengan pesan error
-        header("Location: list-guru.php?status=errorHapus");
+        // Jika gagal
+        echo "<script>alert('Gagal menghapus data'); window.location.href='list-guru.php';</script>";
     }
-} else {
-    // Jika tidak ada guruID, redirect ke list-guru.php
-    header("Location: list-guru.php");
 }
-exit();
