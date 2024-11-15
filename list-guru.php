@@ -82,6 +82,8 @@ include 'function.php';
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+
+                            <button class="btn btn-outline-success mb-2"><a href="tambah-guru.php">+ Tambah Guru</a></button>
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
