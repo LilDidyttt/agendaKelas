@@ -3,10 +3,12 @@
 include 'function.php';
 
 if (isset($_POST['editGuru'])) {
-    editGuru($_POST);
-    header("Location: list-guru.php?status=success&message=Data guru berhasil diedit");
-} else {
-    header("Location: list-guru.php?status=error&message=Gagal mengedit data guru");
+    $result = editGuru($_POST);
+    if ($result) {
+        header("Location: list-guru.php?status=success&message=Data guru berhasil diedit");
+    } else {
+        header("Location: list-guru.php?status=error&message=Gagal mengedit data guru");
+    }
 }
 ?>
 
@@ -64,7 +66,8 @@ if (isset($_POST['editGuru'])) {
             <section class="content">
                 <div class="container-fluid">
                     <?php
-                    $dataGuru = getAllGuru();
+                    $id = $_GET['guruID'];
+                    $dataGuru = getGuruById($id);
                     $row = mysqli_fetch_assoc($dataGuru);
                     ?>
                     <!-- form edit guru -->
