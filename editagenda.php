@@ -22,6 +22,24 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     exit();
 }
 
+if (isset($_POST['edit'])) {
+    $guru = mysqli_real_escape_string($conn, $_POST['guru']);
+    $kelas = mysqli_real_escape_string($conn, $_POST['kelas']);
+    $mapel = mysqli_real_escape_string($conn, $_POST['mapel']);
+    $materi = mysqli_real_escape_string($conn, $_POST['materi']);
+    $keterangan = mysqli_real_escape_string($conn, $_POST['keterangan']);
+    $jampelajaran = mysqli_real_escape_string($conn, $_POST['jampelajaran']);
+
+    $sql = "UPDATE agenda SET guruID = '$guru', kelas = '$kelas', KodeMapel = '$mapel', materi = '$materi', keterangan = '$keterangan', jamPelajaran = '$jampelajaran' WHERE agendaID = '$id'";
+    $query = mysqli_query($conn, $sql);
+    if ($query) {
+        header("Location: agenda.php");
+        exit();
+    } else {
+        echo "<script>alert('Gagal menyimpan data');</script>";
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -83,32 +101,89 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                             <!-- jquery validation -->
                             <div class="card card-primary">
                                 <div class="card-header">
-                                    <h3 class="card-title">Quick Example <small>jQuery Validation</small></h3>
+                                    <h3 class="card-title">Edit Agenda Mata Pelajaran ke-<?= $row['jamPelajaran'] ?></h3>
                                 </div>
                                 <!-- /.card-header -->
                                 <!-- form start -->
-                                <form id="quickForm" novalidate="novalidate">
-                                    <div class="card-body">
-                                        <div class="form-group">
-                                            <label for="exampleInputEmail1">Email address</label>
-                                            <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                                <div class="container">
+                                    <form id="tambahMapelForm" action="" method="post">
+                                        <div class="mb-3 mt-3">
+                                            <label for="namaGuru" class="form-label">Nama Guru</label>
+                                            <select name="guru" id="namaGuru" class="form-control">
+                                                <option value="">Pilih Guru</option>
+
+
+                                                <?php
+                                                $sql = getAllGuru();
+
+                                                ?>
+                                                <?php
+                                                while ($guru = mysqli_fetch_assoc($sql)) :
+                                                ?>
+                                                    <option value="<?= $guru["guruID"] ?>" <?= ($guru['guruID'] == $row['guruID']) ? "selected" : "" ?>>
+                                                        <?= $guru["nama"] ?>
+                                                    </option>
+                                                <?php endwhile ?>
+                                            </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="exampleInputPassword1">Password</label>
-                                            <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                                        <div class="mb-3">
+                                            <label for="kelas" class="form-label">Kelas</label>
+                                            <select name="kelas" class="form-control" id="kelas">
+                                                <option value="" selected disabled></option>
+                                                <?php
+                                                $sql = selectKelas();
+                                                $kelas = mysqli_fetch_assoc($sql);
+                                                do { ?>
+                                                    <option value="<?php echo $kelas['kelas'] ?>" <?= ($kelas['kelas'] == $row['kelas']) ? "selected" : "" ?>><?php echo $kelas['kelas'] ?></option>
+                                                <?php } while ($kelas = mysqli_fetch_assoc($sql)); ?>
+
+                                            </select>
                                         </div>
-                                        <div class="form-group mb-0">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" name="terms" class="custom-control-input" id="exampleCheck1">
-                                                <label class="custom-control-label" for="exampleCheck1">I agree to the <a href="#">terms of service</a>.</label>
-                                            </div>
+                                        <div class="mb-3">
+                                            <label for="mapel" class="form-label">Mapel</label>
+                                            <select name="mapel" class="form-control" id="mapel">
+                                                <option value="" selected disabled>-- Pilih Mapel</option>
+                                                <?php $sql = getAllMapel();
+                                                while ($mapel = mysqli_fetch_assoc($sql)): ?>
+                                                    <option value="<?php echo $mapel['KodeMapel'] ?>" <?= ($mapel['KodeMapel'] == $row['KodeMapel']) ? "selected" : "" ?>><?php echo $mapel['namaMapel'] ?></option>
+                                                <?php endwhile; ?>
+
+                                            </select>
                                         </div>
-                                    </div>
-                                    <!-- /.card-body -->
-                                    <div class="card-footer">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </div>
-                                </form>
+                                        <div class="mb-3">
+                                            <label for="materi" class="form-label">Materi</label>
+                                            <input type="text" class="form-control" id="materi" value="<?= $row['materi'] ?>" name="materi" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="keterangan" class="form-label">keterangan</label>
+                                            <select name="keterangan" id="keterangan" class="form-control">
+                                                <option value=""></option>
+                                                <option value="Hadir" <?= ($row['keterangan'] == 'Hadir') ? "selected" : "" ?>>Hadir</option>
+                                                <option value="Tidak Hadir" <?= ($row['keterangan'] == 'Tidak Hadir') ? "selected" : "" ?>>Tidak Hadir</option>
+                                                <option value="Tugas" <?= ($row['keterangan'] == 'Tugas') ? "selected" : "" ?>>Tugas</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="jampelajaran" class="form-label">jam pelajaran</label>
+                                            <select name="jampelajaran" id="jampelajaran" class="form-control">
+                                                <option value=""></option>
+                                                <option value="1" <?= ($row['jamPelajaran'] == 1) ? "selected" : "" ?>>1</option>
+                                                <option value="2" <?= ($row['jamPelajaran'] == 2) ? "selected" : "" ?>>2</option>
+                                                <option value="3" <?= ($row['jamPelajaran'] == 3) ? "selected" : "" ?>>3</option>
+                                                <option value="4" <?= ($row['jamPelajaran'] == 4) ? "selected" : "" ?>>4</option>
+                                                <option value="5" <?= ($row['jamPelajaran'] == 5) ? "selected" : "" ?>>5</option>
+                                                <option value="6" <?= ($row['jamPelajaran'] == 6) ? "selected" : "" ?>>6</option>
+                                                <option value="7" <?= ($row['jamPelajaran'] == 7) ? "selected" : "" ?>>7</option>
+                                                <option value="8" <?= ($row['jamPelajaran'] == 8) ? "selected" : "" ?>>8</option>
+                                                <option value="9" <?= ($row['jamPelajaran'] == 9) ? "selected" : "" ?>>9</option>
+                                                <option value="10" <?= ($row['jamPelajaran'] == 10) ? "selected" : "" ?>>10</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <button type="submit" name="edit" class="btn btn-primary">Edit Agenda</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                             <!-- /.card -->
                         </div>

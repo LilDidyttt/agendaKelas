@@ -63,7 +63,8 @@ function hapusGuru($id)
 function getAllSiswaFromKelas()
 {
     global $conn;
-    $sql = mysqli_query($conn, "SELECT * from siswa WHERE kelas = '12 RPL 1'");
+    $kelas = $_SESSION['kelas'];
+    $sql = mysqli_query($conn, "SELECT * from siswa WHERE kelas = '$kelas'");
     return $sql;
 }
 
@@ -86,6 +87,18 @@ function edituser($data)
     $username = $data['username'];
     $level = $data['level'];
     $sql = mysqli_query($conn, "UPDATE `user` SET `username`='$username',`level`='$level' WHERE userID=$id");
+    return mysqli_affected_rows($conn);
+}
+function tambahuser($data)
+{
+    global $conn;
+    $username   = $data['username'];
+    $password   = $data['password'];
+    $level      = $data['level'];
+
+    $enkripsi = password_hash($password, PASSWORD_BCRYPT);
+    $sql = "INSERT INTO user VALUES(NULL,'$username','$enkripsi','$level')";
+    $query = mysqli_query($conn, $sql);
     return mysqli_affected_rows($conn);
 }
 

@@ -1,7 +1,36 @@
 <?php
 
 include 'function.php';
-
+if ($_SESSION['level'] == 'Sekretaris') {
+  header("Location: siswa.php");
+}
+if (isset($_GET['hapus'])) {
+  $id = $_GET['hapus'];
+  $sql = "DELETE FROM user WHERE userID=$id";
+  $query = mysqli_query($conn, $sql);
+  if ($query) {
+    echo "
+    <script>
+    alert('Data berhasil di hapus!');
+    document.location.href = 'user.php';
+    </script>";
+  }
+}
+if (isset($_POST['tambah'])) {
+  if (tambahuser($_POST) > 0) {
+    echo "
+    <script>
+    alert('User berhasil di tambahkan!');
+    document.location.href = 'user.php';
+    </script>";
+  } else {
+    echo "
+    <script>
+    alert('Data gagal di tambah!');
+    document.location.href = 'user.php';
+    </script>";
+  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +44,7 @@ include 'function.php';
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
-   
+
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
@@ -123,6 +152,10 @@ include 'function.php';
           <!-- /.row -->
 
           <!-- tabel kehadiran -->
+          <button type="button"
+            class="btn btn-outline-success"
+            data-toggle="modal"
+            data-target="#modal-tambah"> tambah user</button>
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Data Kehadiran Siswa</h3>
@@ -133,6 +166,7 @@ include 'function.php';
                 <thead>
                   <tr>
                     <th>No</th>
+                    <th>ID User</th>
                     <th>Username</th>
                     <th>Level</th>
                     <th>Aksi</th>
@@ -147,83 +181,40 @@ include 'function.php';
                   ?>
                     <tr>
                       <td><?= $no; ?></td>
+                      <td><?= $row['userID'] ?></td>
                       <td><?= $row['username']; ?></td>
                       <td><?= $row['level']; ?></td>
                       <td>
-                      <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#modal-default">
-                  Edit
-                </button>
-                
-                <!-- modal -->
-                <div class="modal fade" id="modal-default">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Edit User</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              
-              <div class="card card-primary">
-        
-            
-              <!-- form start -->
-              <form action="" method="post">
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Username</label>
-                    <input type="hidden" name="id" value="<?= $row['userID'] ?>">
-                    <input type="text" class="form-control" id="exampleInputEmail1" name="username" value="<?= $row['username'] ?>"">
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Level</label>
-                    <select name="level"  id="" class="form-control">
-                        <option value="<?= $row['level'] ?>"><?= $row['level'] ?></option>
-                        <option value="Kepala Sekolah">Kepala Sekolah</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Sekretaris">Sekretaris</option>
-                        <option value="Guru">Guru</option>
-                    </select>    
-                </div>
-                  
-                </div>
-                <!-- /.card-body -->
+                        <button
+                          class="btn btn-outline-warning"
+                          data-toggle="modal"
+                          data-target="#modal-default"
+                          data-username="<?= $row['username'] ?>"
+                          data-level="<?= $row['level'] ?>"
+                          data-userid="<?= $row['userID'] ?>">
+                          Edit
+                        </button>
 
-                
-                
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" name="edit">Save changes</button>
-                  </div>
-            </div>
-                </form>
-            </div>
-            
-          </div>
-          <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-      </div>
-      <!-- /.modal -->
-                <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#modal-default">
-                  Hapus
-                </button>
+                        <!-- modal -->
+
+                        <a href="user.php?hapus=<?= $row['userID'] ?>" class="btn btn-outline-danger">
+                          Hapus
+                        </a>
                       </td>
                     </tr>
                   <?php
                   }
 
-                  if(isset($_POST['edit'])){
-                    if(edituser($_POST)){
+                  if (isset($_POST['edit'])) {
+                    if (edituser($_POST)) {
                       echo "
-            <script>
-            alert('Data berhasil di edit!');
-            document.location.href = 'user.php';
-            </script>";
+                      <script>
+                      alert('Data berhasil di edit!');
+                      document.location.href = 'user.php';
+                      </script>";
                     }
                   }
+
                   ?>
 
                 </tbody>
@@ -243,7 +234,116 @@ include 'function.php';
       <!-- Control sidebar content goes here -->
     </aside>
     <!-- /.control-sidebar -->
-    
+    <div class="modal fade" id="modal-tambah">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Tambah User</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="card card-primary">
+
+
+              <!-- form start -->
+              <form action="" method="post">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Username</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">password</label>
+                    <input type="text" class="form-control" id="password" name="password">
+                  </div>
+                  <div class=" form-group">
+                    <label for="level">Level</label>
+                    <select name="level" id="level" class="form-control">
+                      <option value=""></option>
+                      <option value="Kepala Sekolah" id="kepalasekolah">Kepala Sekolah</option>
+                      <option value="Admin" id="admin">Admin</option>
+                      <option value="Sekretaris" id="sek">Sekretaris</option>
+                      <option value="Guru" id="guru">Guru</option>
+                    </select>
+                  </div>
+
+                </div>
+                <!-- /.card-body -->
+
+
+
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary" name="tambah">Save</button>
+                </div>
+            </div>
+            </form>
+          </div>
+
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="modal-default">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Edit User</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="card card-primary">
+
+
+              <!-- form start -->
+              <form action="" method="post">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">ID</label>
+                    <input type="text" readonly class="form-control" id="iduser" name="id">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Username</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                  </div>
+                  <div class=" form-group">
+                    <label for="level">Level</label>
+                    <select name="level" id="level" class="form-control">
+                      <option value=""></option>
+                      <option value="Kepala Sekolah" id="kepalasekolah">Kepala Sekolah</option>
+                      <option value="Admin" id="admin">Admin</option>
+                      <option value="Sekretaris" id="sek">Sekretaris</option>
+                      <option value="Guru" id="guru">Guru</option>
+                    </select>
+                  </div>
+
+                </div>
+                <!-- /.card-body -->
+
+
+
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary" name="edit">Save changes</button>
+                </div>
+            </div>
+            </form>
+          </div>
+
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
     <!-- Main Footer -->
     <footer class="main-footer">
       <strong>Copyright &copy; 2014-2021 AgendaKelas.</strong>
@@ -304,6 +404,29 @@ include 'function.php';
         "autoWidth": false,
         "responsive": true,
       });
+    });
+
+    $(document).on('click', '.btn-outline-warning', function() {
+      var username = $(this).data('username');
+      var iduser = $(this).data('userid');
+      var level = $(this).data('level');
+
+      if (level == 'Kepala Sekolah') {
+        $('#kepalasekolah').prop('selected', true);
+      } else if (level == 'Admin') {
+        $('#admin').prop('selected', true);
+      } else if (level == 'Guru') {
+        $('#guru').prop('selected', true);
+      } else {
+        $('#sek').prop('selected', true);
+      }
+      // Set form values ke modal
+      $('#username').val(username);
+      $('#iduser').val(iduser);
+      $('#modal-default').modal('show');
+
+      // Set ID hidden di form agar nanti dikirim saat submit
+
     });
   </script>
 </body>
