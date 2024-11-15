@@ -54,7 +54,8 @@ if (isset($_POST['tambah'])) {
     <title>Mapel | AgendaKelas</title>
 
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <!-- overlayScrollbars -->
@@ -99,67 +100,7 @@ if (isset($_POST['tambah'])) {
             <section class="content">
                 <div class="container-fluid">
                     <!-- Info boxes -->
-                    <div class="row">
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
 
-                                <div class="info-box-content">
-                                    <span class="info-box-text">CPU Traffic</span>
-                                    <span class="info-box-number">
-                                        10
-                                        <small>%</small>
-                                    </span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">Likes</span>
-                                    <span class="info-box-number">41,410</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-
-                        <!-- fix for small devices only -->
-                        <div class="clearfix hidden-md-up"></div>
-
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">Sales</span>
-                                    <span class="info-box-number">760</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">New Members</span>
-                                    <span class="info-box-number">2,000</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-                    </div>
                     <!-- /.row -->
 
                     <!-- tabel kehadiran -->
@@ -169,7 +110,8 @@ if (isset($_POST['tambah'])) {
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#tambahModal"><button class="btn btn-outline-success mb-2">+ Tambah Mapel</button></a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#tambahModal"><button
+                                    class="btn btn-outline-success mb-2">+ Tambah Mapel</button></a>
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
@@ -186,16 +128,20 @@ if (isset($_POST['tambah'])) {
                                     while ($row = mysqli_fetch_array($sql)) {
                                         $no++
                                     ?>
-                                        <tr>
-                                            <td><?= $no; ?></td>
-                                            <td><?= $row['KodeMapel']; ?></td>
-                                            <td><?= $row['namaMapel']; ?></td>
-                                            <td>
-                                                <a href="hapusmapel.php?mapel=<?= $row['KodeMapel'] ?>" onclick="return confirm('Menghapus mapel <?= $row['namaMapel'] ?> ')"><button class="btn btn-outline-danger">Hapus</button></a>
-                                                <button class="btn btn-outline-warning" data-kode="<?= $row['KodeMapel']; ?>" data-nama="<?= $row['namaMapel']; ?>">Edit</button>
-                                            </td>
+                                    <tr>
+                                        <td><?= $no; ?></td>
+                                        <td><?= $row['KodeMapel']; ?></td>
+                                        <td><?= $row['namaMapel']; ?></td>
+                                        <td>
+                                            <a href="hapusmapel.php?mapel=<?= $row['KodeMapel'] ?>"
+                                                onclick="return confirm('Menghapus mapel <?= $row['namaMapel'] ?> ')"><button
+                                                    class="btn btn-outline-danger">Hapus</button></a>
+                                            <button class="btn btn-outline-warning"
+                                                data-kode="<?= $row['KodeMapel']; ?>"
+                                                data-nama="<?= $row['namaMapel']; ?>">Edit</button>
+                                        </td>
 
-                                        </tr>
+                                    </tr>
                                     <?php
                                     }
                                     ?>
@@ -206,7 +152,8 @@ if (isset($_POST['tambah'])) {
                         <!-- /.card-body -->
                     </div>
                     <!-- /.card -->
-                </div><!--/. container-fluid -->
+                </div>
+                <!--/. container-fluid -->
             </section>
             <!-- /.content -->
         </div>
@@ -224,7 +171,8 @@ if (isset($_POST['tambah'])) {
                         <form id="editMapelForm" action="" method="post">
                             <div class="mb-3">
                                 <label for="kodeMapel" class="form-label">Kode Mapel</label>
-                                <input type="text" class="form-control" id="kodeMapel" name="kodeMapel" readonly required>
+                                <input type="text" class="form-control" id="kodeMapel" name="kodeMapel" readonly
+                                    required>
                             </div>
                             <div class="mb-3">
                                 <label for="namaMapel" class="form-label">Nama Mapel</label>
@@ -254,7 +202,8 @@ if (isset($_POST['tambah'])) {
                                 <input type="text" class="form-control" id="namaMapel" name="namaMapel" required>
                             </div>
                             <div class="mb-3">
-                                <button type="submit" name="tambah" class="btn btn-primary">Tambah Mata Pelajaran</button>
+                                <button type="submit" name="tambah" class="btn btn-primary">Tambah Mata
+                                    Pelajaran</button>
                             </div>
                         </form>
                     </div>
@@ -313,46 +262,46 @@ if (isset($_POST['tambah'])) {
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
+    $(function() {
+        $("#example1").DataTable({
+            "responsive": true,
+            "lengthChange": false,
+            "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
         });
+    });
 
-        $(document).on('click', '.btn-outline-warning', function() {
-            var id = $(this).data('id');
-            var kodeMapel = $(this).data('kode');
-            var namaMapel = $(this).data('nama');
+    $(document).on('click', '.btn-outline-warning', function() {
+        var id = $(this).data('id');
+        var kodeMapel = $(this).data('kode');
+        var namaMapel = $(this).data('nama');
 
-            // Set form values ke modal
-            $('#kodeMapel').val(kodeMapel);
-            $('#namaMapel').val(namaMapel);
-            $('#editModal').modal('show');
+        // Set form values ke modal
+        $('#kodeMapel').val(kodeMapel);
+        $('#namaMapel').val(namaMapel);
+        $('#editModal').modal('show');
 
-            // Set ID hidden di form agar nanti dikirim saat submit
-            $('#editMapelForm').data('id', id);
-        });
+        // Set ID hidden di form agar nanti dikirim saat submit
+        $('#editMapelForm').data('id', id);
+    });
 
 
-        // Open modal and fill data when clicking "Edit" button
-        $(document).on('click', '.btn-outline-success', function() {
-            // Set form values ke modal
-            $('#tambahModal').modal('show');
+    // Open modal and fill data when clicking "Edit" button
+    $(document).on('click', '.btn-outline-success', function() {
+        // Set form values ke modal
+        $('#tambahModal').modal('show');
 
-            // Set ID hidden di form agar nanti dikirim saat submit
-        });
+        // Set ID hidden di form agar nanti dikirim saat submit
+    });
     </script>
 </body>
 

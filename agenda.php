@@ -18,7 +18,8 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
     <title>Agenda | AgendaKelas</title>
 
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
 
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
@@ -64,77 +65,20 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
             <section class="content">
                 <div class="container-fluid">
                     <!-- Info boxes -->
-                    <div class="row">
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box">
-                                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
 
-                                <div class="info-box-content">
-                                    <span class="info-box-text">CPU Traffic</span>
-                                    <span class="info-box-number">
-                                        10
-                                        <small>%</small>
-                                    </span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">Likes</span>
-                                    <span class="info-box-number">41,410</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-
-                        <!-- fix for small devices only -->
-                        <div class="clearfix hidden-md-up"></div>
-
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">Sales</span>
-                                    <span class="info-box-number">760</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-12 col-sm-6 col-md-3">
-                            <div class="info-box mb-3">
-                                <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
-
-                                <div class="info-box-content">
-                                    <span class="info-box-text">New Members</span>
-                                    <span class="info-box-number">2,000</span>
-                                </div>
-                                <!-- /.info-box-content -->
-                            </div>
-                            <!-- /.info-box -->
-                        </div>
-                        <!-- /.col -->
-                    </div>
                     <!-- /.row -->
 
                     <!-- tabel kehadiran -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Data Agenda Kelas <?= $_SESSION['kelas'] ?></h3>
+                            <h3 class="card-title">Data Agenda Kelas
+                                <?= (isset($_SESSION['kelas'])) ? $_SESSION["kelas"] : "" ?>
+                            </h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <button class="btn btn-outline-success mb-2" data-bs-toggle="modal" data-bs-target="#tambahModal">+ Tambah Agenda</button>
+                            <button class="btn btn-outline-success mb-2" data-bs-toggle="modal"
+                                data-bs-target="#tambahModal">+ Tambah Agenda</button>
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
@@ -163,24 +107,26 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                                         $m = mysqli_fetch_array($mapel);
                                         $no++
                                     ?>
-                                        <tr>
-                                            <td><?= $no; ?></td>
+                                    <tr>
+                                        <td><?= $no; ?></td>
 
-                                            <td><?= $row["agendaID"] ?></td>
-                                            <td><?= $g['nama']; ?></td>
-                                            <td><?= $row["kelas"] ?></td>
-                                            <td><?= $m["namaMapel"] ?></td>
-                                            <td><?= $row["materi"] ?></td>
-                                            <td><?= $row["keterangan"] ?></td>
-                                            <td><?= $row["jamPelajaran"] ?></td>
-                                            <td><?= date("d M Y H:i:s", strtotime($row['tanggal'])) ?></td>
-                                            <td>
-                                                <a href="?h=<?= $row["agendaID"] ?>" class="btn btn-danger"><i class="fas fa-trash"></i>
-                                                </a>
-                                                <a href="editagenda.php?id=<?= $row['agendaID'] ?>" class="btn btn-warning"><i class="fas fa-edit"></i></a>
-                                            </td>
+                                        <td><?= $row["agendaID"] ?></td>
+                                        <td><?= $g['nama']; ?></td>
+                                        <td><?= $row["kelas"] ?></td>
+                                        <td><?= $m["namaMapel"] ?></td>
+                                        <td><?= $row["materi"] ?></td>
+                                        <td><?= $row["keterangan"] ?></td>
+                                        <td><?= $row["jamPelajaran"] ?></td>
+                                        <td><?= date("d M Y H:i:s", strtotime($row['tanggal'])) ?></td>
+                                        <td>
+                                            <a href="?h=<?= $row["agendaID"] ?>" class="btn btn-danger"><i
+                                                    class="fas fa-trash"></i>
+                                            </a>
+                                            <a href="editagenda.php?id=<?= $row['agendaID'] ?>"
+                                                class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                                        </td>
 
-                                        </tr>
+                                    </tr>
                                     <?php
                                     }
                                     ?>
@@ -191,7 +137,8 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                         <!-- /.card-body -->
                     </div>
                     <!-- /.card -->
-                </div><!--/. container-fluid -->
+                </div>
+                <!--/. container-fluid -->
             </section>
             <!-- /.content -->
         </div>
@@ -234,9 +181,9 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                                 <?php
                                 while ($row = mysqli_fetch_assoc($sql)) :
                                 ?>
-                                    <option value="<?= $row["guruID"] ?>">
-                                        <?= $row["nama"] ?>
-                                    </option>
+                                <option value="<?= $row["guruID"] ?>">
+                                    <?= $row["nama"] ?>
+                                </option>
                                 <?php endwhile ?>
                             </select>
                         </div>
@@ -247,7 +194,7 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                                 $sql = selectKelas();
                                 $kelas = mysqli_fetch_assoc($sql);
                                 do { ?>
-                                    <option value="<?php echo $kelas['kelas'] ?>"><?php echo $kelas['kelas'] ?></option>
+                                <option value="<?php echo $kelas['kelas'] ?>"><?php echo $kelas['kelas'] ?></option>
                                 <?php } while ($kelas = mysqli_fetch_assoc($sql)); ?>
 
                             </select>
@@ -257,7 +204,7 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                             <select name="mapel" class="form-control" id="mapel">
                                 <?php $sql = getAllMapel();
                                 while ($row = mysqli_fetch_assoc($sql)): ?>
-                                    <option value="<?php echo $row['KodeMapel'] ?>"><?php echo $row['namaMapel'] ?></option>
+                                <option value="<?php echo $row['KodeMapel'] ?>"><?php echo $row['namaMapel'] ?></option>
                                 <?php endwhile; ?>
 
                             </select>
@@ -334,36 +281,36 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
-        $(document).on('click', '.btn-outline-success', function() {
-            var id = $(this).data('id');
+    $(document).on('click', '.btn-outline-success', function() {
+        var id = $(this).data('id');
 
-            var nama = $(this).data('nama');
+        var nama = $(this).data('nama');
 
-            // Set form values ke modal
-            $('#idsiswa').val(id);
-            $('#nama').val(nama);
-            $('#tambahModal').modal('show');
+        // Set form values ke modal
+        $('#idsiswa').val(id);
+        $('#nama').val(nama);
+        $('#tambahModal').modal('show');
 
-            // Set ID hidden di form agar nanti dikirim saat submit
+        // Set ID hidden di form agar nanti dikirim saat submit
+    });
+
+    $(function() {
+        $("#example1").DataTable({
+            "responsive": true,
+            "lengthChange": false,
+            "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
         });
-
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
-        });
+    });
     </script>
 
 </body>
