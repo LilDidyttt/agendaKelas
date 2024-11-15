@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 15, 2024 at 04:38 PM
+-- Generation Time: Nov 15, 2024 at 05:21 PM
 -- Server version: 10.1.29-MariaDB
 -- PHP Version: 7.1.12
 
@@ -57,7 +57,7 @@ CREATE TABLE `guru` (
 --
 
 INSERT INTO `guru` (`guruID`, `userID`, `nama`, `nip`, `jk`) VALUES
-(5, NULL, 'Ahmad Nursohe', '123123', 'L');
+(5, 4, 'Ahmad Nursohe', '123123', 'L');
 
 -- --------------------------------------------------------
 
@@ -172,7 +172,8 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`userID`, `username`, `password`, `level`) VALUES
 (1, 'admin', '$2y$10$ihaMnfyH2lqHme3YUiMybOiP3dTCBUu4nkw5tU4nuDMO1G6cqK6/e', 'Admin'),
 (2, '12 RPL 1', '$2y$10$lJcXelw7ULF4JK9FJScmF.mA8O/9GnZSQ1FaFPEBylyzw6e2ZrVZW', 'Sekretaris'),
-(3, 'Budi Rukadi', '$2y$10$s/LwbsmCPpQx0/TkyKgH.OsmrNcAHvO1avyIx/GURtlWNYdoGJdAO', 'Wakil Kepala Sekolah');
+(3, 'Budi Rukadi', '$2y$10$s/LwbsmCPpQx0/TkyKgH.OsmrNcAHvO1avyIx/GURtlWNYdoGJdAO', 'Wakil Kepala Sekolah'),
+(4, 'sohe', '$2y$10$pnFqUmC/aKt1H0uASz.vDu6/0uwXZr.I9.8LKekOLO3FFxbRbYcRC', 'Guru');
 
 --
 -- Indexes for dumped tables
@@ -281,7 +282,7 @@ ALTER TABLE `siswa`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
