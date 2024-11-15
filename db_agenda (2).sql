@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 14 Nov 2024 pada 13.40
--- Versi Server: 10.1.29-MariaDB
+-- Generation Time: Nov 15, 2024 at 04:18 AM
+-- Server version: 10.1.29-MariaDB
 -- PHP Version: 7.1.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -19,13 +19,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db_agenda1`
+-- Database: `db_agenda`
 --
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `agenda`
+-- Table structure for table `agenda`
 --
 
 CREATE TABLE `agenda` (
@@ -38,17 +38,10 @@ CREATE TABLE `agenda` (
   `jamPelajaran` int(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data untuk tabel `agenda`
---
-
-INSERT INTO `agenda` (`agendaID`, `guruID`, `kelas`, `KodeMapel`, `materi`, `keterangan`, `jamPelajaran`) VALUES
-(1, 1, '12 RPL 1', 3, 'Hak Asasi Manusia', 'Tugas', 2);
-
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `guru`
+-- Table structure for table `guru`
 --
 
 CREATE TABLE `guru` (
@@ -59,16 +52,16 @@ CREATE TABLE `guru` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `guru`
+-- Dumping data for table `guru`
 --
 
 INSERT INTO `guru` (`guruID`, `nama`, `nip`, `jk`) VALUES
-(1, 'Ace Haryanto S.H', '1293142', 'L');
+(4, 'Ahmad Nursoheh', '2143124', 'P');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kehadiran`
+-- Table structure for table `kehadiran`
 --
 
 CREATE TABLE `kehadiran` (
@@ -81,17 +74,19 @@ CREATE TABLE `kehadiran` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `kehadiran`
+-- Dumping data for table `kehadiran`
 --
 
 INSERT INTO `kehadiran` (`kehadiranID`, `siswaID`, `jamHadir`, `jamPulang`, `keterangan`, `ketPulang`) VALUES
-(8, 1, '2024-11-14 12:27:29', '2024-11-14 12:28:13', 'Hadir', 'Sudah'),
-(9, 2, '2024-11-14 12:27:39', '2024-11-14 12:27:49', 'Hadir', 'Sudah');
+(4, 1, '2024-11-14 10:33:09', '2024-11-14 10:33:17', 'Hadir', 'Sudah'),
+(5, 1, '2024-11-13 02:54:48', '2024-11-15 02:55:51', 'Hadir', 'Belum'),
+(6, 2, '2024-11-15 02:55:07', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(7, 1, '2024-11-15 03:00:16', '2024-11-15 03:01:06', 'Hadir', 'Sudah');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `mapel`
+-- Table structure for table `mapel`
 --
 
 CREATE TABLE `mapel` (
@@ -100,7 +95,7 @@ CREATE TABLE `mapel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `mapel`
+-- Dumping data for table `mapel`
 --
 
 INSERT INTO `mapel` (`KodeMapel`, `namaMapel`) VALUES
@@ -113,7 +108,25 @@ INSERT INTO `mapel` (`KodeMapel`, `namaMapel`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `siswa`
+-- Table structure for table `setjam`
+--
+
+CREATE TABLE `setjam` (
+  `jamID` int(11) NOT NULL,
+  `jamPulang` time NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `setjam`
+--
+
+INSERT INTO `setjam` (`jamID`, `jamPulang`) VALUES
+(1, '07:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `siswa`
 --
 
 CREATE TABLE `siswa` (
@@ -127,18 +140,18 @@ CREATE TABLE `siswa` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `siswa`
+-- Dumping data for table `siswa`
 --
 
 INSERT INTO `siswa` (`siswaID`, `nama`, `uid`, `nisn`, `nipd`, `jk`, `kelas`) VALUES
-(1, 'Ahmad Daffa', 'A38A0930', '0076756001', '2223.10.016', 'L', '12 RPL 1'),
-(2, 'Alber Galih Antoni', '13DF1236', '0067398146', '2223.10.030', 'L', '12 RPL 1'),
+(1, 'Ahmad Daffa', 'US1234PIK', '0076756001', '2223.10.016', 'L', '12 RPL 1'),
+(2, 'Alber Galih Antoni', 'AOJ1782NJ', '0067398146', '2223.10.030', 'L', '12 RPL 1'),
 (3, 'Ameliya Nofitasari', '1203UASD2', '0071002689', '2223.10.047', 'P', '12 RPL 1');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -149,11 +162,12 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `user`
+-- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`userID`, `username`, `password`, `level`) VALUES
-(1, 'admin', '$2y$10$ihaMnfyH2lqHme3YUiMybOiP3dTCBUu4nkw5tU4nuDMO1G6cqK6/e', 'Admin');
+(1, 'admin', '$2y$10$ihaMnfyH2lqHme3YUiMybOiP3dTCBUu4nkw5tU4nuDMO1G6cqK6/e', 'Admin'),
+(2, '12rpl1', '$2y$10$lJcXelw7ULF4JK9FJScmF.mA8O/9GnZSQ1FaFPEBylyzw6e2ZrVZW', 'Sekretaris');
 
 --
 -- Indexes for dumped tables
@@ -187,6 +201,12 @@ ALTER TABLE `mapel`
   ADD PRIMARY KEY (`KodeMapel`);
 
 --
+-- Indexes for table `setjam`
+--
+ALTER TABLE `setjam`
+  ADD PRIMARY KEY (`jamID`);
+
+--
 -- Indexes for table `siswa`
 --
 ALTER TABLE `siswa`
@@ -212,19 +232,25 @@ ALTER TABLE `agenda`
 -- AUTO_INCREMENT for table `guru`
 --
 ALTER TABLE `guru`
-  MODIFY `guruID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `guruID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `kehadiran`
 --
 ALTER TABLE `kehadiran`
-  MODIFY `kehadiranID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `kehadiranID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `mapel`
 --
 ALTER TABLE `mapel`
   MODIFY `KodeMapel` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `setjam`
+--
+ALTER TABLE `setjam`
+  MODIFY `jamID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `siswa`
@@ -236,21 +262,21 @@ ALTER TABLE `siswa`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+-- Constraints for dumped tables
 --
 
 --
--- Ketidakleluasaan untuk tabel `agenda`
+-- Constraints for table `agenda`
 --
 ALTER TABLE `agenda`
   ADD CONSTRAINT `agenda_ibfk_1` FOREIGN KEY (`guruID`) REFERENCES `guru` (`guruID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `agenda_ibfk_2` FOREIGN KEY (`KodeMapel`) REFERENCES `mapel` (`KodeMapel`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `kehadiran`
+-- Constraints for table `kehadiran`
 --
 ALTER TABLE `kehadiran`
   ADD CONSTRAINT `kehadiran_ibfk_1` FOREIGN KEY (`siswaID`) REFERENCES `siswa` (`siswaID`) ON DELETE CASCADE ON UPDATE CASCADE;

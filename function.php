@@ -10,7 +10,7 @@ if (!$conn) {
 function getAllKehadiran()
 {
     global $conn;
-    $sql = mysqli_query($conn, "SELECT * from kehadiran");
+    $sql = mysqli_query($conn, "SELECT * from kehadiran where DATE(jamHadir) = CURDATE()");
     return $sql;
 }
 
@@ -57,7 +57,7 @@ function hapusGuru($id)
 {
     global $conn;
     $sql = mysqli_query($conn, "DELETE FROM guru WHERE guruID=$id");
-    return $sql;    
+    return $sql;
 }
 
 function getAllSiswaFromKelas()
