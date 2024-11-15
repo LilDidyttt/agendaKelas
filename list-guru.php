@@ -62,10 +62,22 @@ include 'function.php';
                     <!-- tabel kehadiran -->
                     <!-- Tambahkan kode ini sebelum tabel -->
                     <?php
-                    if (isset($_GET['status']) && isset($_GET['message'])) {
+                    if (isset($_GET['status'])) {
                         $status = $_GET['status'];
-                        $message = $_GET['message'];
-                        $alertClass = ($status == 'success') ? 'alert-success' : 'alert-danger';
+                        if ($status == "successHapus") {
+                            $message = "Berhasil Menghapus Data";
+                            $alertClass = 'alert-success';
+                        } else if ($status == "errorHapus") {
+                            $message = "Gagal Menghapus Data";
+                            $alertClass = 'alert-danger';
+                        } else if ($status == "successEdit") {
+                            $alertClass = 'alert-success';
+                            $message = "Berhasil Edit Data";
+                        } else if ($status == "errorEdit") {
+                            $message = "gagal Edit Data";
+                            $alertClass = 'alert-danger';
+                        }
+
                     ?>
                         <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert">
                             <?= $message ?>

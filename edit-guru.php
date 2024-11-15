@@ -5,9 +5,9 @@ include 'function.php';
 if (isset($_POST['editGuru'])) {
     $result = editGuru($_POST);
     if ($result) {
-        header("Location: list-guru.php?status=success&message=Data guru berhasil diedit");
+        header("Location: list-guru.php?status=successEdit");
     } else {
-        header("Location: list-guru.php?status=error&message=Gagal mengedit data guru");
+        header("Location: list-guru.php?status=errorEdit");
     }
 }
 ?>
