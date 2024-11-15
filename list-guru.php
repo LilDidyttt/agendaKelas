@@ -98,7 +98,7 @@ if (isset($_POST['tambah'])) {
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#tambahModal"><button class="btn btn-outline-success mb-2">+ Tambah Mapel</button></a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#tambahModal"><button class="btn btn-outline-success mb-2">+ Tambah Guru</button></a>
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
