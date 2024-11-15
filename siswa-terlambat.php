@@ -20,9 +20,14 @@ if ($_SESSION['level'] == 'Sekretaris' || $_SESSION['level'] == 'Guru') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Data Guru | AgendaKelas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <!-- overlayScrollbars -->
@@ -81,10 +86,16 @@ if ($_SESSION['level'] == 'Sekretaris' || $_SESSION['level'] == 'Guru') {
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Data Siswa Terlambat</h3>
+
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="example1" class="table table-bordered table-striped">
+                            <button type="button" class="btn btn-danger mb-2" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal" class="btn btn-danger mb-2"><i
+                                    class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+
+                            <table id="example1" class="table table-dark">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -113,14 +124,14 @@ if ($_SESSION['level'] == 'Sekretaris' || $_SESSION['level'] == 'Guru') {
                                         $siswa = mysqli_fetch_assoc($s);
                                         $no++;
                                     ?>
-                                        <tr>
-                                            <td><?= $no; ?></td>
-                                            <td><?= $row['siswaID']; ?></td>
-                                            <td><?= $siswa['nama']; ?></td>
-                                            <td><?= $siswa['kelas']; ?></td>
-                                            <td><?= $siswa['jk'] ?></td>
-                                            <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
-                                        </tr>
+                                    <tr>
+                                        <td><?= $no; ?></td>
+                                        <td><?= $row['siswaID']; ?></td>
+                                        <td><?= $siswa['nama']; ?></td>
+                                        <td><?= $siswa['kelas']; ?></td>
+                                        <td><?= $siswa['jk'] ?></td>
+                                        <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
+                                    </tr>
                                     <?php
                                     }
                                     ?>
@@ -131,7 +142,8 @@ if ($_SESSION['level'] == 'Sekretaris' || $_SESSION['level'] == 'Guru') {
                         <!-- /.card-body -->
                     </div>
                     <!-- /.card -->
-                </div><!--/. container-fluid -->
+                </div>
+                <!--/. container-fluid -->
             </section>
             <!-- /.content -->
         </div>
@@ -150,6 +162,38 @@ if ($_SESSION['level'] == 'Sekretaris' || $_SESSION['level'] == 'Guru') {
                 <b>Version</b> 3.2.0
             </div>
         </footer>
+    </div>
+    <!-- modal pdf -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Convert To PDF</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <h1>Tentukan Waktu</h1>
+                    <form action="pdf.php" method="post">
+                        <div class="mb-3">
+                            <label for="waktuawal" class="form-label">Dari</label>
+                            <input type="date" name="A" id="waktuawal" class="form-control">
+                        </div>
+                        <div class="mb-2">
+                            <label for="waktuakhir" class="form-label">Sampai</label>
+                            <input type="date" name="B" class="form-control">
+                        </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Convert</button>
+                </div>
+                </form>
+
+            </div>
+        </div>
     </div>
     <!-- ./wrapper -->
 
@@ -188,6 +232,10 @@ if ($_SESSION['level'] == 'Sekretaris' || $_SESSION['level'] == 'Guru') {
     <script src="plugins/raphael/raphael.min.js"></script>
     <script src="plugins/jquery-mapael/jquery.mapael.min.js"></script>
     <script src="plugins/jquery-mapael/maps/usa_states.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+
     <!-- ChartJS -->
     <script src="plugins/chart.js/Chart.min.js"></script>
 
