@@ -1,10 +1,44 @@
+<?php
+require 'function.php';
+
+$message = "";
+$alertClass = "";
+
+if (isset($_POST['login'])) {
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+
+    $cek = mysqli_query($conn, "SELECT * FROM user where username = '$username'");
+    $row = mysqli_fetch_array($cek);
+
+    if ($row) {
+        $passwordhash = $row['password'];
+
+        if (password_verify($password, $passwordhash)) {
+            $_SESSION['iduser'] = $row['userID'];
+            $_SESSION['level']  = $row['level'];
+
+            header("Location: index.php");
+            exit();
+        } else {
+            $message = "Username atau password salah";
+            $alertClass = "alert-danger";
+        }
+    } else {
+        $message = "Username atau asdas salah";
+        $alertClass = "alert-danger";
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Log in (v2)</title>
+    <title>Login | AgendaKelas</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -21,12 +55,23 @@
         <!-- /.login-logo -->
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <a href=" index2.html" class="h1"><b>Log</b>in</a>
+                <h1><b>Login</b> </h1>
             </div>
             <div class="card-body">
-                <p class="login-box-msg">Login untuk mendapatkan hak akses</p>
+                <p class="login-box-msg">Selamat Datang di AgendaKelas</p>
 
-                <form action=" index3.html" method="post">
+                <?php if (isset($message) && !empty($message)) : ?>
+
+                    <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert">
+                        <?= $message ?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                <?php endif; ?>
+
+                <form action="" method="post">
                     <div class="input-group mb-3">
                         <input type="text" name="username" class="form-control" placeholder="Username">
                         <div class="input-group-append">
@@ -43,14 +88,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
 
-                        <!-- /.col -->
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">Login</button>
-                        </div>
-                        <!-- /.col -->
+                    <!-- /.col -->
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" name="login" class="btn btn-primary btn-block">Login</button>
                     </div>
+                    <!-- /.col -->
                 </form>
                 <!-- /.social-auth-links -->
 
@@ -71,6 +114,3 @@
 </body>
 
 </html>
-<?php
-require "function.php";
-?>
