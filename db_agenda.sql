@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 15, 2024 at 05:23 AM
+-- Generation Time: Nov 15, 2024 at 01:54 PM
 -- Server version: 10.1.29-MariaDB
 -- PHP Version: 7.1.12
 
@@ -179,7 +179,7 @@ CREATE TABLE `user` (
   `userID` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `level` enum('Kepala Sekolah','Admin','Sekretaris','Guru') NOT NULL
+  `level` enum('Kepala Sekolah','Admin','Sekretaris','Guru','Wakil Kepala Sekolah') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -254,7 +254,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `agenda`
 --
 ALTER TABLE `agenda`
-  MODIFY `agendaID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `agendaID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `guru`
