@@ -25,7 +25,6 @@ function getGuruById($id)
 {
     global $conn;
     $sql = mysqli_query($conn, "SELECT * FROM guru WHERE guruID=$id");
-    header("location: edit-guru.php");
     return $sql;
 }
 
