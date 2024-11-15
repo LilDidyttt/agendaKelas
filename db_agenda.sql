@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 15, 2024 at 04:18 AM
+-- Generation Time: Nov 15, 2024 at 05:23 AM
 -- Server version: 10.1.29-MariaDB
 -- PHP Version: 7.1.12
 
@@ -69,7 +69,7 @@ CREATE TABLE `kehadiran` (
   `siswaID` int(11) NOT NULL,
   `jamHadir` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `jamPulang` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-  `keterangan` enum('Tidak Ada','Hadir','Sakit','Izin','Alpa') NOT NULL DEFAULT 'Tidak Ada',
+  `keterangan` enum('Tidak Ada','Hadir','Sakit','Izin','Alpha') NOT NULL DEFAULT 'Tidak Ada',
   `ketPulang` enum('Sudah','Belum') NOT NULL DEFAULT 'Belum'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -78,10 +78,31 @@ CREATE TABLE `kehadiran` (
 --
 
 INSERT INTO `kehadiran` (`kehadiranID`, `siswaID`, `jamHadir`, `jamPulang`, `keterangan`, `ketPulang`) VALUES
-(4, 1, '2024-11-14 10:33:09', '2024-11-14 10:33:17', 'Hadir', 'Sudah'),
-(5, 1, '2024-11-13 02:54:48', '2024-11-15 02:55:51', 'Hadir', 'Belum'),
-(6, 2, '2024-11-15 02:55:07', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
-(7, 1, '2024-11-15 03:00:16', '2024-11-15 03:01:06', 'Hadir', 'Sudah');
+(1, 1, '2024-11-15 04:10:57', '0000-00-00 00:00:00', 'Hadir', 'Belum');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `keterangan`
+--
+
+CREATE TABLE `keterangan` (
+  `keteranganID` int(11) NOT NULL,
+  `siswaID` int(11) NOT NULL,
+  `keterangan` enum('Sakit','Izin','Alpha') NOT NULL,
+  `tanggal` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `keterangan`
+--
+
+INSERT INTO `keterangan` (`keteranganID`, `siswaID`, `keterangan`, `tanggal`) VALUES
+(2, 2, 'Sakit', '2024-10-15 11:02:22'),
+(3, 1, 'Izin', '2024-10-15 11:09:37'),
+(4, 2, 'Izin', '2024-10-15 11:13:00'),
+(5, 2, 'Sakit', '2024-11-15 11:16:32'),
+(6, 3, 'Sakit', '2024-11-15 11:16:38');
 
 -- --------------------------------------------------------
 
@@ -195,6 +216,13 @@ ALTER TABLE `kehadiran`
   ADD KEY `siswaID` (`siswaID`);
 
 --
+-- Indexes for table `keterangan`
+--
+ALTER TABLE `keterangan`
+  ADD PRIMARY KEY (`keteranganID`),
+  ADD KEY `siswaID` (`siswaID`);
+
+--
 -- Indexes for table `mapel`
 --
 ALTER TABLE `mapel`
@@ -238,7 +266,13 @@ ALTER TABLE `guru`
 -- AUTO_INCREMENT for table `kehadiran`
 --
 ALTER TABLE `kehadiran`
-  MODIFY `kehadiranID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `kehadiranID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `keterangan`
+--
+ALTER TABLE `keterangan`
+  MODIFY `keteranganID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `mapel`
@@ -280,6 +314,12 @@ ALTER TABLE `agenda`
 --
 ALTER TABLE `kehadiran`
   ADD CONSTRAINT `kehadiran_ibfk_1` FOREIGN KEY (`siswaID`) REFERENCES `siswa` (`siswaID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `keterangan`
+--
+ALTER TABLE `keterangan`
+  ADD CONSTRAINT `keterangan_ibfk_1` FOREIGN KEY (`siswaID`) REFERENCES `siswa` (`siswaID`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
