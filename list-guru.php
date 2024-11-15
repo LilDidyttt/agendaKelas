@@ -1,4 +1,5 @@
 <?php
+ob_start();
 include 'function.php';
 
 if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
@@ -46,6 +47,45 @@ if (isset($_POST['tambah'])) {
         echo "<script>alert('Gagal menambahkan guru');</script>";
     }
 }
+
+if (isset($_POST['tambahakun'])) {
+    $idguru = $_POST['idguru'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $cekusername = mysqli_query($conn, "SELECT * FROM user where username = '$username'");
+
+    if (mysqli_num_rows($cekusername) == 0) {
+        $cek = mysqli_fetch_array($cekusername);
+        $enkripsi = password_hash($password, PASSWORD_BCRYPT);
+
+        $query = mysqli_query($conn, "INSERT INTO user (username, password, level) VALUES ('$username', '$enkripsi', 'Guru')");
+
+        if ($query) {
+
+            $query = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username'");
+            $getID = mysqli_fetch_array($query);
+            $iduser = $getID['userID'];
+
+            $queryupdate = mysqli_query($conn, "UPDATE guru SET userID = '$iduser' where guruID = '$idguru'");
+
+            if ($queryupdate) {
+                $message = "Tambah akun guru berhasil!";
+                $alertClass = "alert-success";
+            } else {
+                $message = "Gagal mengupdate data guru.";
+                $alertClass = "alert-danger";
+            }
+        } else {
+            $message = "Gagal menambahkan akun guru.";
+            $alertClass = "alert-danger";
+        }
+    } else {
+        $message = "Username sudah terpakai.";
+        $alertClass = "alert-danger";
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -100,6 +140,18 @@ if (isset($_POST['tambah'])) {
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
+                    <?php if (isset($message) && !empty($message)) : ?>
+
+                        <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert" id="autoHideAlert">
+                            <?= $message ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <?php header("refresh:5;url=siswa.php") ?>
+
+                    <?php endif; ?>
                     <!-- tabel kehadiran -->
                     <div class="card">
                         <div class="card-header">
@@ -112,10 +164,12 @@ if (isset($_POST['tambah'])) {
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>ID GUru</th>
+                                        <th>ID Guru</th>
                                         <th>Nama Guru</th>
                                         <th>NIP</th>
                                         <th>Jenis Kelamin</th>
+                                        <th>ID User</th>
+                                        <th>Username</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -124,6 +178,9 @@ if (isset($_POST['tambah'])) {
                                     $sql = getAllGuru();
                                     $no = 0;
                                     while ($row = mysqli_fetch_array($sql)) {
+                                        $iduser = $row['userID'];
+                                        $query = mysqli_query($conn, "SELECT * from user where userID =  '$iduser'");
+                                        $ambilusername = mysqli_fetch_array($query);
                                         $no++
                                     ?>
                                         <tr>
@@ -132,6 +189,8 @@ if (isset($_POST['tambah'])) {
                                             <td><?= $row['nama']; ?></td>
                                             <td><?= $row['nip'] ?></td>
                                             <td><?= $row['jk'] ?></td>
+                                            <td><?= (empty($row['userID'])) ? "Tidak ada akun" : $row['userID'] ?></td>
+                                            <td><?= (empty($ambilusername['username'])) ? "Tidak ada akun" : $ambilusername['username'] ?></td>
                                             <td>
                                                 <a href="hapus-guru.php?guruID=<?= $row['guruID'] ?>" onclick="return confirm('Menghapus guru <?= $row['nama'] ?> ')"><button class="btn btn-outline-danger">Hapus</button></a>
                                                 <button
@@ -143,6 +202,10 @@ if (isset($_POST['tambah'])) {
                                                     onclick="editGuru(this)">
                                                     Edit
                                                 </button>
+
+                                                <?php if (empty($row['userID'])) : ?>
+                                                    <button class="btn btn-outline-info" data-idguru="<?= $row['guruID'] ?>" data-namaguru="<?= $row['nama'] ?>">Tambah Akun</button>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php
@@ -198,6 +261,56 @@ if (isset($_POST['tambah'])) {
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Modal untuk Tambah Akun Guru -->
+        <div class="modal fade" id="modalAkun">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Tambah Akun Guru</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="card card-primary">
+
+
+                            <!-- form start -->
+                            <form action="" method="post">
+                                <div class="card-body">
+                                    <input type="hidden" name="idguru" id="idguru">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Nama Guru</label>
+                                        <input type="text" class="form-control" id="namaguru" readonly name="namaguru">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Username</label>
+                                        <input type="text" class="form-control" name="username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">password</label>
+                                        <input type="text" class="form-control" name="password">
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+
+
+
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" name="tambahakun">Tambah</button>
+                                </div>
+                        </div>
+                        </form>
+                    </div>
+
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
         </div>
 
         <!-- Modal untuk Tambah Guru -->
@@ -335,6 +448,19 @@ if (isset($_POST['tambah'])) {
             $('#editModal').modal('show');
         }
 
+        $(document).on('click', '.btn-outline-info', function() {
+            var id = $(this).data('idguru');
+            var nama = $(this).data('namaguru');
+
+            // Set form values ke modal
+            $('#idguru').val(id);
+            $('#namaguru').val(nama);
+            $('#modalAkun').modal('show');
+
+            // Set ID hidden di form agar nanti dikirim saat submit
+            $('#editMapelForm').data('id', id);
+        });
+
 
 
 
@@ -349,3 +475,8 @@ if (isset($_POST['tambah'])) {
 </body>
 
 </html>
+
+<?php
+ob_end_flush();
+
+?>

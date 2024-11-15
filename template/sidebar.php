@@ -19,7 +19,7 @@
                  <li class="nav-item menu-open"></li>
 
                  <?php if ($_SESSION['level'] == 'Admin'): ?>
-                   
+
                      <li class="nav-item">
                          <a href="index.php" class="nav-link">
                              <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -89,7 +89,7 @@
                          </a>
                      </li>
 
-                 <?php elseif ($_SESSION['level'] == 'Kepala Sekolah'): ?>
+                 <?php elseif ($_SESSION['level'] == 'Kepala Sekolah' || $_SESSION['level'] == 'Wakil Kepala Sekolah'): ?>
                      <li class="nav-item">
                          <a href="siswa-terlambat.php" class="nav-link">
                              <i class="nav-icon fas fa-exclamation-circle"></i>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 15, 2024 at 01:54 PM
+-- Generation Time: Nov 15, 2024 at 05:21 PM
 -- Server version: 10.1.29-MariaDB
 -- PHP Version: 7.1.12
 
@@ -46,6 +46,7 @@ CREATE TABLE `agenda` (
 
 CREATE TABLE `guru` (
   `guruID` int(11) NOT NULL,
+  `userID` int(11) DEFAULT NULL,
   `nama` varchar(255) NOT NULL,
   `nip` varchar(15) NOT NULL,
   `jk` enum('L','P') NOT NULL
@@ -55,8 +56,8 @@ CREATE TABLE `guru` (
 -- Dumping data for table `guru`
 --
 
-INSERT INTO `guru` (`guruID`, `nama`, `nip`, `jk`) VALUES
-(4, 'Ahmad Nursoheh', '2143124', 'P');
+INSERT INTO `guru` (`guruID`, `userID`, `nama`, `nip`, `jk`) VALUES
+(5, 4, 'Ahmad Nursohe', '123123', 'L');
 
 -- --------------------------------------------------------
 
@@ -73,13 +74,6 @@ CREATE TABLE `kehadiran` (
   `ketPulang` enum('Sudah','Belum') NOT NULL DEFAULT 'Belum'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `kehadiran`
---
-
-INSERT INTO `kehadiran` (`kehadiranID`, `siswaID`, `jamHadir`, `jamPulang`, `keterangan`, `ketPulang`) VALUES
-(1, 1, '2024-11-15 04:10:57', '0000-00-00 00:00:00', 'Hadir', 'Belum');
-
 -- --------------------------------------------------------
 
 --
@@ -92,17 +86,6 @@ CREATE TABLE `keterangan` (
   `keterangan` enum('Sakit','Izin','Alpha') NOT NULL,
   `tanggal` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `keterangan`
---
-
-INSERT INTO `keterangan` (`keteranganID`, `siswaID`, `keterangan`, `tanggal`) VALUES
-(2, 2, 'Sakit', '2024-10-15 11:02:22'),
-(3, 1, 'Izin', '2024-10-15 11:09:37'),
-(4, 2, 'Izin', '2024-10-15 11:13:00'),
-(5, 2, 'Sakit', '2024-11-15 11:16:32'),
-(6, 3, 'Sakit', '2024-11-15 11:16:38');
 
 -- --------------------------------------------------------
 
@@ -153,7 +136,7 @@ INSERT INTO `setjam` (`jamID`, `jamPulang`) VALUES
 CREATE TABLE `siswa` (
   `siswaID` int(11) NOT NULL,
   `nama` varchar(255) NOT NULL,
-  `uid` varchar(20) NOT NULL,
+  `uid` varchar(20) NOT NULL DEFAULT 'Belum di set',
   `nisn` varchar(15) NOT NULL,
   `nipd` varchar(15) NOT NULL,
   `jk` enum('L','P') NOT NULL,
@@ -165,9 +148,9 @@ CREATE TABLE `siswa` (
 --
 
 INSERT INTO `siswa` (`siswaID`, `nama`, `uid`, `nisn`, `nipd`, `jk`, `kelas`) VALUES
-(1, 'Ahmad Daffa', 'US1234PIK', '0076756001', '2223.10.016', 'L', '12 RPL 1'),
-(2, 'Alber Galih Antoni', 'AOJ1782NJ', '0067398146', '2223.10.030', 'L', '12 RPL 1'),
-(3, 'Ameliya Nofitasari', '1203UASD2', '0071002689', '2223.10.047', 'P', '12 RPL 1');
+(1, 'Ahmad Daffa', 'Belum di set', '0076756001', '2223.10.016', 'L', '12 RPL 1'),
+(2, 'Alber Galih Antoni', 'Belum di set', '0067398146', '2223.10.030', 'L', '12 RPL 1'),
+(3, 'Ameliya Nofitasari', 'Belum di set', '0071002689', '2223.10.047', 'P', '12 RPL 1');
 
 -- --------------------------------------------------------
 
@@ -188,7 +171,9 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`userID`, `username`, `password`, `level`) VALUES
 (1, 'admin', '$2y$10$ihaMnfyH2lqHme3YUiMybOiP3dTCBUu4nkw5tU4nuDMO1G6cqK6/e', 'Admin'),
-(2, '12rpl1', '$2y$10$lJcXelw7ULF4JK9FJScmF.mA8O/9GnZSQ1FaFPEBylyzw6e2ZrVZW', 'Sekretaris');
+(2, '12 RPL 1', '$2y$10$lJcXelw7ULF4JK9FJScmF.mA8O/9GnZSQ1FaFPEBylyzw6e2ZrVZW', 'Sekretaris'),
+(3, 'Budi Rukadi', '$2y$10$s/LwbsmCPpQx0/TkyKgH.OsmrNcAHvO1avyIx/GURtlWNYdoGJdAO', 'Wakil Kepala Sekolah'),
+(4, 'sohe', '$2y$10$pnFqUmC/aKt1H0uASz.vDu6/0uwXZr.I9.8LKekOLO3FFxbRbYcRC', 'Guru');
 
 --
 -- Indexes for dumped tables
@@ -206,7 +191,8 @@ ALTER TABLE `agenda`
 -- Indexes for table `guru`
 --
 ALTER TABLE `guru`
-  ADD PRIMARY KEY (`guruID`);
+  ADD PRIMARY KEY (`guruID`),
+  ADD KEY `userID` (`userID`);
 
 --
 -- Indexes for table `kehadiran`
@@ -260,19 +246,19 @@ ALTER TABLE `agenda`
 -- AUTO_INCREMENT for table `guru`
 --
 ALTER TABLE `guru`
-  MODIFY `guruID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `guruID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `kehadiran`
 --
 ALTER TABLE `kehadiran`
-  MODIFY `kehadiranID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `kehadiranID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `keterangan`
 --
 ALTER TABLE `keterangan`
-  MODIFY `keteranganID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `keteranganID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `mapel`
@@ -296,7 +282,7 @@ ALTER TABLE `siswa`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -308,6 +294,12 @@ ALTER TABLE `user`
 ALTER TABLE `agenda`
   ADD CONSTRAINT `agenda_ibfk_1` FOREIGN KEY (`guruID`) REFERENCES `guru` (`guruID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `agenda_ibfk_2` FOREIGN KEY (`KodeMapel`) REFERENCES `mapel` (`KodeMapel`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `guru`
+--
+ALTER TABLE `guru`
+  ADD CONSTRAINT `guru_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `kehadiran`

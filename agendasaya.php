@@ -2,6 +2,10 @@
 
 include 'function.php';
 
+if ($_SESSION['level'] == 'Sekretaris' && $_SESSION['level'] == 'Admin') {
+    header("Location: siswa.php");
+}
+
 if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
     header("Location: login.php");
     exit();

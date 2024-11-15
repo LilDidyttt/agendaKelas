@@ -1,5 +1,7 @@
 <?php
 
+ob_start(); // Start output buffering
+
 include 'function.php';
 
 if (isset($_POST['edit'])) {
@@ -7,13 +9,50 @@ if (isset($_POST['edit'])) {
     $nama = mysqli_real_escape_string($conn, $_POST['nama']);
     $idsiswa = mysqli_real_escape_string($conn, $_POST['idsiswa']);
 
-    $setket = mysqli_query($conn, "INSERT into keterangan (siswaID, keterangan) values ('$idsiswa',  '$keterangan')");
+    $cek = mysqli_query($conn, "SELECT * FROM keterangan WHERE siswaID = '$idsiswa' AND DATE(tanggal) = CURDATE() ");
+
+    if (mysqli_fetch_array($cek) > 0) {
+        $setket = mysqli_query($conn, "UPDATE keterangan set keterangan = '$keterangan' where siswaID = '$idsiswa' AND DATE(tanggal) = CURDATE()");
+    } else {
+        $setket = mysqli_query($conn, "INSERT into keterangan (siswaID, keterangan) values ('$idsiswa',  '$keterangan')");
+    }
 
     if ($setket) {
         $message = "Keterangan " . $nama . " diubah menjadi " . $keterangan . ".";
         $alertClass = "alert-success";
     } else {
         $message = "Gagal mengubah keterangan.";
+        $alertClass = "alert-danger";
+    }
+}
+
+if (isset($_POST['tambahuid'])) {
+    $kodeuid = mysqli_real_escape_string($conn, $_POST['uid']);
+    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+    $idsiswa = mysqli_real_escape_string($conn, $_POST['idsiswa']);
+
+    $sql = mysqli_query($conn, "UPDATE siswa SET uid = '$kodeuid' where siswaID = '$idsiswa'");
+
+    if ($sql) {
+        $message = "Set UID Kartu " . $nama . " berhasil ditambahkan!";
+        $alertClass = "alert-success";
+    } else {
+        $message = "Gagal menambahkan uid.";
+        $alertClass = "alert-danger";
+    }
+}
+
+if (isset($_POST['edituid'])) {
+    $kodeuid = mysqli_real_escape_string($conn, $_POST['uid']);
+    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+    $idsiswa = mysqli_real_escape_string($conn, $_POST['idsiswa']);
+
+    $sql = mysqli_query($conn, "UPDATE siswa SET uid = '$kodeuid' where siswaID = '$idsiswa'");
+    if ($sql) {
+        $message = "UID Kartu " . $nama . " berhasil diubah!";
+        $alertClass = "alert-success";
+    } else {
+        $message = "Gagal mengubah uid.";
         $alertClass = "alert-danger";
     }
 }
@@ -77,7 +116,7 @@ if (isset($_POST['edit'])) {
                     <div class="row">
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="info-box">
-                                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-user"></i></span>
+                                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
                                 <?php
                                 $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as totalsiswa from siswa WHERE kelas = '12 RPL 1'");
                                 $total = mysqli_fetch_array($sql);
@@ -95,14 +134,14 @@ if (isset($_POST['edit'])) {
                         <!-- /.col -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="info-box mb-3">
-                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-user-injured"></i></span>
+                                <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-user-injured"></i></span>
                                 <?php
                                 $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as siswasakit FROM keterangan WHERE keterangan = 'Sakit' AND DATE(tanggal) = CURDATE()");
-                                $total = mysqli_fetch_array($sql);
+                                $sakit = mysqli_fetch_array($sql);
                                 ?>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Siswa Sakit</span>
-                                    <span class="info-box-number"><?= $total['siswasakit'] ?></span>
+                                    <span class="info-box-number"><?= $sakit['siswasakit'] ?></span>
                                 </div>
                                 <!-- /.info-box-content -->
                             </div>
@@ -115,11 +154,14 @@ if (isset($_POST['edit'])) {
 
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="info-box mb-3">
-                                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
-
+                                <span class="info-box-icon bg-success elevation-1"><i class="fas fa-user-check"></i></span>
+                                <?php
+                                $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as siswaizin FROM keterangan WHERE keterangan = 'Izin' AND DATE(tanggal) = CURDATE()");
+                                $izin = mysqli_fetch_array($sql);
+                                ?>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">Sales</span>
-                                    <span class="info-box-number">760</span>
+                                    <span class="info-box-text">Siswa Izin</span>
+                                    <span class="info-box-number"><?= $izin['siswaizin'] ?></span>
                                 </div>
                                 <!-- /.info-box-content -->
                             </div>
@@ -128,11 +170,16 @@ if (isset($_POST['edit'])) {
                         <!-- /.col -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="info-box mb-3">
-                                <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
-
+                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-times-circle"></i></span>
+                                <?php
+                                $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as siswaalpha FROM keterangan WHERE keterangan = 'Alpha' AND DATE(tanggal) = CURDATE()");
+                                $total = mysqli_fetch_array($sql);
+                                $ambilsiswa = mysqli_query($conn, "SELECT * FROM siswa WHERE siswaID NOT IN (SELECT siswaID FROM kehadiran WHERE DATE(jamHadir) = CURDATE())");
+                                $totalalpha = mysqli_num_rows($ambilsiswa) + $total['siswaalpha'] - $izin['siswaizin'] - $sakit['siswasakit'];
+                                ?>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">New Members</span>
-                                    <span class="info-box-number">2,000</span>
+                                    <span class="info-box-text">Siswa Tanpa Keterangan</span>
+                                    <span class="info-box-number"><?= $totalalpha; ?></span>
                                 </div>
                                 <!-- /.info-box-content -->
                             </div>
@@ -145,19 +192,22 @@ if (isset($_POST['edit'])) {
                     <!-- tabel kehadiran -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Data Siswa Kelas <?= $_SESSION['kelas'] ?></h3>
+                            <h3 class="card-title"> <?= ($_SESSION['level'] == 'Admin') ? "Data Semua Siswa" : "Data Siswa Kelas " . $_SESSION['kelas'] . "." ?></h3>
                         </div>
 
                         <?php if (isset($message) && !empty($message)) : ?>
 
-                            <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert">
+                            <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert" id="autoHideAlert">
                                 <?= $message ?>
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
 
+                            <?php header("refresh:5;url=siswa.php") ?>
+
                         <?php endif; ?>
+
                         <!-- /.card-header -->
                         <div class="card-body">
                             <table id="example1" class="table table-bordered table-striped">
@@ -168,6 +218,7 @@ if (isset($_POST['edit'])) {
                                         <th>Nama Siswa</th>
                                         <th>NISN</th>
                                         <th>NIPD</th>
+                                        <th>UID Kartu</th>
                                         <th>Jk</th>
                                         <th>Kelas</th>
                                         <th>Keterangan</th>
@@ -201,10 +252,20 @@ if (isset($_POST['edit'])) {
                                             <td><?= $row['nama']; ?></td>
                                             <td><?= $row['nisn']; ?></td>
                                             <td><?= $row['nipd']; ?></td>
+                                            <td><?= $row['uid']; ?></td>
                                             <td><?= $row['jk']; ?></td>
                                             <td><?= $row['kelas']; ?></td>
                                             <td><?= $keterangan ?></td>
-                                            <td><button class="btn btn-outline-warning" data-id="<?= $row['siswaID']; ?>" data-nama="<?= $row['nama']; ?>">Tambah Ket</button></td>
+                                            <td>
+                                                <button class="btn btn-outline-warning" data-id="<?= $row['siswaID']; ?>" data-nama="<?= $row['nama']; ?>">Tambah Ket</button>
+                                                <?php if ($_SESSION['level'] == 'Admin') : ?>
+                                                    <?php if ($row['uid'] == "Belum di set") : ?>
+                                                        <button class="btn btn-outline-info" data-iduid="<?= $row['siswaID']; ?>" data-namauid="<?= $row['nama']; ?>">Set UID</button>
+                                                    <?php else : ?>
+                                                        <button class="btn btn-info" data-iduidedit="<?= $row['siswaID']; ?>" data-namauidedit="<?= $row['nama']; ?>" data-uidedit="<?= $row['uid']; ?>">Edit UID</button>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            </td>
                                         </tr>
                                     <?php
                                     }
@@ -250,6 +311,69 @@ if (isset($_POST['edit'])) {
                             </div>
                             <div class="mb-3">
                                 <button type="submit" name="edit" class="btn btn-primary">Simpan Perubahan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- UID Modal -->
+        <div class="modal fade" id="modalUID" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Tambah UID Kartu Siswa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editMapelForm" action="" method="post">
+                            <div class="mb-3">
+                                <label for="idsiswa" class="form-label">ID Siswa</label>
+                                <input type="text" class="form-control" id="idsiswauid" name="idsiswa" readonly required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nama" class="form-label">Nama Siswa</label>
+                                <input type="text" class="form-control" id="namauid" name="nama" readonly required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="uid" class="form-label">Kode UID Kartu</label>
+                                <input type="text" id="uid" class="form-control" name="uid" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <button type="submit" name="tambahuid" class="btn btn-primary">Simpan Perubahan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- UID Edit Modal -->
+        <div class="modal fade" id="modalEditUID" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit UID Kartu Siswa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editMapelForm" action="" method="post">
+                            <div class="mb-3">
+                                <label for="idsiswa" class="form-label">ID Siswa</label>
+                                <input type="text" class="form-control" id="idsiswauidedit" name="idsiswa" readonly required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nama" class="form-label">Nama Siswa</label>
+                                <input type="text" class="form-control" id="namauidedit" name="nama" readonly required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="uid" class="form-label">Kode UID Kartu</label>
+                                <input type="text" class="form-control" id="uidedit" name="uid" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <button type="submit" name="edituid" class="btn btn-primary">Simpan Perubahan</button>
                             </div>
                         </form>
                     </div>
@@ -319,6 +443,32 @@ if (isset($_POST['edit'])) {
             // Set ID hidden di form agar nanti dikirim saat submit
         });
 
+        $(document).on('click', '.btn-outline-info', function() {
+            var idUID = $(this).data('iduid');
+            var namaUID = $(this).data('namauid');
+
+            // Set form values ke modal
+            $('#idsiswauid').val(idUID);
+            $('#namauid').val(namaUID);
+            $('#modalUID').modal('show');
+
+            // Set ID hidden di form agar nanti dikirim saat submit
+        });
+
+        $(document).on('click', '.btn-info', function() {
+            var idUID = $(this).data('iduidedit');
+            var namaUID = $(this).data('namauidedit');
+            var UID = $(this).data('uidedit');
+
+            // Set form values ke modal
+            $('#idsiswauidedit').val(idUID);
+            $('#namauidedit').val(namaUID);
+            $('#uidedit').val(UID);
+            $('#modalEditUID').modal('show');
+
+            // Set ID hidden di form agar nanti dikirim saat submit
+        });
+
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
@@ -340,3 +490,7 @@ if (isset($_POST['edit'])) {
 </body>
 
 </html>
+
+<?php
+ob_end_flush();  // Send the output to the browser
+?>
