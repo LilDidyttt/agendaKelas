@@ -14,4 +14,6 @@ if (isset($_GET['mapel'])) {
         // Jika gagal
         echo "<script>alert('Gagal menghapus data'); window.location.href='mapel.php';</script>";
     }
+} else {
+    header("Location: mapel.php");
 }
