@@ -61,3 +61,4 @@ function getAllMapel()
     $sql = mysqli_query($conn, "SELECT * from mapel");
     return $sql;
 }
+
