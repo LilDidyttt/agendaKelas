@@ -22,7 +22,7 @@ if (isset($_POST['edit'])) {
 
 if (isset($_POST['tambah'])) {
     // Ambil data dari form
-    $nama = $_POST['nama'];
+    $nama = $_POST['nama'];  
     $nip = $_POST['nip'];
     $jk = $_POST['jk'];
 
