@@ -144,7 +144,6 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                     <th>Jam Pulang</th>
                     <th>Keterangan</th>
                     <th>Ket. Pulang</th>
-                    <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -165,7 +164,6 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                       <td><?= ($row['ketPulang'] == 'Sudah') ? date("d M Y H:i:s", strtotime($row['jamPulang'])) : $row['jamPulang'] ?></td>
                       <td><?= $row['keterangan'] ?></td>
                       <td><?= $row['ketPulang'] ?></td>
-                      <td><button class="btn btn-outline-warning">Tambah Ket</button></td>
                     </tr>
                   <?php
                   }

@@ -22,7 +22,7 @@
                  <li class="nav-item">
                      <a href="index.php" class="nav-link">
                          <i class="nav-icon fas fa-tachometer-alt"></i>
-                        
+
                          <p>
                              Dashboard
                          </p>
@@ -44,7 +44,16 @@
                          </p>
                      </a>
                  </li>
-                 
+
+                 <li class="nav-item">
+                     <a href="agenda.php" class="nav-link">
+                         <i class="nav-icon fas fa-book-open"></i>
+                         <p>
+                             Agenda Kelas
+                         </p>
+                     </a>
+                 </li>
+
                  <li class="nav-item">
                      <a href="siswa.php" class="nav-link">
                          <i class="nav-icon fas fa-graduation-cap"></i>
@@ -69,8 +78,8 @@
                          </p>
                      </a>
                  </li>
-                 
-                 </ul>
+
+             </ul>
          </nav>
          <!-- /.sidebar-menu -->
      </div>
