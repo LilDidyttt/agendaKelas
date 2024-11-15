@@ -73,3 +73,18 @@ function getAllMapel()
     $sql = mysqli_query($conn, "SELECT * from mapel");
     return $sql;
 }
+function getAllUser()
+{   
+    global $conn;
+    $sql = mysqli_query($conn, "SELECT * FROM user");
+    return $sql;
+}
+function edituser($data){
+    global $conn;
+    $id=$data['id'];
+    $username = $data['username'];
+    $level = $data['level'];
+    $sql = mysqli_query($conn, "UPDATE `user` SET `username`='$username',`level`='$level' WHERE userID=$id");
+    return mysqli_affected_rows($conn);
+
+}
