@@ -1,7 +1,9 @@
 <?php
 
 include 'function.php';
-
+if ($_SESSION['level'] == 'Sekretaris') {
+    header("Location: siswa.php");
+}
 if (isset($_POST['edit'])) {
     // Ambil data yang dikirim dari form
     $kodeMapel = $_POST['kodeMapel'];

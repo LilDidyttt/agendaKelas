@@ -145,7 +145,7 @@ if (isset($_POST['edit'])) {
                     <!-- tabel kehadiran -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Data Siswa</h3>
+                            <h3 class="card-title">Data Siswa Kelas <?= $_SESSION['kelas'] ?></h3>
                         </div>
 
                         <?php if (isset($message) && !empty($message)) : ?>

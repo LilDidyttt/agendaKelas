@@ -1,6 +1,8 @@
 <?php
 include 'function.php';
-
+if ($_SESSION['level'] == 'Sekretaris') {
+    header("Location: siswa.php");
+}
 if (isset($_POST['edit'])) {
     // Ambil data yang dikirim dari form
     $guruID = $_POST['guruID'];
@@ -98,7 +100,7 @@ if (isset($_POST['tambah'])) {
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#tambahModal"><button class="btn btn-outline-success mb-2">+ Tambah Mapel</button></a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#tambahModal"><button class="btn btn-outline-success mb-2">+ Tambah Guru</button></a>
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>

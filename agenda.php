@@ -134,36 +134,52 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <button class="btn btn-outline-success mb-2" data-bs-toggle="modal" data-bs-target="#tambahModal">+ Tambah Agenda</button>
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>ID Siswa</th>
-                                        <th>Nama Siswa</th>
-                                        <th>Jam Hadir</th>
-                                        <th>Jam Pulang</th>
+                                        <th>Agenda ID</th>
+                                        <th>Guru</th>
+                                        <th>Kelas</th>
+                                        <th>Mata Pelajaran</th>
+                                        <th>Materi</th>
                                         <th>Keterangan</th>
-                                        <th>Ket. Pulang</th>
+                                        <th>Jam Pelajaran</th>
+                                        <th>Tanggal</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql = getAllKehadiran();
+                                    $sql = getAllAgenda();
                                     $no = 0;
                                     while ($row = mysqli_fetch_array($sql)) {
-                                        $idsiswa = $row['siswaID'];
-                                        $ambilnama = mysqli_query($conn, "select * from siswa where siswaID = '$idsiswa'");
-                                        $s = mysqli_fetch_array($ambilnama);
+                                        $idguru = $row['guruID'];
+                                        $kodeMapel = $row['KodeMapel'];
+                                        $guru = mysqli_query($conn, "select * from guru where guruID = '$idguru'");
+                                        $mapel = mysqli_query($conn, "select * from mapel where KodeMapel = '$kodeMapel'");
+                                        $g = mysqli_fetch_array($guru);
+                                        $m = mysqli_fetch_array($mapel);
                                         $no++
                                     ?>
                                         <tr>
                                             <td><?= $no; ?></td>
-                                            <td><?= $row['siswaID']; ?></td>
-                                            <td><?= $s['nama']; ?></td>
-                                            <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
-                                            <td><?= ($row['ketPulang'] == 'Sudah') ? date("d M Y H:i:s", strtotime($row['jamPulang'])) : $row['jamPulang'] ?></td>
-                                            <td><?= $row['keterangan'] ?></td>
-                                            <td><?= $row['ketPulang'] ?></td>
+
+                                            <td><?= $row["agendaID"] ?></td>
+                                            <td><?= $g['nama']; ?></td>
+                                            <td><?= $row["kelas"] ?></td>
+                                            <td><?= $m["namaMapel"] ?></td>
+                                            <td><?= $row["materi"] ?></td>
+                                            <td><?= $row["keterangan"] ?></td>
+                                            <td><?= $row["jamPelajaran"] ?></td>
+                                            <td><?= date("d M Y H:i:s", strtotime($row['tanggal'])) ?></td>
+                                            <td>
+                                                <a href="?h=<?= $row["agendaID"] ?>" class="btn btn-danger"><i class="fas fa-trash"></i>
+                                                </a>
+                                                <a href="editagenda.php?id=<?= $row['agendaID'] ?>" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                                            </td>
+
                                         </tr>
                                     <?php
                                     }
@@ -195,6 +211,93 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                 <b>Version</b> 3.2.0
             </div>
         </footer>
+    </div>
+    <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tambahModalLabel">Tambah Agenda</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="tambahMapelForm" action="" method="post">
+                        <div class="mb-3">
+                            <label for="namaGuru" class="form-label">Nama Guru</label>
+                            <select name="guru" id="namaGuru" class="form-control">
+                                <option value="">Pilih Guru</option>
+
+
+                                <?php
+                                $sql = getAllGuru();
+
+                                ?>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($sql)) :
+                                ?>
+                                    <option value="<?= $row["guruID"] ?>">
+                                        <?= $row["nama"] ?>
+                                    </option>
+                                <?php endwhile ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="kelas" class="form-label">Kelas</label>
+                            <select name="kelas" class="form-control" id="kelas">
+                                <?php
+                                $sql = selectKelas();
+                                $kelas = mysqli_fetch_assoc($sql);
+                                do { ?>
+                                    <option value="<?php echo $kelas['kelas'] ?>"><?php echo $kelas['kelas'] ?></option>
+                                <?php } while ($kelas = mysqli_fetch_assoc($sql)); ?>
+
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mapel" class="form-label">Mapel</label>
+                            <select name="mapel" class="form-control" id="mapel">
+                                <?php $sql = getAllMapel();
+                                while ($row = mysqli_fetch_assoc($sql)): ?>
+                                    <option value="<?php echo $row['KodeMapel'] ?>"><?php echo $row['namaMapel'] ?></option>
+                                <?php endwhile; ?>
+
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="materi" class="form-label">Materi</label>
+                            <input type="text" class="form-control" id="materi" name="materi" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="keterangan" class="form-label">keterangan</label>
+                            <select name="keterangan" id="keterangan" class="form-control">
+                                <option value=""></option>
+                                <option value="Hadir">Hadir</option>
+                                <option value="Tidak Hadir">Tidak Hadir</option>
+                                <option value="Tugas">Tugas</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="jampelajaran" class="form-label">jam pelajaran</label>
+                            <select name="jampelajaran" id="jampelajaran" class="form-control">
+                                <option value=""></option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" name="tambah" class="btn btn-primary">Tambah Agenda</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
     <!-- ./wrapper -->
 
@@ -231,6 +334,19 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
+        $(document).on('click', '.btn-outline-success', function() {
+            var id = $(this).data('id');
+
+            var nama = $(this).data('nama');
+
+            // Set form values ke modal
+            $('#idsiswa').val(id);
+            $('#nama').val(nama);
+            $('#tambahModal').modal('show');
+
+            // Set ID hidden di form agar nanti dikirim saat submit
+        });
+
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
@@ -249,6 +365,30 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
             });
         });
     </script>
+
 </body>
 
 </html>
+<?php
+if (isset($_POST['tambah'])) {
+
+    $idGuru = $_POST['guru'];
+    $kelas = $_POST['kelas'];
+    $mapel = $_POST['mapel'];
+    $materi = $_POST['materi'];
+    $keterangan = $_POST['keterangan'];
+    $jamPelajaran = $_POST['jampelajaran'];
+    $sql = mysqli_query($conn, "INSERT INTO agenda(guruID, kelas, KodeMapel, materi, keterangan, jamPelajaran) VALUES ('$idGuru','$kelas','$mapel','$materi','$keterangan','$jamPelajaran')");
+    echo "<script>
+ window.location.href = 'agenda.php';
+ </script>";
+}
+if (isset($_GET['h'])) {
+
+    $id = $_GET['h'];
+    mysqli_query($conn, "DELETE FROM agenda WHERE agendaID = $id");
+    echo "<script>
+    window.location.href = 'agenda.php';
+    </script>";
+}
+?>
