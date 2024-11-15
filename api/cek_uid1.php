@@ -32,6 +32,18 @@ if (!empty($uid)) {
         $currentDate = date("Y-m-d");
         $currentTime = date("H:i:s");
 
+        // Mendapatkan jam pulang dari tabel setJam
+        $jamPulangSQL = "SELECT jamPulang FROM setJam LIMIT 1";
+        $jamPulangResult = $conn->query($jamPulangSQL);
+
+        if ($jamPulangResult->num_rows > 0) {
+            $jamPulangRow = $jamPulangResult->fetch_assoc();
+            $jamPulang = $jamPulangRow['jamPulang'];
+        } else {
+            // Jika jam pulang tidak ditemukan, set default
+            $jamPulang = '15:00:00';
+        }
+
         // Cek apakah sudah ada data kehadiran siswa untuk hari ini
         $checkSQL = "SELECT * FROM kehadiran WHERE siswaID = '$siswaID' AND DATE(jamHadir) = '$currentDate'";
         $checkResult = $conn->query($checkSQL);
@@ -44,9 +56,9 @@ if (!empty($uid)) {
             if ($attendanceData['ketPulang'] == 'Sudah') {
                 echo "sudahAbsenLengkap"; // Sudah absen masuk dan pulang
             } else {
-                // Cek apakah sudah waktunya pulang (setelah jam 15:00)
-                if (strtotime($currentTime) >= strtotime('15:00:00')) {
-                    // Jika sudah jam 15:00 atau lebih, update ketPulang menjadi Sudah
+                // Cek apakah sudah waktunya pulang berdasarkan jamPulang dari tabel setJam
+                if (strtotime($currentTime) >= strtotime($jamPulang)) {
+                    // Jika sudah waktunya pulang, update ketPulang menjadi Sudah
                     $updateSQL = "UPDATE kehadiran 
                                  SET ketPulang = 'Sudah'
                                  WHERE siswaID = '$siswaID' 
@@ -58,7 +70,7 @@ if (!empty($uid)) {
                         echo "error"; // Gagal update
                     }
                 } else {
-                    // Jika belum jam 15:00, jangan update dan beri pesan
+                    // Jika belum waktunya pulang, jangan update dan beri pesan
                     echo "belumWaktuPulang";
                 }
             }
