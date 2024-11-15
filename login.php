@@ -5,6 +5,8 @@ $message = "";
 $alertClass = "";
 
 if (isset($_POST['login'])) {
+
+
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
 
@@ -17,6 +19,7 @@ if (isset($_POST['login'])) {
         if (password_verify($password, $passwordhash)) {
             $_SESSION['iduser'] = $row['userID'];
             $_SESSION['level']  = $row['level'];
+            $_SESSION['kelas']  = $row['username'];
             $_SESSION['login']  = true;
 
             header("Location: index.php");

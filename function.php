@@ -63,7 +63,8 @@ function hapusGuru($id)
 function getAllSiswaFromKelas()
 {
     global $conn;
-    $sql = mysqli_query($conn, "SELECT * from siswa WHERE kelas = '12 RPL 1'");
+    $kelas = $_SESSION['kelas'];
+    $sql = mysqli_query($conn, "SELECT * from siswa WHERE kelas = '$kelas'");
     return $sql;
 }
 
@@ -71,5 +72,46 @@ function getAllMapel()
 {
     global $conn;
     $sql = mysqli_query($conn, "SELECT * from mapel");
+    return $sql;
+}
+function getAllUser()
+{
+    global $conn;
+    $sql = mysqli_query($conn, "SELECT * FROM user");
+    return $sql;
+}
+function edituser($data)
+{
+    global $conn;
+    $id = $data['id'];
+    $username = $data['username'];
+    $level = $data['level'];
+    $sql = mysqli_query($conn, "UPDATE `user` SET `username`='$username',`level`='$level' WHERE userID=$id");
+    return mysqli_affected_rows($conn);
+}
+function tambahuser($data)
+{
+    global $conn;
+    $username   = $data['username'];
+    $password   = $data['password'];
+    $level      = $data['level'];
+
+    $enkripsi = password_hash($password, PASSWORD_BCRYPT);
+    $sql = "INSERT INTO user VALUES(NULL,'$username','$enkripsi','$level')";
+    $query = mysqli_query($conn, $sql);
+    return mysqli_affected_rows($conn);
+}
+
+function getAllAgenda()
+{
+    global $conn;
+    $sql = mysqli_query($conn, "SELECT * FROM agenda");
+    return $sql;
+}
+
+function selectKelas()
+{
+    global $conn;
+    $sql = mysqli_query($conn, "SELECT kelas from siswa group by kelas");
     return $sql;
 }

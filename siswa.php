@@ -2,6 +2,22 @@
 
 include 'function.php';
 
+if (isset($_POST['edit'])) {
+    $keterangan = mysqli_real_escape_string($conn, $_POST['status_kehadiran']);
+    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+    $idsiswa = mysqli_real_escape_string($conn, $_POST['idsiswa']);
+
+    $setket = mysqli_query($conn, "INSERT into keterangan (siswaID, keterangan) values ('$idsiswa',  '$keterangan')");
+
+    if ($setket) {
+        $message = "Keterangan " . $nama . " diubah menjadi " . $keterangan . ".";
+        $alertClass = "alert-success";
+    } else {
+        $message = "Gagal mengubah keterangan.";
+        $alertClass = "alert-danger";
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -61,13 +77,15 @@ include 'function.php';
                     <div class="row">
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="info-box">
-                                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
-
+                                <span class="info-box-icon bg-info elevation-1"><i class="fas fa-user"></i></span>
+                                <?php
+                                $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as totalsiswa from siswa WHERE kelas = '12 RPL 1'");
+                                $total = mysqli_fetch_array($sql);
+                                ?>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">CPU Traffic</span>
+                                    <span class="info-box-text">Total Siswa</span>
                                     <span class="info-box-number">
-                                        10
-                                        <small>%</small>
+                                        <?= $total['totalsiswa']; ?>
                                     </span>
                                 </div>
                                 <!-- /.info-box-content -->
@@ -77,11 +95,14 @@ include 'function.php';
                         <!-- /.col -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="info-box mb-3">
-                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
-
+                                <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-user-injured"></i></span>
+                                <?php
+                                $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as siswasakit FROM keterangan WHERE keterangan = 'Sakit' AND DATE(tanggal) = CURDATE()");
+                                $total = mysqli_fetch_array($sql);
+                                ?>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">Likes</span>
-                                    <span class="info-box-number">41,410</span>
+                                    <span class="info-box-text">Siswa Sakit</span>
+                                    <span class="info-box-number"><?= $total['siswasakit'] ?></span>
                                 </div>
                                 <!-- /.info-box-content -->
                             </div>
@@ -124,8 +145,19 @@ include 'function.php';
                     <!-- tabel kehadiran -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Data Siswa</h3>
+                            <h3 class="card-title">Data Siswa Kelas <?= $_SESSION['kelas'] ?></h3>
                         </div>
+
+                        <?php if (isset($message) && !empty($message)) : ?>
+
+                            <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert">
+                                <?= $message ?>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                        <?php endif; ?>
                         <!-- /.card-header -->
                         <div class="card-body">
                             <table id="example1" class="table table-bordered table-striped">
@@ -148,8 +180,19 @@ include 'function.php';
                                     $no = 0;
                                     while ($row = mysqli_fetch_array($sql)) {
                                         $idsiswa = $row['siswaID'];
-                                        $ambilnama = mysqli_query($conn, "SELECT * FROM kehadiran WHERE siswaID = '$idsiswa' AND DATE(jamHadir) = CURDATE()");
-                                        $s = mysqli_fetch_array($ambilnama);
+                                        $ambildata = mysqli_query($conn, "SELECT * FROM kehadiran WHERE siswaID = '$idsiswa' AND DATE(jamHadir) = CURDATE()");
+                                        $s = mysqli_fetch_array($ambildata);
+
+                                        $ambilket = mysqli_query($conn, "SELECT * from keterangan where siswaID = '$idsiswa' and DATE(tanggal) = CURDATE()");
+                                        $ket = mysqli_fetch_array($ambilket);
+
+                                        if (isset($s['keterangan']) && !empty($s['keterangan'])) {
+                                            $keterangan = $s['keterangan'];
+                                        } elseif (isset($ket['keterangan']) && !empty($ket['keterangan'])) {
+                                            $keterangan = $ket['keterangan'];
+                                        } else {
+                                            $keterangan = "Tidak Ada";
+                                        }
                                         $no++
                                     ?>
                                         <tr>
@@ -160,7 +203,7 @@ include 'function.php';
                                             <td><?= $row['nipd']; ?></td>
                                             <td><?= $row['jk']; ?></td>
                                             <td><?= $row['kelas']; ?></td>
-                                            <td><?= (isset($s['keterangan'])) ? $s['keterangan'] : "Tidak Ada" ?></td>
+                                            <td><?= $keterangan ?></td>
                                             <td><button class="btn btn-outline-warning" data-id="<?= $row['siswaID']; ?>" data-nama="<?= $row['nama']; ?>">Tambah Ket</button></td>
                                         </tr>
                                     <?php
@@ -196,6 +239,14 @@ include 'function.php';
                             <div class="mb-3">
                                 <label for="nama" class="form-label">Nama Siswa</label>
                                 <input type="text" class="form-control" id="nama" name="nama" readonly required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="status_kehadiran">Status Kehadiran</label>
+                                <select class="form-control" id="status_kehadiran" name="status_kehadiran">
+                                    <option value="Sakit">Sakit</option>
+                                    <option value="Izin">Izin</option>
+                                    <option value="Alpha">Alpha</option>
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <button type="submit" name="edit" class="btn btn-primary">Simpan Perubahan</button>
