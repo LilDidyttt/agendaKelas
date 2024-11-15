@@ -21,6 +21,18 @@ function getAllGuru()
     return $sql;
 }
 
+function addGuru($data)
+{
+    global $conn;
+    if (isset($data['addGuru'])) {
+        $nama = $data['nama'];
+        $nip = $data['nip'];
+        $jk = $data['jk'];
+        $sql = mysqli_query($conn, "INSERT INTO guru (nama, nip, jk) VALUES ('$nama', '$nip', '$jk')");
+        return $sql;
+    }
+}
+
 function getGuruById($id)
 {
     global $conn;
