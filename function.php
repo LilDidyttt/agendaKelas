@@ -63,8 +63,12 @@ function hapusGuru($id)
 function getAllSiswaFromKelas()
 {
     global $conn;
-    $kelas = $_SESSION['kelas'];
-    $sql = mysqli_query($conn, "SELECT * from siswa WHERE kelas = '$kelas'");
+    if ($_SESSION['level'] == 'Admin') {
+        $sql = mysqli_query($conn, "SELECT * from siswa");
+    } else {
+        $kelas = $_SESSION['kelas'];
+        $sql = mysqli_query($conn, "SELECT * from siswa WHERE kelas = '$kelas'");
+    }
     return $sql;
 }
 

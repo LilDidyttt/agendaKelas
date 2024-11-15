@@ -29,7 +29,7 @@ if (isset($_POST['login'])) {
             $alertClass = "alert-danger";
         }
     } else {
-        $message = "Username atau asdas salah";
+        $message = "Username atau password salah";
         $alertClass = "alert-danger";
     }
 }

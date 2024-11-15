@@ -2,7 +2,7 @@
 include 'function.php';
 
 
-if (isset($_GET['guruID'])) {
+if (isset($_GET['guruID']) && !empty($_GET['guruID'])) {
     $id = $_GET['guruID'];
 
     $sql = "DELETE FROM guru where guruID = '$id'";
@@ -14,4 +14,7 @@ if (isset($_GET['guruID'])) {
         // Jika gagal
         echo "<script>alert('Gagal menghapus data'); window.location.href='list-guru.php';</script>";
     }
+} else {
+    header("Location: guru.php");
+    exit();
 }
