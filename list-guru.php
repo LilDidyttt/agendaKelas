@@ -112,7 +112,7 @@ if (isset($_POST['tambah'])) {
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>ID GUru</th>
+                                        <th>ID Guru</th>
                                         <th>Nama Guru</th>
                                         <th>NIP</th>
                                         <th>Jenis Kelamin</th>
