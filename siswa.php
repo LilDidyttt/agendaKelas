@@ -161,7 +161,7 @@ include 'function.php';
                                             <td><?= $row['jk']; ?></td>
                                             <td><?= $row['kelas']; ?></td>
                                             <td><?= (isset($s['keterangan'])) ? $s['keterangan'] : "Tidak Ada" ?></td>
-                                            <td><button class="btn btn-outline-warning">Tambah Ket</button></td>
+                                            <td><button class="btn btn-outline-warning" data-id="<?= $row['siswaID']; ?>" data-nama="<?= $row['nama']; ?>">Tambah Ket</button></td>
                                         </tr>
                                     <?php
                                     }
@@ -178,6 +178,33 @@ include 'function.php';
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="modalKet" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Tambah Keterangan Siswa</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editMapelForm" action="" method="post">
+                            <div class="mb-3">
+                                <label for="idsiswa" class="form-label">ID Siswa</label>
+                                <input type="text" class="form-control" id="idsiswa" name="idsiswa" readonly required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nama" class="form-label">Nama Siswa</label>
+                                <input type="text" class="form-control" id="nama" name="nama" readonly required>
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" name="edit" class="btn btn-primary">Simpan Perubahan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
@@ -229,6 +256,18 @@ include 'function.php';
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
+        $(document).on('click', '.btn-outline-warning', function() {
+            var id = $(this).data('id');
+            var nama = $(this).data('nama');
+
+            // Set form values ke modal
+            $('#idsiswa').val(id);
+            $('#nama').val(nama);
+            $('#modalKet').modal('show');
+
+            // Set ID hidden di form agar nanti dikirim saat submit
+        });
+
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,

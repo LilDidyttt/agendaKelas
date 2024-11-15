@@ -10,7 +10,7 @@ if (!$conn) {
 function getAllKehadiran()
 {
     global $conn;
-    $sql = mysqli_query($conn, "SELECT * from kehadiran");
+    $sql = mysqli_query($conn, "SELECT * from kehadiran where DATE(jamHadir) = CURDATE()");
     return $sql;
 }
 
@@ -19,6 +19,18 @@ function getAllGuru()
     global $conn;
     $sql = mysqli_query($conn, "SELECT * from guru");
     return $sql;
+}
+
+function addGuru($data)
+{
+    global $conn;
+    if (isset($data['addGuru'])) {
+        $nama = $data['nama'];
+        $nip = $data['nip'];
+        $jk = $data['jk'];
+        $sql = mysqli_query($conn, "INSERT INTO guru (nama, nip, jk) VALUES ('$nama', '$nip', '$jk')");
+        return $sql;
+    }
 }
 
 function getGuruById($id)

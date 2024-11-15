@@ -2,6 +2,14 @@
 
 include 'function.php';
 
+if (isset($_POST['addGuru'])) {
+    $result = addGuru($_POST);
+    if ($result) {
+        header("Location: list-guru.php?status=successAdd");
+    } else {
+        header("Location: list-guru.php?status=errorAdd");
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -10,7 +18,7 @@ include 'function.php';
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Data Guru | AgendaKelas</title>
+    <title>Tambah Guru | AgendaKelas</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -57,92 +65,40 @@ include 'function.php';
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-
-
-                    <!-- tabel kehadiran -->
-                    <!-- Tambahkan kode ini sebelum tabel -->
-                    <?php
-                    if (isset($_GET['status'])) {
-                        $status = $_GET['status'];
-                        if ($status == "successHapus") {
-                            $message = "Berhasil Menghapus Data";
-                            $alertClass = 'alert-success';
-                        } else if ($status == "errorHapus") {
-                            $message = "Gagal Menghapus Data";
-                            $alertClass = 'alert-danger';
-                        } else if ($status == "successEdit") {
-                            $alertClass = 'alert-success';
-                            $message = "Berhasil Edit Data";
-                        } else if ($status == "errorEdit") {
-                            $message = "Gagal Edit Data";
-                            $alertClass = 'alert-danger';
-                        } else if ($status == "successAdd") {
-                            $message = "Berhasil Tambah Data";
-                            $alertClass = 'alert-success';
-                        } else if ($status == "errorAdd") {
-                            $message = "Gagal Tambah Data";
-                            $alertClass = 'alert-danger';
-                        }
-
-                    ?>
-                        <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert">
-                            <?= $message ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    <?php
-                    }
-                    ?>
-                    <div class="card">
+                    <!-- form Tambah guru -->
+                    <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title">Data Guru</h3>
+                            <h3 class="card-title">Tambah guru</h3>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body">
-
-                            <button class="btn btn-outline-success mb-2"><a href="tambah-guru.php">+ Tambah Guru</a></button>
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>ID GUru</th>
-                                        <th>Nama Guru</th>
-                                        <th>NIP</th>
-                                        <th>Jenis Kelamin</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $sql = getAllGuru();
-                                    $no = 0;
-                                    while ($row = mysqli_fetch_array($sql)) {
-                                        $no++
-                                    ?>
-                                        <tr>
-                                            <td><?= $no; ?></td>
-                                            <td><?= $row['guruID']; ?></td>
-                                            <td><?= $row['nama']; ?></td>
-                                            <td><?= $row['nip'] ?></td>
-                                            <td><?= $row['jk'] ?></td>
-                                            <td>
-                                                <button class="btn btn-outline-warning">
-                                                    <a href="edit-guru.php?guruID=<?= $row['guruID'] ?>">Edit</a>
-                                                </button>
-                                                <button class="btn btn-outline-danger ml-2" onclick="return confirm('Apakah Anda yakin ingin menghapus guru ini?')">
-                                                    <a href="hapus-guru.php?guruID=<?= $row['guruID'] ?>">Hapus</a>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    <?php
-                                    }
-                                    ?>
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- /.card-body -->
+                        <!-- form start -->
+                        <form action="" method="post">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="nama">Nama</label>
+                                    <input type="text" class="form-control" id="nama" placeholder="Masukan nama" name="nama" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nip">NIP</label>
+                                    <input type="text" class="form-control" id="nip" placeholder="Masukan NIP" name="nip" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="jk">Jenis Kelamin</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="jk" value="L">
+                                        <label class="form-check-label">Laki-laki</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="jk" value="P">
+                                        <label class="form-check-label">Perempuan</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary" name="addGuru">Tambah</button>
+                            </div>
+                        </form>
                     </div>
                     <!-- /.card -->
                 </div><!--/. container-fluid -->

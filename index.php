@@ -2,6 +2,11 @@
 
 include 'function.php';
 
+if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
+  header("Location: login.php");
+  exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +20,7 @@ include 'function.php';
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
-   
+
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
@@ -47,7 +52,7 @@ include 'function.php';
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard v2</li>
+                <li class="breadcrumb-item active">Dashboard</li>
               </ol>
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -157,7 +162,7 @@ include 'function.php';
                       <td><?= $row['siswaID']; ?></td>
                       <td><?= $s['nama']; ?></td>
                       <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
-                      <td><?= date("d M Y H:i:s", strtotime($row['jamPulang'])) ?></td>
+                      <td><?= ($row['ketPulang'] == 'Sudah') ? date("d M Y H:i:s", strtotime($row['jamPulang'])) : $row['jamPulang'] ?></td>
                       <td><?= $row['keterangan'] ?></td>
                       <td><?= $row['ketPulang'] ?></td>
                       <td><button class="btn btn-outline-warning">Tambah Ket</button></td>
