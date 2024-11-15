@@ -14,6 +14,21 @@ if (isset($_GET['hapus'])) {
     </script>";
   }
 }
+if (isset($_POST['tambah'])) {
+  if (tambahuser($_POST) > 0) {
+    echo "
+    <script>
+    alert('User berhasil di tambahkan!');
+    document.location.href = 'user.php';
+    </script>";
+  } else {
+    echo "
+    <script>
+    alert('Data gagal di tambah!');
+    document.location.href = 'user.php';
+    </script>";
+  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -235,12 +250,12 @@ if (isset($_GET['hapus'])) {
               <form action="" method="post">
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">ID</label>
-                    <input type="text" readonly class="form-control" id="iduser" name="id">
-                  </div>
-                  <div class="form-group">
                     <label for="exampleInputEmail1">Username</label>
                     <input type="text" class="form-control" id="username" name="username">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">password</label>
+                    <input type="text" class="form-control" id="password" name="password">
                   </div>
                   <div class=" form-group">
                     <label for="level">Level</label>
