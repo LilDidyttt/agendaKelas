@@ -1,5 +1,7 @@
 <?php
 
+ob_start();
+
 include 'function.php';
 
 if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
@@ -13,6 +15,8 @@ if ($_SESSION['level'] == 'Sekretaris') {
 
 $halaman = 'index';
 
+$sql = mysqli_query($conn, "SELECT * FROM setjam limit 1");
+$jam = mysqli_fetch_assoc($sql);
 ?>
 
 <!DOCTYPE html>
@@ -80,7 +84,7 @@ $halaman = 'index';
                                     <span class="info-box-text">Set Waktu Pulang</span>
                                     <form action="" method="post">
                                         <div class="input-group">
-                                            <input type="time" name="waktu" class="form-control">
+                                            <input type="time" name="waktu" value="<?= $jam['jamPulang'] ?>" class="form-control">
                                         </div>
                                         <button class="btn mt-1 btn-primary" name="set">Set</button>
                                     </form>
@@ -90,6 +94,14 @@ $halaman = 'index';
                                 if (isset($_POST['set'])) {
                                     $jam = $_POST["waktu"];
                                     $sql = mysqli_query($conn, "UPDATE setjam SET jamPulang = '$jam' WHERE jamID =1 ");
+
+                                    if ($sql) {
+                                        $message = "Jam pulang berhasil di set ke jam " . date('H:i', strtotime($jam)) . ".";
+                                        $alertClass = "alert-success";
+                                    } else {
+                                        $message = "Terjadi Kesalahan.";
+                                        $alertClass = "alert-danger";
+                                    }
                                 }
                                 ?>
                                 <!-- /.info-box-content -->
@@ -101,6 +113,23 @@ $halaman = 'index';
                         <!-- /.col -->
                     </div>
                     <!-- /.row -->
+
+                    <?php if (isset($message) && !empty($message)) : ?>
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert" id="autoHideAlert">
+                                    <?= $message ?>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+
+                                <?php header("refresh:3;url=index.php") ?>
+
+                            </div>
+                        </div>
+                    <?php endif; ?>
 
                     <!-- tabel kehadiran -->
                     <div class="card">
@@ -229,3 +258,7 @@ $halaman = 'index';
 </body>
 
 </html>
+
+<?php
+ob_end_flush();
+?>

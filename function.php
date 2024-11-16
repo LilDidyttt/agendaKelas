@@ -96,15 +96,29 @@ function edituser($data)
 function tambahuser($data)
 {
     global $conn;
-    $username   = $data['username'];
-    $password   = $data['password'];
-    $level      = $data['level'];
+    $username = $data['username'];
+    $password = $data['password'];
+    $level    = $data['level'];
 
+    // Cek apakah username sudah ada di database
+    $checkQuery = "SELECT * FROM user WHERE username = '$username'";
+    $result = mysqli_query($conn, $checkQuery);
+
+    if (mysqli_num_rows($result) > 0) {
+        // Username sudah ada
+        return -1; // Kode untuk menandakan bahwa username sudah ada
+    }
+
+    // Enkripsi password
     $enkripsi = password_hash($password, PASSWORD_BCRYPT);
-    $sql = "INSERT INTO user VALUES(NULL,'$username','$enkripsi','$level')";
+
+    // Query untuk menambahkan user baru
+    $sql = "INSERT INTO user VALUES(NULL, '$username', '$enkripsi', '$level')";
     $query = mysqli_query($conn, $sql);
+
     return mysqli_affected_rows($conn);
 }
+
 
 function getAllAgenda()
 {
