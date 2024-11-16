@@ -6,6 +6,12 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
     header("Location: login.php");
     exit();
 }
+if ($_SESSION['level'] == 'Kepala Sekolah' && $_SESSION['level'] == 'Wakil Kepala Sekolah') {
+    header("Location: siswa-terlambat.php");
+    exit();
+}
+
+$halaman = 'agenda';
 
 ?>
 
@@ -69,72 +75,78 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                     <!-- /.row -->
 
                     <!-- tabel kehadiran -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Data Agenda Kelas
-                                <?= (isset($_SESSION['kelas'])) ? $_SESSION["kelas"] : "" ?>
-                            </h3>
+                    <div class="container-fluid">
+                        <div class="card shadow mb-4">
+                            <div class="card-header">
+                                <h3 class="card-title">Data Agenda Kelas
+                                    <?= (isset($_SESSION['kelas'])) ? $_SESSION["kelas"] : "" ?>
+                                </h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <?php if ($_SESSION['level'] == 'Sekretaris') : ?>
+                                    <button class="btn btn-outline-success mb-2" data-bs-toggle="modal"
+                                        data-bs-target="#tambahModal">+ Tambah Agenda</button>
+                                <?php endif; ?>
+                                <div class="table-responsive">
+                                    <table id="example1" class="table table-bordered table-striped" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Agenda ID</th>
+                                                <th>Guru</th>
+                                                <th>Kelas</th>
+                                                <th>Mata Pelajaran</th>
+                                                <th>Materi</th>
+                                                <th>Keterangan</th>
+                                                <th>Jam Pelajaran</th>
+                                                <th>Tanggal</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $sql = getAllAgenda();
+                                            $no = 0;
+                                            while ($row = mysqli_fetch_array($sql)) {
+                                                $idguru = $row['guruID'];
+                                                $kodeMapel = $row['KodeMapel'];
+                                                $guru = mysqli_query($conn, "select * from guru where guruID = '$idguru'");
+                                                $mapel = mysqli_query($conn, "select * from mapel where KodeMapel = '$kodeMapel'");
+                                                $g = mysqli_fetch_array($guru);
+                                                $m = mysqli_fetch_array($mapel);
+                                                $no++
+                                            ?>
+                                                <tr>
+                                                    <td><?= $no; ?></td>
+
+                                                    <td><?= $row["agendaID"] ?></td>
+                                                    <td><?= $g['nama']; ?></td>
+                                                    <td><?= $row["kelas"] ?></td>
+                                                    <td><?= $m["namaMapel"] ?></td>
+                                                    <td><?= $row["materi"] ?></td>
+                                                    <td><?= $row["keterangan"] ?></td>
+                                                    <td><?= $row["jamPelajaran"] ?></td>
+                                                    <td><?= date("d M Y H:i:s", strtotime($row['tanggal'])) ?></td>
+                                                    <td>
+                                                        <a href="?h=<?= $row["agendaID"] ?>" class="btn btn-danger"><i
+                                                                class="fas fa-trash"></i>
+                                                        </a>
+                                                        <a href="editagenda.php?id=<?= $row['agendaID'] ?>"
+                                                            class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                                                    </td>
+
+                                                </tr>
+                                            <?php
+                                            }
+                                            ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card-header -->
-                        <div class="card-body">
-                            <button class="btn btn-outline-success mb-2" data-bs-toggle="modal"
-                                data-bs-target="#tambahModal">+ Tambah Agenda</button>
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Agenda ID</th>
-                                        <th>Guru</th>
-                                        <th>Kelas</th>
-                                        <th>Mata Pelajaran</th>
-                                        <th>Materi</th>
-                                        <th>Keterangan</th>
-                                        <th>Jam Pelajaran</th>
-                                        <th>Tanggal</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $sql = getAllAgenda();
-                                    $no = 0;
-                                    while ($row = mysqli_fetch_array($sql)) {
-                                        $idguru = $row['guruID'];
-                                        $kodeMapel = $row['KodeMapel'];
-                                        $guru = mysqli_query($conn, "select * from guru where guruID = '$idguru'");
-                                        $mapel = mysqli_query($conn, "select * from mapel where KodeMapel = '$kodeMapel'");
-                                        $g = mysqli_fetch_array($guru);
-                                        $m = mysqli_fetch_array($mapel);
-                                        $no++
-                                    ?>
-                                    <tr>
-                                        <td><?= $no; ?></td>
-
-                                        <td><?= $row["agendaID"] ?></td>
-                                        <td><?= $g['nama']; ?></td>
-                                        <td><?= $row["kelas"] ?></td>
-                                        <td><?= $m["namaMapel"] ?></td>
-                                        <td><?= $row["materi"] ?></td>
-                                        <td><?= $row["keterangan"] ?></td>
-                                        <td><?= $row["jamPelajaran"] ?></td>
-                                        <td><?= date("d M Y H:i:s", strtotime($row['tanggal'])) ?></td>
-                                        <td>
-                                            <a href="?h=<?= $row["agendaID"] ?>" class="btn btn-danger"><i
-                                                    class="fas fa-trash"></i>
-                                            </a>
-                                            <a href="editagenda.php?id=<?= $row['agendaID'] ?>"
-                                                class="btn btn-warning"><i class="fas fa-edit"></i></a>
-                                        </td>
-
-                                    </tr>
-                                    <?php
-                                    }
-                                    ?>
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- /.card-body -->
                     </div>
                     <!-- /.card -->
                 </div>
@@ -181,9 +193,9 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                                 <?php
                                 while ($row = mysqli_fetch_assoc($sql)) :
                                 ?>
-                                <option value="<?= $row["guruID"] ?>">
-                                    <?= $row["nama"] ?>
-                                </option>
+                                    <option value="<?= $row["guruID"] ?>">
+                                        <?= $row["nama"] ?>
+                                    </option>
                                 <?php endwhile ?>
                             </select>
                         </div>
@@ -194,7 +206,7 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                                 $sql = selectKelas();
                                 $kelas = mysqli_fetch_assoc($sql);
                                 do { ?>
-                                <option value="<?php echo $kelas['kelas'] ?>"><?php echo $kelas['kelas'] ?></option>
+                                    <option value="<?php echo $kelas['kelas'] ?>"><?php echo $kelas['kelas'] ?></option>
                                 <?php } while ($kelas = mysqli_fetch_assoc($sql)); ?>
 
                             </select>
@@ -204,7 +216,7 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                             <select name="mapel" class="form-control" id="mapel">
                                 <?php $sql = getAllMapel();
                                 while ($row = mysqli_fetch_assoc($sql)): ?>
-                                <option value="<?php echo $row['KodeMapel'] ?>"><?php echo $row['namaMapel'] ?></option>
+                                    <option value="<?php echo $row['KodeMapel'] ?>"><?php echo $row['namaMapel'] ?></option>
                                 <?php endwhile; ?>
 
                             </select>
@@ -264,9 +276,6 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
     <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
     <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
     <!-- PAGE PLUGINS -->
     <!-- jQuery Mapael -->
@@ -281,36 +290,22 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
-    $(document).on('click', '.btn-outline-success', function() {
-        var id = $(this).data('id');
+        $(document).on('click', '.btn-outline-success', function() {
+            var id = $(this).data('id');
 
-        var nama = $(this).data('nama');
+            var nama = $(this).data('nama');
 
-        // Set form values ke modal
-        $('#idsiswa').val(id);
-        $('#nama').val(nama);
-        $('#tambahModal').modal('show');
+            // Set form values ke modal
+            $('#idsiswa').val(id);
+            $('#nama').val(nama);
+            $('#tambahModal').modal('show');
 
-        // Set ID hidden di form agar nanti dikirim saat submit
-    });
-
-    $(function() {
-        $("#example1").DataTable({
-            "responsive": true,
-            "lengthChange": false,
-            "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
+            // Set ID hidden di form agar nanti dikirim saat submit
         });
-    });
+
+        $(document).ready(function() {
+            $('#example1').DataTable();
+        });
     </script>
 
 </body>

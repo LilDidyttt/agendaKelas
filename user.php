@@ -3,40 +3,42 @@
 include 'function.php';
 
 if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
-  header("Location: login.php");
+    header("Location: login.php");
 
-  exit();
+    exit();
 }
+
+$halaman = 'user';
 
 if ($_SESSION['level'] == 'Sekretaris') {
-  header("Location: siswa.php");
+    header("Location: siswa.php");
 }
 if (isset($_GET['hapus'])) {
-  $id = $_GET['hapus'];
-  $sql = "DELETE FROM user WHERE userID=$id";
-  $query = mysqli_query($conn, $sql);
-  if ($query) {
-    echo "
+    $id = $_GET['hapus'];
+    $sql = "DELETE FROM user WHERE userID=$id";
+    $query = mysqli_query($conn, $sql);
+    if ($query) {
+        echo "
     <script>
     alert('Data berhasil di hapus!');
     document.location.href = 'user.php';
     </script>";
-  }
+    }
 }
 if (isset($_POST['tambah'])) {
-  if (tambahuser($_POST) > 0) {
-    echo "
+    if (tambahuser($_POST) > 0) {
+        echo "
     <script>
     alert('User berhasil di tambahkan!');
     document.location.href = 'user.php';
     </script>";
-  } else {
-    echo "
+    } else {
+        echo "
     <script>
     alert('Data gagal di tambah!');
     document.location.href = 'user.php';
     </script>";
-  }
+    }
 }
 ?>
 
@@ -120,45 +122,45 @@ if (isset($_POST['tambah'])) {
                                 </thead>
                                 <tbody>
                                     <?php
-                  $sql = getAlluser();
-                  $no = 0;
-                  while ($row = mysqli_fetch_array($sql)) {
-                    $no++
-                  ?>
-                                    <tr>
-                                        <td><?= $no; ?></td>
-                                        <td><?= $row['userID'] ?></td>
-                                        <td><?= $row['username']; ?></td>
-                                        <td><?= $row['level']; ?></td>
-                                        <td>
-                                            <button class="btn btn-outline-warning" data-toggle="modal"
-                                                data-target="#modal-default" data-username="<?= $row['username'] ?>"
-                                                data-level="<?= $row['level'] ?>" data-userid="<?= $row['userID'] ?>">
-                                                Edit
-                                            </button>
+                                    $sql = getAlluser();
+                                    $no = 0;
+                                    while ($row = mysqli_fetch_array($sql)) {
+                                        $no++
+                                    ?>
+                                        <tr>
+                                            <td><?= $no; ?></td>
+                                            <td><?= $row['userID'] ?></td>
+                                            <td><?= $row['username']; ?></td>
+                                            <td><?= $row['level']; ?></td>
+                                            <td>
+                                                <button class="btn btn-outline-warning" data-toggle="modal"
+                                                    data-target="#modal-default" data-username="<?= $row['username'] ?>"
+                                                    data-level="<?= $row['level'] ?>" data-userid="<?= $row['userID'] ?>">
+                                                    Edit
+                                                </button>
 
-                                            <!-- modal -->
+                                                <!-- modal -->
 
-                                            <a href="user.php?hapus=<?= $row['userID'] ?>"
-                                                class="btn btn-outline-danger">
-                                                Hapus
-                                            </a>
-                                        </td>
-                                    </tr>
+                                                <a href="user.php?hapus=<?= $row['userID'] ?>"
+                                                    class="btn btn-outline-danger">
+                                                    Hapus
+                                                </a>
+                                            </td>
+                                        </tr>
                                     <?php
-                  }
+                                    }
 
-                  if (isset($_POST['edit'])) {
-                    if (edituser($_POST)) {
-                      echo "
+                                    if (isset($_POST['edit'])) {
+                                        if (edituser($_POST)) {
+                                            echo "
                       <script>
                       alert('Data berhasil di edit!');
                       document.location.href = 'user.php';
                       </script>";
-                    }
-                  }
+                                        }
+                                    }
 
-                  ?>
+                                    ?>
 
                                 </tbody>
                             </table>
@@ -334,48 +336,48 @@ if (isset($_POST['tambah'])) {
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
-    $(function() {
-        $("#example1").DataTable({
-            "responsive": true,
-            "lengthChange": false,
-            "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
+        $(function() {
+            $("#example1").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
         });
-    });
 
-    $(document).on('click', '.btn-outline-warning', function() {
-        var nama = $(this).data('username');
-        var iduser = $(this).data('userid');
-        var level = $(this).data('level');
+        $(document).on('click', '.btn-outline-warning', function() {
+            var nama = $(this).data('username');
+            var iduser = $(this).data('userid');
+            var level = $(this).data('level');
 
-        if (level == 'Kepala Sekolah') {
-            $('#kepalasekolah').prop('selected', true);
-        } else if (level == 'Admin') {
-            $('#admin').prop('selected', true);
-        } else if (level == 'Guru') {
-            $('#guru').prop('selected', true);
-        } else if (level == 'Wakil Kepala Sekolah') {
-            $('#waka').prop('selected', true);
-        } else {
-            $('#sek').prop('selected', true);
-        }
-        // Set form values ke modal
-        $('#username').val(nama);
-        $('#iduser').val(iduser);
-        $('#modal-default').modal('show');
+            if (level == 'Kepala Sekolah') {
+                $('#kepalasekolah').prop('selected', true);
+            } else if (level == 'Admin') {
+                $('#admin').prop('selected', true);
+            } else if (level == 'Guru') {
+                $('#guru').prop('selected', true);
+            } else if (level == 'Wakil Kepala Sekolah') {
+                $('#waka').prop('selected', true);
+            } else {
+                $('#sek').prop('selected', true);
+            }
+            // Set form values ke modal
+            $('#username').val(nama);
+            $('#iduser').val(iduser);
+            $('#modal-default').modal('show');
 
-        // Set ID hidden di form agar nanti dikirim saat submit
+            // Set ID hidden di form agar nanti dikirim saat submit
 
-    });
+        });
     </script>
 </body>
 

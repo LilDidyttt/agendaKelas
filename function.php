@@ -112,6 +112,16 @@ function getAllAgenda()
     $sql = mysqli_query($conn, "SELECT * FROM agenda");
     return $sql;
 }
+function getAgendaGuru()
+{
+    global $conn;
+    $iduser = $_SESSION['iduser'];
+    $getidguru = mysqli_query($conn, "SELECT * FROM guru WHERE userID = '$iduser'");
+    $ambilidguru = mysqli_fetch_array($getidguru);
+    $idguru = $ambilidguru['guruID'];
+    $sql = mysqli_query($conn, "SELECT * FROM agenda where GuruID = $idguru");
+    return $sql;
+}
 
 function selectKelas()
 {

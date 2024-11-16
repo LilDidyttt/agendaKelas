@@ -4,6 +4,18 @@ ob_start(); // Start output buffering
 
 include 'function.php';
 
+if ($_SESSION['level'] == 'Sekretaris' && $_SESSION['level'] == 'Admin') {
+    header("Location: siswa.php");
+}
+
+if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
+    header("Location: login.php");
+    exit();
+}
+
+$halaman = 'siswa';
+
+
 if (isset($_POST['edit'])) {
     $keterangan = mysqli_real_escape_string($conn, $_POST['status_kehadiran']);
     $nama = mysqli_real_escape_string($conn, $_POST['nama']);
@@ -118,7 +130,14 @@ if (isset($_POST['edituid'])) {
                             <div class="info-box">
                                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
                                 <?php
-                                $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as totalsiswa from siswa WHERE kelas = '12 RPL 1'");
+
+                                $kelas = $_SESSION['kelas'];
+                                if ($_SESSION['level'] == 'Admin') {
+                                    $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as totalsiswa from siswa");
+                                } else {
+                                    $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as totalsiswa from siswa WHERE kelas = '$kelas'");
+                                }
+
                                 $total = mysqli_fetch_array($sql);
                                 ?>
                                 <div class="info-box-content">
@@ -136,7 +155,26 @@ if (isset($_POST['edituid'])) {
                             <div class="info-box mb-3">
                                 <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-user-injured"></i></span>
                                 <?php
-                                $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as siswasakit FROM keterangan WHERE keterangan = 'Sakit' AND DATE(tanggal) = CURDATE()");
+
+                                if ($_SESSION['level'] == 'Admin') {
+                                    $sql = mysqli_query($conn, "
+                                SELECT COUNT(k.siswaID) AS siswasakit 
+                                FROM keterangan k
+                                JOIN siswa s ON k.siswaID = s.siswaID
+                                WHERE k.keterangan = 'Sakit' 
+                                  AND DATE(k.tanggal) = CURDATE()
+                            ");
+                                } else {
+                                    $sql = mysqli_query($conn, "
+                                    SELECT COUNT(k.siswaID) AS siswasakit 
+                                    FROM keterangan k
+                                    JOIN siswa s ON k.siswaID = s.siswaID
+                                    WHERE k.keterangan = 'Sakit' 
+                                      AND DATE(k.tanggal) = CURDATE()
+                                      AND s.kelas = '$kelas'
+                                ");
+                                }
+
                                 $sakit = mysqli_fetch_array($sql);
                                 ?>
                                 <div class="info-box-content">
@@ -156,7 +194,26 @@ if (isset($_POST['edituid'])) {
                             <div class="info-box mb-3">
                                 <span class="info-box-icon bg-success elevation-1"><i class="fas fa-user-check"></i></span>
                                 <?php
-                                $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as siswaizin FROM keterangan WHERE keterangan = 'Izin' AND DATE(tanggal) = CURDATE()");
+                                if ($_SESSION['level'] == 'Admin') {
+                                    $sql = mysqli_query($conn, "
+                                SELECT COUNT(k.siswaID) AS siswaizin 
+                                FROM keterangan k
+                                JOIN siswa s ON k.siswaID = s.siswaID
+                                WHERE k.keterangan = 'Izin' 
+                                  AND DATE(k.tanggal) = CURDATE()
+                            ");
+                                } else {
+                                    $sql = mysqli_query($conn, "
+                                    SELECT COUNT(k.siswaID) AS siswaizin 
+                                    FROM keterangan k
+                                    JOIN siswa s ON k.siswaID = s.siswaID
+                                    WHERE k.keterangan = 'Izin' 
+                                      AND DATE(k.tanggal) = CURDATE()
+                                      AND s.kelas = '$kelas'
+                                ");
+                                }
+
+
                                 $izin = mysqli_fetch_array($sql);
                                 ?>
                                 <div class="info-box-content">
@@ -172,9 +229,29 @@ if (isset($_POST['edituid'])) {
                             <div class="info-box mb-3">
                                 <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-times-circle"></i></span>
                                 <?php
-                                $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as siswaalpha FROM keterangan WHERE keterangan = 'Alpha' AND DATE(tanggal) = CURDATE()");
+
+                                if ($_SESSION['level'] == 'Admin') {
+                                    $sql = mysqli_query($conn, "
+                                SELECT COUNT(k.siswaID) AS siswaalpha 
+                                FROM keterangan k
+                                JOIN siswa s ON k.siswaID = s.siswaID
+                                WHERE k.keterangan = 'Alpha' 
+                                  AND DATE(k.tanggal) = CURDATE()
+                            ");
+                                } else {
+                                    $sql = mysqli_query($conn, "
+                                    SELECT COUNT(k.siswaID) AS siswaalpha 
+                                    FROM keterangan k
+                                    JOIN siswa s ON k.siswaID = s.siswaID
+                                    WHERE k.keterangan = 'Alpha' 
+                                      AND DATE(k.tanggal) = CURDATE()
+                                      AND s.kelas = '$kelas'
+                                ");
+                                }
+
+
                                 $total = mysqli_fetch_array($sql);
-                                $ambilsiswa = mysqli_query($conn, "SELECT * FROM siswa WHERE siswaID NOT IN (SELECT siswaID FROM kehadiran WHERE DATE(jamHadir) = CURDATE())");
+                                $ambilsiswa = mysqli_query($conn, "SELECT * FROM siswa WHERE siswaID NOT IN (SELECT siswaID FROM kehadiran WHERE DATE(jamHadir) = CURDATE()) and kelas = '$kelas'");
                                 $totalalpha = mysqli_num_rows($ambilsiswa) + $total['siswaalpha'] - $izin['siswaizin'] - $sakit['siswasakit'];
                                 ?>
                                 <div class="info-box-content">
@@ -210,69 +287,73 @@ if (isset($_POST['edituid'])) {
 
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>ID Siswa</th>
-                                        <th>Nama Siswa</th>
-                                        <th>NISN</th>
-                                        <th>NIPD</th>
-                                        <th>UID Kartu</th>
-                                        <th>Jk</th>
-                                        <th>Kelas</th>
-                                        <th>Keterangan</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $sql = getAllSiswaFromKelas();
-                                    $no = 0;
-                                    while ($row = mysqli_fetch_array($sql)) {
-                                        $idsiswa = $row['siswaID'];
-                                        $ambildata = mysqli_query($conn, "SELECT * FROM kehadiran WHERE siswaID = '$idsiswa' AND DATE(jamHadir) = CURDATE()");
-                                        $s = mysqli_fetch_array($ambildata);
-
-                                        $ambilket = mysqli_query($conn, "SELECT * from keterangan where siswaID = '$idsiswa' and DATE(tanggal) = CURDATE()");
-                                        $ket = mysqli_fetch_array($ambilket);
-
-                                        if (isset($s['keterangan']) && !empty($s['keterangan'])) {
-                                            $keterangan = $s['keterangan'];
-                                        } elseif (isset($ket['keterangan']) && !empty($ket['keterangan'])) {
-                                            $keterangan = $ket['keterangan'];
-                                        } else {
-                                            $keterangan = "Tidak Ada";
-                                        }
-                                        $no++
-                                    ?>
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
                                         <tr>
-                                            <td><?= $no; ?></td>
-                                            <td><?= $row['siswaID']; ?></td>
-                                            <td><?= $row['nama']; ?></td>
-                                            <td><?= $row['nisn']; ?></td>
-                                            <td><?= $row['nipd']; ?></td>
-                                            <td><?= $row['uid']; ?></td>
-                                            <td><?= $row['jk']; ?></td>
-                                            <td><?= $row['kelas']; ?></td>
-                                            <td><?= $keterangan ?></td>
-                                            <td>
-                                                <button class="btn btn-outline-warning" data-id="<?= $row['siswaID']; ?>" data-nama="<?= $row['nama']; ?>">Tambah Ket</button>
-                                                <?php if ($_SESSION['level'] == 'Admin') : ?>
-                                                    <?php if ($row['uid'] == "Belum di set") : ?>
-                                                        <button class="btn btn-outline-info" data-iduid="<?= $row['siswaID']; ?>" data-namauid="<?= $row['nama']; ?>">Set UID</button>
-                                                    <?php else : ?>
-                                                        <button class="btn btn-info" data-iduidedit="<?= $row['siswaID']; ?>" data-namauidedit="<?= $row['nama']; ?>" data-uidedit="<?= $row['uid']; ?>">Edit UID</button>
-                                                    <?php endif; ?>
-                                                <?php endif; ?>
-                                            </td>
+                                            <th>No</th>
+                                            <th>ID Siswa</th>
+                                            <th>Nama Siswa</th>
+                                            <th>NISN</th>
+                                            <th>NIPD</th>
+                                            <th>UID Kartu</th>
+                                            <th>Jk</th>
+                                            <th>Kelas</th>
+                                            <th>Keterangan</th>
+                                            <th>Aksi</th>
                                         </tr>
-                                    <?php
-                                    }
-                                    ?>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $sql = getAllSiswaFromKelas();
+                                        $no = 0;
+                                        while ($row = mysqli_fetch_array($sql)) {
+                                            $idsiswa = $row['siswaID'];
+                                            $ambildata = mysqli_query($conn, "SELECT * FROM kehadiran WHERE siswaID = '$idsiswa' AND DATE(jamHadir) = CURDATE()");
+                                            $s = mysqli_fetch_array($ambildata);
 
-                                </tbody>
-                            </table>
+                                            $ambilket = mysqli_query($conn, "SELECT * from keterangan where siswaID = '$idsiswa' and DATE(tanggal) = CURDATE()");
+                                            $ket = mysqli_fetch_array($ambilket);
+
+                                            if (isset($s['keterangan']) && !empty($s['keterangan'])) {
+                                                $keterangan = $s['keterangan'];
+                                            } elseif (isset($ket['keterangan']) && !empty($ket['keterangan'])) {
+                                                $keterangan = $ket['keterangan'];
+                                            } else {
+                                                $keterangan = "Tidak Ada";
+                                            }
+                                            $no++
+                                        ?>
+                                            <tr>
+                                                <td><?= $no; ?></td>
+                                                <td><?= $row['siswaID']; ?></td>
+                                                <td><?= $row['nama']; ?></td>
+                                                <td><?= $row['nisn']; ?></td>
+                                                <td><?= $row['nipd']; ?></td>
+                                                <td><?= $row['uid']; ?></td>
+                                                <td><?= $row['jk']; ?></td>
+                                                <td><?= $row['kelas']; ?></td>
+                                                <td><?= $keterangan ?></td>
+                                                <td>
+                                                    <div class="grid gap-3" style="display: grid;">
+                                                        <button class="btn btn-outline-warning mb-2" data-id="<?= $row['siswaID']; ?>" data-nama="<?= $row['nama']; ?>">Tambah Ket</button>
+                                                        <?php if ($_SESSION['level'] == 'Admin') : ?>
+                                                            <?php if ($row['uid'] == "Belum di set") : ?>
+                                                                <button class="btn btn-outline-info" data-iduid="<?= $row['siswaID']; ?>" data-namauid="<?= $row['nama']; ?>">Set UID</button>
+                                                            <?php else : ?>
+                                                                <button class="btn btn-info" data-iduidedit="<?= $row['siswaID']; ?>" data-namauidedit="<?= $row['nama']; ?>" data-uidedit="<?= $row['uid']; ?>">Edit UID</button>
+                                                            <?php endif; ?>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                        }
+                                        ?>
+
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -289,7 +370,7 @@ if (isset($_POST['edituid'])) {
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editModalLabel">Tambah Keterangan Siswa</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="editMapelForm" action="" method="post">
@@ -413,10 +494,6 @@ if (isset($_POST['edituid'])) {
     <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
     <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
     <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
     <!-- PAGE PLUGINS -->
     <!-- jQuery Mapael -->
@@ -469,22 +546,8 @@ if (isset($_POST['edituid'])) {
             // Set ID hidden di form agar nanti dikirim saat submit
         });
 
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
+        $(document).ready(function() {
+            $('#example1').DataTable();
         });
     </script>
 </body>

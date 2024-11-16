@@ -11,6 +11,10 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
 if ($_SESSION['level'] == 'Sekretaris') {
     header("Location: siswa.php");
 }
+
+$halaman = 'guru';
+
+
 if (isset($_POST['edit'])) {
     // Ambil data yang dikirim dari form
     $guruID = $_POST['guruID'];
@@ -32,7 +36,7 @@ if (isset($_POST['edit'])) {
 
 if (isset($_POST['tambah'])) {
     // Ambil data dari form
-    $nama = $_POST['nama'];  
+    $nama = $_POST['nama'];
     $nip = $_POST['nip'];
     $jk = $_POST['jk'];
 

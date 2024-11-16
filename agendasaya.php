@@ -134,63 +134,65 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                     <!-- tabel kehadiran -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Data Agenda Kelas <?= $_SESSION['kelas'] ?></h3>
+                            <h3 class="card-title">Data Agenda Saya Tanggal <?= date("d F Y"); ?></h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <button class="btn btn-outline-success mb-2" data-bs-toggle="modal" data-bs-target="#tambahModal">+ Tambah Agenda</button>
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Agenda ID</th>
-                                        <th>Guru</th>
-                                        <th>Kelas</th>
-                                        <th>Mata Pelajaran</th>
-                                        <th>Materi</th>
-                                        <th>Keterangan</th>
-                                        <th>Jam Pelajaran</th>
-                                        <th>Tanggal</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $sql = getAllAgenda();
-                                    $no = 0;
-                                    while ($row = mysqli_fetch_array($sql)) {
-                                        $idguru = $row['guruID'];
-                                        $kodeMapel = $row['KodeMapel'];
-                                        $guru = mysqli_query($conn, "select * from guru where guruID = '$idguru'");
-                                        $mapel = mysqli_query($conn, "select * from mapel where KodeMapel = '$kodeMapel'");
-                                        $g = mysqli_fetch_array($guru);
-                                        $m = mysqli_fetch_array($mapel);
-                                        $no++
-                                    ?>
+                            <?php
+                            $userID = $_SESSION['iduser'];
+                            $ambildata = mysqli_query($conn, "SELECT * FROM guru where userID = '$userID'");
+                            $result = mysqli_fetch_array($ambildata);
+
+                            ?>
+                            <p>Nama Guru : <?= $result['nama']; ?></p>
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
                                         <tr>
-                                            <td><?= $no; ?></td>
-
-                                            <td><?= $row["agendaID"] ?></td>
-                                            <td><?= $g['nama']; ?></td>
-                                            <td><?= $row["kelas"] ?></td>
-                                            <td><?= $m["namaMapel"] ?></td>
-                                            <td><?= $row["materi"] ?></td>
-                                            <td><?= $row["keterangan"] ?></td>
-                                            <td><?= $row["jamPelajaran"] ?></td>
-                                            <td><?= date("d M Y H:i:s", strtotime($row['tanggal'])) ?></td>
-                                            <td>
-                                                <a href="?h=<?= $row["agendaID"] ?>" class="btn btn-danger"><i class="fas fa-trash"></i>
-                                                </a>
-                                                <a href="editagenda.php?id=<?= $row['agendaID'] ?>" class="btn btn-warning"><i class="fas fa-edit"></i></a>
-                                            </td>
-
+                                            <th>No</th>
+                                            <th>Agenda ID</th>
+                                            <th>Guru</th>
+                                            <th>Kelas</th>
+                                            <th>Mata Pelajaran</th>
+                                            <th>Materi</th>
+                                            <th>Keterangan</th>
+                                            <th>Jam Pelajaran</th>
+                                            <th>Tanggal</th>
                                         </tr>
-                                    <?php
-                                    }
-                                    ?>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $sql = getAgendaGuru();
+                                        $no = 0;
+                                        while ($row = mysqli_fetch_array($sql)) {
+                                            $idguru = $row['guruID'];
+                                            $kodeMapel = $row['KodeMapel'];
+                                            $guru = mysqli_query($conn, "select * from guru where guruID = '$idguru'");
+                                            $mapel = mysqli_query($conn, "select * from mapel where KodeMapel = '$kodeMapel'");
+                                            $g = mysqli_fetch_array($guru);
+                                            $m = mysqli_fetch_array($mapel);
+                                            $no++
+                                        ?>
+                                            <tr>
+                                                <td><?= $no; ?></td>
 
-                                </tbody>
-                            </table>
+                                                <td><?= $row["agendaID"] ?></td>
+                                                <td><?= $g['nama']; ?></td>
+                                                <td><?= $row["kelas"] ?></td>
+                                                <td><?= $m["namaMapel"] ?></td>
+                                                <td><?= $row["materi"] ?></td>
+                                                <td><?= $row["keterangan"] ?></td>
+                                                <td><?= $row["jamPelajaran"] ?></td>
+                                                <td><?= date("d M Y H:i:s", strtotime($row['tanggal'])) ?></td>
+
+                                            </tr>
+                                        <?php
+                                        }
+                                        ?>
+
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -320,10 +322,7 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
     <script src="plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
     <script src="plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
     <script src="plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
 
     <!-- PAGE PLUGINS -->
     <!-- jQuery Mapael -->
@@ -351,22 +350,8 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
             // Set ID hidden di form agar nanti dikirim saat submit
         });
 
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
+        $(document).ready(function() {
+            $('#example1').DataTable();
         });
     </script>
 

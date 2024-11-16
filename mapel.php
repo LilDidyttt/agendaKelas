@@ -10,6 +10,10 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
 if ($_SESSION['level'] == 'Sekretaris') {
     header("Location: siswa.php");
 }
+
+$halaman = 'mapel';
+
+
 if (isset($_POST['edit'])) {
     // Ambil data yang dikirim dari form
     $kodeMapel = $_POST['kodeMapel'];
@@ -128,20 +132,20 @@ if (isset($_POST['tambah'])) {
                                     while ($row = mysqli_fetch_array($sql)) {
                                         $no++
                                     ?>
-                                    <tr>
-                                        <td><?= $no; ?></td>
-                                        <td><?= $row['KodeMapel']; ?></td>
-                                        <td><?= $row['namaMapel']; ?></td>
-                                        <td>
-                                            <a href="hapusmapel.php?mapel=<?= $row['KodeMapel'] ?>"
-                                                onclick="return confirm('Menghapus mapel <?= $row['namaMapel'] ?> ')"><button
-                                                    class="btn btn-outline-danger">Hapus</button></a>
-                                            <button class="btn btn-outline-warning"
-                                                data-kode="<?= $row['KodeMapel']; ?>"
-                                                data-nama="<?= $row['namaMapel']; ?>">Edit</button>
-                                        </td>
+                                        <tr>
+                                            <td><?= $no; ?></td>
+                                            <td><?= $row['KodeMapel']; ?></td>
+                                            <td><?= $row['namaMapel']; ?></td>
+                                            <td>
+                                                <a href="hapusmapel.php?mapel=<?= $row['KodeMapel'] ?>"
+                                                    onclick="return confirm('Menghapus mapel <?= $row['namaMapel'] ?> ')"><button
+                                                        class="btn btn-outline-danger">Hapus</button></a>
+                                                <button class="btn btn-outline-warning"
+                                                    data-kode="<?= $row['KodeMapel']; ?>"
+                                                    data-nama="<?= $row['namaMapel']; ?>">Edit</button>
+                                            </td>
 
-                                    </tr>
+                                        </tr>
                                     <?php
                                     }
                                     ?>
@@ -262,46 +266,46 @@ if (isset($_POST['tambah'])) {
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
-    $(function() {
-        $("#example1").DataTable({
-            "responsive": true,
-            "lengthChange": false,
-            "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
+        $(function() {
+            $("#example1").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
         });
-    });
 
-    $(document).on('click', '.btn-outline-warning', function() {
-        var id = $(this).data('id');
-        var kodeMapel = $(this).data('kode');
-        var namaMapel = $(this).data('nama');
+        $(document).on('click', '.btn-outline-warning', function() {
+            var id = $(this).data('id');
+            var kodeMapel = $(this).data('kode');
+            var namaMapel = $(this).data('nama');
 
-        // Set form values ke modal
-        $('#kodeMapel').val(kodeMapel);
-        $('#namaMapel').val(namaMapel);
-        $('#editModal').modal('show');
+            // Set form values ke modal
+            $('#kodeMapel').val(kodeMapel);
+            $('#namaMapel').val(namaMapel);
+            $('#editModal').modal('show');
 
-        // Set ID hidden di form agar nanti dikirim saat submit
-        $('#editMapelForm').data('id', id);
-    });
+            // Set ID hidden di form agar nanti dikirim saat submit
+            $('#editMapelForm').data('id', id);
+        });
 
 
-    // Open modal and fill data when clicking "Edit" button
-    $(document).on('click', '.btn-outline-success', function() {
-        // Set form values ke modal
-        $('#tambahModal').modal('show');
+        // Open modal and fill data when clicking "Edit" button
+        $(document).on('click', '.btn-outline-success', function() {
+            // Set form values ke modal
+            $('#tambahModal').modal('show');
 
-        // Set ID hidden di form agar nanti dikirim saat submit
-    });
+            // Set ID hidden di form agar nanti dikirim saat submit
+        });
     </script>
 </body>
 

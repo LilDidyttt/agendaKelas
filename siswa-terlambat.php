@@ -11,6 +11,9 @@ if ($_SESSION['level'] == 'Sekretaris' || $_SESSION['level'] == 'Guru') {
     header("Location: siswa.php");
 }
 
+$halaman = 'terlambat';
+
+
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +22,7 @@ if ($_SESSION['level'] == 'Sekretaris' || $_SESSION['level'] == 'Guru') {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Data Guru | AgendaKelas</title>
+    <title>Data Siswa Terlambat | AgendaKelas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
@@ -40,9 +43,9 @@ if ($_SESSION['level'] == 'Sekretaris' || $_SESSION['level'] == 'Guru') {
     <div class="wrapper">
 
         <!-- Preloader -->
-        <!-- <div class="preloader flex-column justify-content-center align-items-center">
+        <div class="preloader flex-column justify-content-center align-items-center">
             <img class="animation__wobble" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
-        </div> -->
+        </div>
 
         <?php include 'template/topbar.php'; ?>
 
@@ -124,14 +127,14 @@ if ($_SESSION['level'] == 'Sekretaris' || $_SESSION['level'] == 'Guru') {
                                         $siswa = mysqli_fetch_assoc($s);
                                         $no++;
                                     ?>
-                                    <tr>
-                                        <td><?= $no; ?></td>
-                                        <td><?= $row['siswaID']; ?></td>
-                                        <td><?= $siswa['nama']; ?></td>
-                                        <td><?= $siswa['kelas']; ?></td>
-                                        <td><?= $siswa['jk'] ?></td>
-                                        <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
-                                    </tr>
+                                        <tr>
+                                            <td><?= $no; ?></td>
+                                            <td><?= $row['siswaID']; ?></td>
+                                            <td><?= $siswa['nama']; ?></td>
+                                            <td><?= $siswa['kelas']; ?></td>
+                                            <td><?= $siswa['jk'] ?></td>
+                                            <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
+                                        </tr>
                                     <?php
                                     }
                                     ?>

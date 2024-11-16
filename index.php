@@ -3,13 +3,16 @@
 include 'function.php';
 
 if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
-  header("Location: login.php");
+    header("Location: login.php");
 
-  exit();
+    exit();
 }
 if ($_SESSION['level'] == 'Sekretaris') {
-  header("Location: siswa.php");
+    header("Location: siswa.php");
 }
+
+$halaman = 'index';
+
 ?>
 
 <!DOCTYPE html>
@@ -84,11 +87,11 @@ if ($_SESSION['level'] == 'Sekretaris') {
 
                                 </div>
                                 <?php
-                if (isset($_POST['set'])) {
-                  $jam = $_POST["waktu"];
-                  $sql = mysqli_query($conn, "UPDATE setjam SET jamPulang = '$jam' WHERE jamID =1 ");
-                }
-                ?>
+                                if (isset($_POST['set'])) {
+                                    $jam = $_POST["waktu"];
+                                    $sql = mysqli_query($conn, "UPDATE setjam SET jamPulang = '$jam' WHERE jamID =1 ");
+                                }
+                                ?>
                                 <!-- /.info-box-content -->
                             </div>
                             <!-- /.info-box -->
@@ -120,27 +123,27 @@ if ($_SESSION['level'] == 'Sekretaris') {
                                 </thead>
                                 <tbody>
                                     <?php
-                  $sql = getAllKehadiran();
-                  $no = 0;
-                  while ($row = mysqli_fetch_array($sql)) {
-                    $idsiswa = $row['siswaID'];
-                    $ambilnama = mysqli_query($conn, "select * from siswa where siswaID = '$idsiswa'");
-                    $s = mysqli_fetch_array($ambilnama);
-                    $no++
-                  ?>
-                                    <tr>
-                                        <td><?= $no; ?></td>
-                                        <td><?= $row['siswaID']; ?></td>
-                                        <td><?= $s['nama']; ?></td>
-                                        <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
-                                        <td><?= ($row['ketPulang'] == 'Sudah') ? date("d M Y H:i:s", strtotime($row['jamPulang'])) : $row['jamPulang'] ?>
-                                        </td>
-                                        <td><?= $row['keterangan'] ?></td>
-                                        <td><?= $row['ketPulang'] ?></td>
-                                    </tr>
+                                    $sql = getAllKehadiran();
+                                    $no = 0;
+                                    while ($row = mysqli_fetch_array($sql)) {
+                                        $idsiswa = $row['siswaID'];
+                                        $ambilnama = mysqli_query($conn, "select * from siswa where siswaID = '$idsiswa'");
+                                        $s = mysqli_fetch_array($ambilnama);
+                                        $no++
+                                    ?>
+                                        <tr>
+                                            <td><?= $no; ?></td>
+                                            <td><?= $row['siswaID']; ?></td>
+                                            <td><?= $s['nama']; ?></td>
+                                            <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
+                                            <td><?= ($row['ketPulang'] == 'Sudah') ? date("d M Y H:i:s", strtotime($row['jamPulang'])) : $row['jamPulang'] ?>
+                                            </td>
+                                            <td><?= $row['keterangan'] ?></td>
+                                            <td><?= $row['ketPulang'] ?></td>
+                                        </tr>
                                     <?php
-                  }
-                  ?>
+                                    }
+                                    ?>
 
                                 </tbody>
                             </table>
@@ -205,23 +208,23 @@ if ($_SESSION['level'] == 'Sekretaris') {
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
-    $(function() {
-        $("#example1").DataTable({
-            "responsive": true,
-            "lengthChange": false,
-            "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
+        $(function() {
+            $("#example1").DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
         });
-    });
     </script>
 </body>
 
