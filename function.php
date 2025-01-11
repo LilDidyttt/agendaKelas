@@ -119,6 +119,55 @@ function tambahuser($data)
     return mysqli_affected_rows($conn);
 }
 
+function tambahsiswa($data)
+{
+    global $conn;
+    $nama = $data['nama'];
+    $kelas = $data['kelas'];
+    $UID    = $data['UID'];
+    $NISN    = $data['NISN'];
+    $NIPD    = $data['NIPD'];
+    $jk    = $data['jk'];
+
+    if (empty($data['uid'])) {
+        $insertsiswa = mysqli_query($conn, "INSERT into siswa values (NULL, '$nama', '$kelas', default , '$NISN', '$NIPD', '$jk')");
+    } else {
+        $insertsiswa = mysqli_query($conn, "INSERT into siswa values (NULL, '$nama', '$kelas', '$UID', '$NISN', '$NIPD', '$jk')");
+    }
+
+    if ($insertsiswa) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function editsiswa($data)
+{
+    global $conn;
+    $id = $data['id'];
+    $nama = $data['nama'];
+    $kelas = $data['kelas'];
+    $nisn    = $data['nisn'];
+    $nipd    = $data['nipd'];
+    $jk    = $data['jk'];
+
+    $updatesiswa = mysqli_query($conn, "UPDATE siswa SET nama='$nama', kelasID='$kelas', nisn='$nisn', nisn='$nisn', jk='$jk' WHERE siswaID=$id");
+
+    return mysqli_affected_rows($conn);
+}
+
+function hapussiswa($id)
+{
+    global $conn;
+    $sql = mysqli_query($conn, "DELETE FROM siswa WHERE siswaID=$id");
+    if ($sql) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 
 function getAllAgenda()
 {
