@@ -12,6 +12,9 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
 if ($_SESSION['level'] == 'Sekretaris') {
     header("Location: siswa.php");
 }
+if ($_SESSION['level'] == 'Guru') {
+    header("Location: agendasaya.php");
+}
 
 $halaman = 'index';
 
