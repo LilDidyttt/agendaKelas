@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 16, 2024 at 04:47 AM
--- Server version: 10.1.29-MariaDB
+-- Generation Time: 11 Jan 2025 pada 04.40
+-- Versi Server: 10.1.29-MariaDB
 -- PHP Version: 7.1.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -25,7 +25,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `agenda`
+-- Struktur dari tabel `agenda`
 --
 
 CREATE TABLE `agenda` (
@@ -42,7 +42,7 @@ CREATE TABLE `agenda` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `guru`
+-- Struktur dari tabel `guru`
 --
 
 CREATE TABLE `guru` (
@@ -54,7 +54,7 @@ CREATE TABLE `guru` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `guru`
+-- Dumping data untuk tabel `guru`
 --
 
 INSERT INTO `guru` (`guruID`, `userID`, `nama`, `nip`, `jk`) VALUES
@@ -64,7 +64,7 @@ INSERT INTO `guru` (`guruID`, `userID`, `nama`, `nip`, `jk`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kehadiran`
+-- Struktur dari tabel `kehadiran`
 --
 
 CREATE TABLE `kehadiran` (
@@ -76,10 +76,52 @@ CREATE TABLE `kehadiran` (
   `ketPulang` enum('Sudah','Belum') NOT NULL DEFAULT 'Belum'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data untuk tabel `kehadiran`
+--
+
+INSERT INTO `kehadiran` (`kehadiranID`, `siswaID`, `jamHadir`, `jamPulang`, `keterangan`, `ketPulang`) VALUES
+(1, 1, '2025-01-07 10:42:54', '2025-01-07 10:43:03', 'Hadir', 'Sudah'),
+(2, 1, '2025-01-09 09:36:41', '2025-01-09 09:37:12', 'Hadir', 'Sudah'),
+(3, 2, '2025-01-09 09:39:30', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(4, 3, '2025-01-10 09:23:52', '2025-01-10 09:24:03', 'Hadir', 'Sudah'),
+(5, 4, '2025-01-11 02:08:36', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(6, 5, '2025-01-11 02:14:34', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(7, 6, '2025-01-11 02:15:20', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(8, 7, '2025-01-11 02:15:51', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(9, 8, '2025-01-11 02:16:12', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(10, 10, '2025-01-11 02:16:54', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(11, 11, '2025-01-11 02:17:38', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(12, 12, '2025-01-11 02:18:31', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(13, 2, '2025-01-11 02:19:04', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(14, 1, '2025-01-11 02:19:31', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(15, 15, '2025-01-11 02:20:15', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(16, 16, '2025-01-11 02:20:45', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(17, 17, '2025-01-11 02:21:11', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(18, 18, '2025-01-11 02:21:44', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(19, 19, '2025-01-11 02:22:14', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(20, 20, '2025-01-11 02:22:43', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(21, 21, '2025-01-11 02:23:04', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(22, 22, '2025-01-11 02:23:42', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(23, 23, '2025-01-11 02:24:05', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(24, 24, '2025-01-11 02:24:29', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(25, 25, '2025-01-11 02:24:58', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(26, 26, '2025-01-11 02:25:29', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(27, 27, '2025-01-11 02:25:58', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(28, 28, '2025-01-11 02:26:17', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(29, 29, '2025-01-11 02:26:38', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(30, 30, '2025-01-11 02:27:01', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(31, 31, '2025-01-11 02:27:22', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(32, 32, '2025-01-11 02:27:43', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(33, 33, '2025-01-11 02:28:33', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(34, 34, '2025-01-11 02:29:09', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(35, 35, '2025-01-11 02:29:35', '0000-00-00 00:00:00', 'Hadir', 'Belum'),
+(36, 36, '2025-01-11 02:29:51', '0000-00-00 00:00:00', 'Hadir', 'Belum');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `keterangan`
+-- Struktur dari tabel `keterangan`
 --
 
 CREATE TABLE `keterangan` (
@@ -92,7 +134,7 @@ CREATE TABLE `keterangan` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `mapel`
+-- Struktur dari tabel `mapel`
 --
 
 CREATE TABLE `mapel` (
@@ -101,7 +143,7 @@ CREATE TABLE `mapel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `mapel`
+-- Dumping data untuk tabel `mapel`
 --
 
 INSERT INTO `mapel` (`KodeMapel`, `namaMapel`) VALUES
@@ -114,7 +156,7 @@ INSERT INTO `mapel` (`KodeMapel`, `namaMapel`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `setjam`
+-- Struktur dari tabel `setjam`
 --
 
 CREATE TABLE `setjam` (
@@ -123,16 +165,16 @@ CREATE TABLE `setjam` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `setjam`
+-- Dumping data untuk tabel `setjam`
 --
 
 INSERT INTO `setjam` (`jamID`, `jamPulang`) VALUES
-(1, '07:00:00');
+(1, '15:00:00');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `siswa`
+-- Struktur dari tabel `siswa`
 --
 
 CREATE TABLE `siswa` (
@@ -146,52 +188,52 @@ CREATE TABLE `siswa` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `siswa`
+-- Dumping data untuk tabel `siswa`
 --
 
 INSERT INTO `siswa` (`siswaID`, `nama`, `uid`, `nisn`, `nipd`, `jk`, `kelas`) VALUES
-(1, 'Ahmad Daffa', 'Belum di set', '0076756001', '2223.10.016', 'L', '12 RPL 1'),
-(2, 'Alber Galih Antoni', 'Belum di set', '0067398146', '2223.10.030', 'L', '12 RPL 1'),
-(3, 'Ameliya Nofitasari', 'Belum di set', '0071002689', '2223.10.047', 'P', '12 RPL 1'),
-(4, 'AISYAH', 'Belum di set', '0065874852', '2223.10.025', 'P', '12 RPL 2'),
-(5, 'ALVITA DAMAYANTI', 'Belum di set', '0073551189', '2223.10.037', 'P', '12 RPL 2'),
-(6, 'ANAS SATORI', 'Belum di set', '0067332264', '2223.10.045', 'L', '12 RPL 2'),
-(7, 'ANWAR HIDAYAT', 'Belum di set', '0065227836', '2223.10.049', 'L', '12 RPL 2'),
-(8, 'BUNGA CITRA RAMADANI', 'Belum di set', '0067139484', '2223.10.065', 'P', '12 RPL 2'),
+(1, 'Ahmad Daffa', '03D87B05', '0076756001', '2223.10.016', 'L', '12 RPL 1'),
+(2, 'Alber Galih Antoni', '83A87E05', '0067398146', '2223.10.030', 'L', '12 RPL 1'),
+(3, 'Ameliya Nofitasari', '93A91536', '0071002689', '2223.10.047', 'P', '12 RPL 1'),
+(4, 'AISYAH', '23C67B05', '0065874852', '2223.10.025', 'P', '12 RPL 2'),
+(5, 'ALVITA DAMAYANTI', '935B9005', '0073551189', '2223.10.037', 'P', '12 RPL 2'),
+(6, 'ANAS SATORI', 'C3767A05', '0067332264', '2223.10.045', 'L', '12 RPL 2'),
+(7, 'ANWAR HIDAYAT', 'A3319705', '0065227836', '2223.10.049', 'L', '12 RPL 2'),
+(8, 'BUNGA CITRA RAMADANI', 'E3158905', '0067139484', '2223.10.065', 'P', '12 RPL 2'),
 (9, 'DAHLAN APANDIANSAH', 'Belum di set', '0065213228', '2223.10.066', 'L', '12 RPL 2'),
-(10, 'DEE OLIM', 'Belum di set', '0068827638', '2223.10.092', 'L', '12 RPL 2'),
-(11, 'DIANA MARSELA', 'Belum di set', '0072231266', '2223.10.101', 'P', '12 RPL 2'),
-(12, 'ENCIH UNAYAH', 'Belum di set', '0067393584', '2223.10.103', 'P', '12 RPL 2'),
-(13, 'FAREL SEPTIAN YULIANTO', 'Belum di set', '0074484119', '2223.10.171', 'L', '12 RPL 2'),
-(14, 'GILANG AHMADINATA', 'Belum di set', '0069756444', '2223.10.178', 'L', '12 RPL 2'),
-(15, 'ITA AGUNG SAPUTRA', 'Belum di set', '0067364363', '2223.10.208', 'L', '12 RPL 2'),
-(16, 'KRIS LAKSAMANA AL QAWIYY', 'Belum di set', '0067581567', '2223.10.246', 'L', '12 RPL 2'),
-(17, 'LAURA MUTIA HEN', 'Belum di set', '0065904675', '2223.10.254', 'P', '12 RPL 2'),
-(18, 'ISTA SUPRIYANI', 'Belum di set', '0067361554', '2223.10.274', 'P', '12 RPL 2'),
-(19, 'MOZALIFA', 'Belum di set', '0072837938', '2223.10.280', 'P', '12 RPL 2'),
-(20, 'MUHAMMAD ADHA REZA AFRIZA', 'Belum di set', '0072937844', '2223.10.287', 'L', '12 RPL 2'),
-(21, 'MUTHIA NOVA SEVTIANI', 'Belum di set', '0078851992', '2223.10.301', 'P', '12 RPL 2'),
-(22, 'NADIA MERLIANA', 'Belum di set', '0066980822', '2223.10.305', 'P', '12 RPL 2'),
-(23, 'NENG GITA NOVIA', 'Belum di set', '0067980193', '2223.10.338', 'P', '12 RPL 2'),
-(24, 'NURYANTI', 'Belum di set', '0067283103', '2223.10.346', 'P', '12 RPL 2'),
-(25, 'POPY REVALINA', 'Belum di set', '0068898089', '2223.10.350', 'P', '12 RPL 2'),
-(26, 'RATANSYAH', 'Belum di set', '0065560062', '2223.10.366', 'L', '12 RPL 2'),
-(27, 'RAYNA SRI RAHAYU', 'Belum di set', '0072776587', '2223.10.387', 'P', '12 RPL 2'),
-(28, 'RHADIT MIKA RAHIL', 'Belum di set', '0073789772', '2223.10.397', 'L', '12 RPL 2'),
-(29, 'RINA', 'Belum di set', '0065239454', '2223.10.389', 'P', '12 RPL 2'),
-(30, 'RIRIN DEWI ARYANI', 'Belum di set', '0065946703', '2223.10.394', 'P', '12 RPL 2'),
-(31, 'ROMLAH', 'Belum di set', '0079804153', '2223.10.410', 'P', '12 RPL 2'),
-(32, 'SANDI ALFITRI ANSYAH', 'Belum di set', '0061652067', '2223.10.421', 'L', '12 RPL 2'),
-(33, 'SRI RAHAYU', 'Belum di set', '0067787262', '2223.10.422', 'P', '12 RPL 2'),
-(34, 'TIARA ANGGISTINA', 'Belum di set', '0067663567', '2223.10.446', 'P', '12 RPL 2'),
-(35, 'WINA AMELIA PUTRI', 'Belum di set', '0082214216', '2223.10.510', 'P', '12 RPL 2'),
-(36, 'WULAN SARI', 'Belum di set', '0075859891', '2223.10.520', 'P', '12 RPL 2'),
+(10, 'DEE OLIM', '138C7C05', '0068827638', '2223.10.092', 'L', '12 RPL 2'),
+(11, 'DIANA MARSELA', '23268E05', '0072231266', '2223.10.101', 'P', '12 RPL 2'),
+(12, 'ENCIH UNAYAH', '33A58405', '0067393584', '2223.10.103', 'P', '12 RPL 2'),
+(13, 'FAREL SEPTIAN YULIANTO', '83A87E05', '0074484119', '2223.10.171', 'L', '12 RPL 2'),
+(14, 'GILANG AHMADINATA', '03D87B05', '0069756444', '2223.10.178', 'L', '12 RPL 2'),
+(15, 'ITA AGUNG SAPUTRA', 'A36A9205', '0067364363', '2223.10.208', 'L', '12 RPL 2'),
+(16, 'KRIS LAKSAMANA AL QAWIYY', '63307505', '0067581567', '2223.10.246', 'L', '12 RPL 2'),
+(17, 'LAURA MUTIA HEN', '43777A05', '0065904675', '2223.10.254', 'P', '12 RPL 2'),
+(18, 'ISTA SUPRIYANI', 'C3737E05', '0067361554', '2223.10.274', 'P', '12 RPL 2'),
+(19, 'MOZALIFA', '939E6F05', '0072837938', '2223.10.280', 'P', '12 RPL 2'),
+(20, 'MUHAMMAD ADHA REZA AFRIZA', '73749405', '0072937844', '2223.10.287', 'L', '12 RPL 2'),
+(21, 'MUTHIA NOVA SEVTIANI', '934D8F05', '0078851992', '2223.10.301', 'P', '12 RPL 2'),
+(22, 'NADIA MERLIANA', '23E7A205', '0066980822', '2223.10.305', 'P', '12 RPL 2'),
+(23, 'NENG GITA NOVIA', '73178505', '0067980193', '2223.10.338', 'P', '12 RPL 2'),
+(24, 'NURYANTI', '432A8C05', '0067283103', '2223.10.346', 'P', '12 RPL 2'),
+(25, 'POPY REVALINA', '73FD7805', '0068898089', '2223.10.350', 'P', '12 RPL 2'),
+(26, 'RATANSYAH', 'F3228405', '0065560062', '2223.10.366', 'L', '12 RPL 2'),
+(27, 'RAYNA SRI RAHAYU', 'A32F7905', '0072776587', '2223.10.387', 'P', '12 RPL 2'),
+(28, 'RHADIT MIKA RAHIL', '63C38D05', '0073789772', '2223.10.397', 'L', '12 RPL 2'),
+(29, 'RINA', '83D36E05', '0065239454', '2223.10.389', 'P', '12 RPL 2'),
+(30, 'RIRIN DEWI ARYANI', 'A3F79705', '0065946703', '2223.10.394', 'P', '12 RPL 2'),
+(31, 'ROMLAH', '23318C05', '0079804153', '2223.10.410', 'P', '12 RPL 2'),
+(32, 'SANDI ALFITRI ANSYAH', '83296E05', '0061652067', '2223.10.421', 'L', '12 RPL 2'),
+(33, 'SRI RAHAYU', 'F3318005', '0067787262', '2223.10.422', 'P', '12 RPL 2'),
+(34, 'TIARA ANGGISTINA', '03227105', '0067663567', '2223.10.446', 'P', '12 RPL 2'),
+(35, 'WINA AMELIA PUTRI', 'C3B48205', '0082214216', '2223.10.510', 'P', '12 RPL 2'),
+(36, 'WULAN SARI', '33F08605', '0075859891', '2223.10.520', 'P', '12 RPL 2'),
 (37, 'ZABRINA TRISTA MEILINA', 'Belum di set', '0071228103', '2223.10.533', 'P', '12 RPL 2');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Struktur dari tabel `user`
 --
 
 CREATE TABLE `user` (
@@ -202,7 +244,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data for table `user`
+-- Dumping data untuk tabel `user`
 --
 
 INSERT INTO `user` (`userID`, `username`, `password`, `level`) VALUES
@@ -291,7 +333,7 @@ ALTER TABLE `guru`
 -- AUTO_INCREMENT for table `kehadiran`
 --
 ALTER TABLE `kehadiran`
-  MODIFY `kehadiranID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `kehadiranID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `keterangan`
@@ -324,30 +366,30 @@ ALTER TABLE `user`
   MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `agenda`
+-- Ketidakleluasaan untuk tabel `agenda`
 --
 ALTER TABLE `agenda`
   ADD CONSTRAINT `agenda_ibfk_1` FOREIGN KEY (`guruID`) REFERENCES `guru` (`guruID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `agenda_ibfk_2` FOREIGN KEY (`KodeMapel`) REFERENCES `mapel` (`KodeMapel`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `guru`
+-- Ketidakleluasaan untuk tabel `guru`
 --
 ALTER TABLE `guru`
   ADD CONSTRAINT `guru_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `kehadiran`
+-- Ketidakleluasaan untuk tabel `kehadiran`
 --
 ALTER TABLE `kehadiran`
   ADD CONSTRAINT `kehadiran_ibfk_1` FOREIGN KEY (`siswaID`) REFERENCES `siswa` (`siswaID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `keterangan`
+-- Ketidakleluasaan untuk tabel `keterangan`
 --
 ALTER TABLE `keterangan`
   ADD CONSTRAINT `keterangan_ibfk_1` FOREIGN KEY (`siswaID`) REFERENCES `siswa` (`siswaID`) ON DELETE CASCADE ON UPDATE CASCADE;

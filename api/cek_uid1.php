@@ -4,10 +4,10 @@ $username = "root";
 $password = "";
 $dbname = "db_agenda";
 
-// Set zona waktu sesuai lokasi
+// Set zona waktu
 date_default_timezone_set('Asia/Jakarta');
 
-// Membuat koneksi ke database
+// Koneksi database
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Cek koneksi
@@ -15,83 +15,59 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Mendapatkan UID dari query string
+// Ambil UID dari query string
 $uid = isset($_GET['uid']) ? strtoupper(trim($_GET['uid'])) : '';
 
 if (!empty($uid)) {
-    // Query untuk mendapatkan siswaID berdasarkan UID
+    // Cek apakah UID ada di tabel siswa
     $sql = "SELECT siswaID FROM siswa WHERE uid = '$uid'";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
-        // Jika UID ditemukan, ambil siswaID
+        // Jika UID ditemukan
         $row = $result->fetch_assoc();
         $siswaID = $row['siswaID'];
-
-        // Mendapatkan tanggal dan jam sekarang
         $currentDate = date("Y-m-d");
         $currentTime = date("H:i:s");
 
-        // Mendapatkan jam pulang dari tabel setJam
+        // Ambil jam pulang dari database
+        $jamPulang = "15:00:00";
         $jamPulangSQL = "SELECT jamPulang FROM setJam LIMIT 1";
         $jamPulangResult = $conn->query($jamPulangSQL);
-
         if ($jamPulangResult->num_rows > 0) {
             $jamPulangRow = $jamPulangResult->fetch_assoc();
             $jamPulang = $jamPulangRow['jamPulang'];
-        } else {
-            // Jika jam pulang tidak ditemukan, set default
-            $jamPulang = '15:00:00';
         }
 
-        // Cek apakah sudah ada data kehadiran siswa untuk hari ini
+        // Cek absensi hari ini
         $checkSQL = "SELECT * FROM kehadiran WHERE siswaID = '$siswaID' AND DATE(jamHadir) = '$currentDate'";
         $checkResult = $conn->query($checkSQL);
 
         if ($checkResult->num_rows > 0) {
-            // Ambil data kehadiran
+            // Sudah ada data kehadiran
             $attendanceData = $checkResult->fetch_assoc();
-
-            // Cek apakah sudah absen pulang
             if ($attendanceData['ketPulang'] == 'Sudah') {
-                echo "sudahAbsenLengkap"; // Sudah absen masuk dan pulang
+                echo "sudahAbsenLengkap";
             } else {
-                // Cek apakah sudah waktunya pulang berdasarkan jamPulang dari tabel setJam
                 if (strtotime($currentTime) >= strtotime($jamPulang)) {
-                    // Jika sudah waktunya pulang, update ketPulang menjadi Sudah
-                    $updateSQL = "UPDATE kehadiran 
-                                 SET ketPulang = 'Sudah'
-                                 WHERE siswaID = '$siswaID' 
-                                 AND DATE(jamHadir) = '$currentDate'";
-
-                    if ($conn->query($updateSQL) === TRUE) {
-                        echo "updated";  // Berhasil update ketPulang
-                    } else {
-                        echo "error"; // Gagal update
-                    }
+                    $updateSQL = "UPDATE kehadiran SET ketPulang = 'Sudah' WHERE siswaID = '$siswaID' AND DATE(jamHadir) = '$currentDate'";
+                    echo ($conn->query($updateSQL) === TRUE) ? "updated" : "error";
                 } else {
-                    // Jika belum waktunya pulang, jangan update dan beri pesan
                     echo "belumWaktuPulang";
                 }
             }
         } else {
-            // Jika belum ada data untuk hari ini, insert baru
+            // Insert absensi baru
             $insertSQL = "INSERT INTO kehadiran (siswaID, jamHadir, keterangan, ketPulang) 
-                         VALUES ('$siswaID', NOW(), 'Hadir', 'Belum')";
-
-            if ($conn->query($insertSQL) === TRUE) {
-                echo "inserted";  // Berhasil insert data baru
-            } else {
-                echo "error"; // Gagal insert
-            }
+                          VALUES ('$siswaID', NOW(), 'Hadir', 'Belum')";
+            echo ($conn->query($insertSQL) === TRUE) ? "inserted" : "error";
         }
     } else {
-        // UID tidak ditemukan di tabel siswa
-        echo "false";
+        // UID tidak ditemukan
+        echo "kartu Tidak Terdaftar";
     }
 } else {
     echo "No UID provided.";
 }
 
-// Tutup koneksi
 $conn->close();
