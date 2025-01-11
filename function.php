@@ -67,7 +67,7 @@ function getAllSiswaFromKelas()
         $sql = mysqli_query($conn, "SELECT * from siswa");
     } else {
         $kelas = $_SESSION['kelas'];
-        $sql = mysqli_query($conn, "SELECT * from siswa WHERE kelas = '$kelas'");
+        $sql = mysqli_query($conn, "SELECT * from siswa WHERE kelasID = '$kelas'");
     }
     return $sql;
 }
@@ -220,4 +220,50 @@ function getWaktuAntara($waktuA, $waktuB)
                                 ORDER BY k.jamHadir DESC
                                 ");
     return $sql;
+}
+
+function getAllSekretaris()
+{
+    global $conn;
+    $getdata = mysqli_query($conn, "SELECT * from sekretaris");
+    return $getdata;
+}
+
+function getAllKelas()
+{
+    global $conn;
+    $getdata = mysqli_query($conn, "SELECT * from kelasmaster");
+    return $getdata;
+}
+
+function tambahsekretaris($data)
+{
+    global $conn;
+    $username = $data['username'];
+    $password = $data['password'];
+    $kelasID  = $data['kelas'];
+    $siswaID  = $data['siswa'];
+
+    // Cek apakah username sudah ada di database
+    $checkQuery = "SELECT * FROM sekretaris WHERE username = '$username'";
+    $result = mysqli_query($conn, $checkQuery);
+
+    if (mysqli_num_rows($result) > 0) {
+        // Username sudah ada
+        $error = true;
+        return $error;
+    }
+
+    // Enkripsi password
+    $enkripsi = password_hash($password, PASSWORD_BCRYPT);
+
+    // Query untuk menambahkan user baru
+    $sql = "INSERT INTO sekretaris VALUES(NULL, '$username', '$siswaID', '$kelasID', '$enkripsi')";
+    $query = mysqli_query($conn, $sql);
+
+    if ($query) {
+        return true;
+    } else {
+        return false;
+    }
 }

@@ -307,7 +307,15 @@ if (isset($_POST['hapusdata'])) {
                     <!-- tabel kehadiran -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title"> <?= ($_SESSION['level'] == 'Admin') ? "Data Semua Siswa" : "Data Siswa Kelas " . $_SESSION['kelas'] . "." ?></h3>
+                            <?php
+                            $idkelas = $_SESSION['kelas'];
+                            $getnamakelas = mysqli_query(
+                                $conn,
+                                "SELECT kelasmaster.nama_kelas from kelasmaster inner join siswa on kelasmaster.kelasID = '$idkelas'"
+                            );
+                            $namaKelas = mysqli_fetch_array($getnamakelas)['nama_kelas'];
+                            ?>
+                            <h3 class="card-title"> <?= ($_SESSION['level'] == 'Admin') ? "Data Semua Siswa" : "Data Siswa Kelas " . $namaKelas . "." ?></h3>
                         </div>
 
                         <?php if (isset($message) && !empty($message)) : ?>
@@ -554,7 +562,7 @@ if (isset($_POST['hapusdata'])) {
                                             <?php
                                             $ambilkelas = mysqli_query($conn, "SELECT * FROM kelasmaster");
                                             while ($row = mysqli_fetch_array($ambilkelas)) { ?>
-                                                <option value="<?php echo $row['kelasID']; ?>"><?php echo htmlspecialchars($row['nama_kelas'], ENT_QUOTES, 'UTF-8'); ?></option>
+                                                <option value="<?php echo $row['kelasID']; ?>"> <?php echo htmlspecialchars($row['nama_kelas'], ENT_QUOTES, 'UTF-8'); ?> </option>
                                             <?php
                                             }
                                             ?>

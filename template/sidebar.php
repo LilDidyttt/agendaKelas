@@ -62,6 +62,28 @@
                              <p>User</p>
                          </a>
                      </li>
+
+                     <li class="nav-item">
+                         <a href="kelas.php" class="nav-link <?= ($halaman == 'kelas') ? 'active' : '' ?>">
+                             <i class="nav-icon fas fa-chalkboard"></i>
+                             <p>Kelas</p>
+                         </a>
+                     </li>
+
+                     <li class="nav-item">
+                         <a href="jurusan.php" class="nav-link <?= ($halaman == 'jurusan') ? 'active' : '' ?>">
+                             <i class="nav-icon fas fa-tools"></i>
+                             <p>Jurusan</p>
+                         </a>
+                     </li>
+
+                     <li class="nav-item">
+                         <a href="sekretaris.php" class="nav-link <?= ($halaman == 'sekretaris') ? 'active' : '' ?>">
+                             <i class="nav-icon fas fa-pen"></i>
+                             <p>Sekretaris</p>
+                         </a>
+                     </li>
+
                      <li class="nav-item">
                          <a href="logout.php" onclick="return confirm('Anda akan logout')" class="nav-link">
                              <i class="nav-icon fas fa-sign-out-alt"></i>

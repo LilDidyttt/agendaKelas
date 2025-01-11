@@ -81,7 +81,7 @@ if (isset($_POST['tambah'])) {
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0">user</h1>
+              <h1 class="m-0">Data User</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
@@ -104,7 +104,7 @@ if (isset($_POST['tambah'])) {
           <!-- tabel kehadiran -->
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Data Kehadiran Siswa</h3>
+              <h3 class="card-title">Data User</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">

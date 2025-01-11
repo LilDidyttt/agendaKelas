@@ -10,16 +10,17 @@ if (isset($_POST['login'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
 
-    $cek = mysqli_query($conn, "SELECT * FROM user where username = '$username'");
-    $row = mysqli_fetch_array($cek);
+    $cek = mysqli_query($conn, "SELECT * FROM sekretaris where username = '$username'");
 
-    if ($row) {
+    if (mysqli_num_rows($cek) == 1) {
+        $row = mysqli_fetch_array($cek);
+
         $passwordhash = $row['password'];
 
         if (password_verify($password, $passwordhash)) {
-            $_SESSION['iduser'] = $row['userID'];
-            $_SESSION['level']  = $row['level'];
-            $_SESSION['kelas']  = $row['username'];
+            $_SESSION['iduser'] = $row['sekretarisID'];
+            $_SESSION['level']  = 'Sekretaris';
+            $_SESSION['kelas']  = $row['kelasID'];
             $_SESSION['login']  = true;
 
             header("Location: index.php");
@@ -29,8 +30,27 @@ if (isset($_POST['login'])) {
             $alertClass = "alert-danger";
         }
     } else {
-        $message = "Username atau password salah";
-        $alertClass = "alert-danger";
+        $ambildata = mysqli_query($conn, "SELECT * FROM user where username = '$username'");
+
+        if (mysqli_num_rows($ambildata) > 0) {
+            $row = mysqli_fetch_array($ambildata);
+            $passwordhash = $row['password'];
+
+            if (password_verify($password, $passwordhash)) {
+                $_SESSION['iduser'] = $row['userID'];
+                $_SESSION['level']  = $row['level'];
+                $_SESSION['login']  = true;
+
+                header("Location: index.php");
+                exit();
+            } else {
+                $message = "Username atau password salah";
+                $alertClass = "alert-danger";
+            }
+        } else {
+            $message = "Username atau password salah";
+            $alertClass = "alert-danger";
+        }
     }
 }
 
