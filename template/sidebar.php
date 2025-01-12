@@ -148,3 +148,28 @@
      </div>
      <!-- /.sidebar -->
  </aside>
+
+ <script src="plugins/jquery/jquery.min.js"></script>
+
+ <!-- Sweet Alert -->
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+ <script>
+     $(document).on('click', '.logout-btn', function() {
+         Swal.fire({
+             title: 'Ingin Logout?',
+             text: `Kamu akan keluar dari aplikasi AgendaKelas`,
+             icon: 'warning',
+             showCancelButton: true,
+             confirmButtonColor: '#3085d6',
+             cancelButtonColor: '#d33',
+             confirmButtonText: 'Ya!',
+             cancelButtonText: 'Batal'
+         }).then((result) => {
+             if (result.isConfirmed) {
+                 // Jika pengguna menekan tombol "Ya, hapus!", arahkan ke URL
+                 window.location.href = `logout.php`;
+             }
+         });
+     });
+ </script>

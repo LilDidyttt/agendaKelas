@@ -616,12 +616,12 @@ if (isset($_POST['hapusdata'])) {
         </div>
 
         <!-- UID Modal -->
-        <div class="modal fade" id="modalUID" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modalUID" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editModalLabel">Tambah UID Kartu Siswa</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="modal">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>

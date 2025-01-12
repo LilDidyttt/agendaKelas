@@ -488,24 +488,6 @@ if (isset($_POST['resetpassword'])) {
                 allowClear: true, // Tambahkan opsi clear
             });
 
-            $(document).on('click', '.logout-btn', function() {
-                Swal.fire({
-                    title: 'Ingin logout?',
-                    text: `Kamu akan keluar dari aplikasi AgendaKelas`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Jika pengguna menekan tombol "Ya, hapus!", arahkan ke URL
-                        window.location.href = `logout.php`;
-                    }
-                });
-            });
-
             // Tangkap tombol hapus
             $(document).on('click', '.hapus-sekretaris', function() {
                 var id = $(this).data('id');

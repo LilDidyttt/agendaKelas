@@ -189,8 +189,8 @@ $halaman = 'agenda';
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Tambah Siswa</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <h4 class="modal-title">Tambah Agenda</h4>
+                    <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -200,17 +200,25 @@ $halaman = 'agenda';
                         <form action="" method="post">
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="exampleInputNama">Nama</label>
-                                    <input type="text" id="exampleInputNama" class="form-control" name="nama">
+                                    <?php
+                                    $idkelas = $_SESSION['kelas'];
+                                    $getnamakelas = mysqli_query(
+                                        $conn,
+                                        "SELECT kelasmaster.nama_kelas from kelasmaster inner join siswa on kelasmaster.kelasID = '$idkelas'"
+                                    );
+                                    $namaKelas = mysqli_fetch_array($getnamakelas)['nama_kelas'];
+                                    ?>
+                                    <label for="input-kelas">Kelas : <?= $namaKelas ?></label>
+                                    <input type="hidden" id="input-kelas" value="<?= $_SESSION['kelas'] ?>" class="form-control" name="nama">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="kelas" class="form-label">Kelas</label>
+                                    <label for="kelas" class="form-label">Guru</label>
                                     <select name="kelas" id="kelas" class="form-control">
-                                        <option value="" disabled selected>Pilih Kelas</option>
+                                        <option value="" disabled selected>Pilih Guru</option>
                                         <?php
-                                        $ambilkelas = mysqli_query($conn, "SELECT * FROM kelasmaster");
-                                        while ($row = mysqli_fetch_array($ambilkelas)) { ?>
-                                            <option value="<?php echo $row['kelasID']; ?>"> <?php echo htmlspecialchars($row['nama_kelas'], ENT_QUOTES, 'UTF-8'); ?> </option>
+                                        $ambilguru = mysqli_query($conn, "SELECT * FROM guru");
+                                        while ($row = mysqli_fetch_array($ambilguru)) { ?>
+                                            <option value="<?php echo $row['guruID']; ?>"> <?php echo htmlspecialchars($row['nama'], ENT_QUOTES, 'UTF-8'); ?> </option>
                                         <?php
                                         }
                                         ?>
