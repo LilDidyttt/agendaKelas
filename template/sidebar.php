@@ -85,7 +85,7 @@
                      </li>
 
                      <li class="nav-item">
-                         <a href="logout.php" onclick="return confirm('Anda akan logout')" class="nav-link">
+                         <a href="#" class="nav-link logout-btn">
                              <i class="nav-icon fas fa-sign-out-alt"></i>
                              <p>Logout</p>
                          </a>
@@ -105,7 +105,7 @@
                          </a>
                      </li>
                      <li class="nav-item">
-                         <a href="logout.php" onclick="return confirm('Anda akan logout')" class="nav-link">
+                         <a href="#" class="nav-link logout-btn">
                              <i class="nav-icon fas fa-sign-out-alt"></i>
                              <p>Logout</p>
                          </a>
@@ -120,7 +120,7 @@
                      </li>
 
                      <li class="nav-item">
-                         <a href="logout.php" onclick="return confirm('Anda akan logout')" class="nav-link">
+                         <a href="#" class="nav-link logout-btn">
                              <i class="nav-icon fas fa-sign-out-alt"></i>
                              <p>Logout</p>
                          </a>
@@ -134,7 +134,7 @@
                          </a>
                      </li>
                      <li class="nav-item">
-                         <a href="logout.php" class="nav-link" onclick="return confirm('Anda akan logout')">
+                         <a href="#" class="nav-link logout-btn">
                              <i class=" nav-icon fas fa-sign-out-alt"></i>
                              <p>Logout</p>
                          </a>
