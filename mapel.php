@@ -116,42 +116,44 @@ if (isset($_POST['tambah'])) {
                         <div class="card-body">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#tambahModal"><button
                                     class="btn btn-outline-success mb-2">+ Tambah Mapel</button></a>
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Kode Mapel</th>
-                                        <th>Nama Mapel</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $sql = getAllMapel();
-                                    $no = 0;
-                                    while ($row = mysqli_fetch_array($sql)) {
-                                        $no++
-                                    ?>
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
                                         <tr>
-                                            <td><?= $no; ?></td>
-                                            <td><?= $row['KodeMapel']; ?></td>
-                                            <td><?= $row['namaMapel']; ?></td>
-                                            <td>
-                                                <a href="hapusmapel.php?mapel=<?= $row['KodeMapel'] ?>"
-                                                    onclick="return confirm('Menghapus mapel <?= $row['namaMapel'] ?> ')"><button
-                                                        class="btn btn-outline-danger">Hapus</button></a>
-                                                <button class="btn btn-outline-warning"
-                                                    data-kode="<?= $row['KodeMapel']; ?>"
-                                                    data-nama="<?= $row['namaMapel']; ?>">Edit</button>
-                                            </td>
-
+                                            <th>No</th>
+                                            <th>Kode Mapel</th>
+                                            <th>Nama Mapel</th>
+                                            <th>Aksi</th>
                                         </tr>
-                                    <?php
-                                    }
-                                    ?>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $sql = getAllMapel();
+                                        $no = 0;
+                                        while ($row = mysqli_fetch_array($sql)) {
+                                            $no++
+                                        ?>
+                                            <tr>
+                                                <td><?= $no; ?></td>
+                                                <td><?= $row['KodeMapel']; ?></td>
+                                                <td><?= $row['namaMapel']; ?></td>
+                                                <td>
+                                                    <a href="hapusmapel.php?mapel=<?= $row['KodeMapel'] ?>"
+                                                        onclick="return confirm('Menghapus mapel <?= $row['namaMapel'] ?> ')"><button
+                                                            class="btn btn-outline-danger">Hapus</button></a>
+                                                    <button class="btn btn-outline-warning"
+                                                        data-kode="<?= $row['KodeMapel']; ?>"
+                                                        data-nama="<?= $row['namaMapel']; ?>">Edit</button>
+                                                </td>
 
-                                </tbody>
-                            </table>
+                                            </tr>
+                                        <?php
+                                        }
+                                        ?>
+
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -266,22 +268,8 @@ if (isset($_POST['tambah'])) {
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
+        $(document).ready(function() {
+            $('#example1').DataTable();
         });
 
         $(document).on('click', '.btn-outline-warning', function() {

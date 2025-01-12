@@ -135,52 +135,58 @@ $jam = mysqli_fetch_assoc($sql);
                     <?php endif; ?>
 
                     <!-- tabel kehadiran -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Data Kehadiran Siswa</h3>
-                        </div>
-                        <!-- /.card-header -->
-                        <div class="card-body">
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>ID Siswa</th>
-                                        <th>Nama Siswa</th>
-                                        <th>Jam Hadir</th>
-                                        <th>Jam Pulang</th>
-                                        <th>Keterangan</th>
-                                        <th>Ket. Pulang</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $sql = getAllKehadiran();
-                                    $no = 0;
-                                    while ($row = mysqli_fetch_array($sql)) {
-                                        $idsiswa = $row['siswaID'];
-                                        $ambilnama = mysqli_query($conn, "select * from siswa where siswaID = '$idsiswa'");
-                                        $s = mysqli_fetch_array($ambilnama);
-                                        $no++
-                                    ?>
-                                        <tr>
-                                            <td><?= $no; ?></td>
-                                            <td><?= $row['siswaID']; ?></td>
-                                            <td><?= $s['nama']; ?></td>
-                                            <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
-                                            <td><?= ($row['ketPulang'] == 'Sudah') ? date("d M Y H:i:s", strtotime($row['jamPulang'])) : $row['jamPulang'] ?>
-                                            </td>
-                                            <td><?= $row['keterangan'] ?></td>
-                                            <td><?= $row['ketPulang'] ?></td>
-                                        </tr>
-                                    <?php
-                                    }
-                                    ?>
+                    <div class="content">
+                        <div class="container-fluid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Data Kehadiran Siswa</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table id="example1" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>ID Siswa</th>
+                                                    <th>Nama Siswa</th>
+                                                    <th>Jam Hadir</th>
+                                                    <th>Jam Pulang</th>
+                                                    <th>Keterangan</th>
+                                                    <th>Ket. Pulang</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $sql = getAllKehadiran();
+                                                $no = 0;
+                                                while ($row = mysqli_fetch_array($sql)) {
+                                                    $idsiswa = $row['siswaID'];
+                                                    $ambilnama = mysqli_query($conn, "select * from siswa where siswaID = '$idsiswa'");
+                                                    $s = mysqli_fetch_array($ambilnama);
+                                                    $no++
+                                                ?>
+                                                    <tr>
+                                                        <td><?= $no; ?></td>
+                                                        <td><?= $row['siswaID']; ?></td>
+                                                        <td><?= $s['nama']; ?></td>
+                                                        <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
+                                                        <td><?= ($row['ketPulang'] == 'Sudah') ? date("d M Y H:i:s", strtotime($row['jamPulang'])) : $row['jamPulang'] ?>
+                                                        </td>
+                                                        <td><?= $row['keterangan'] ?></td>
+                                                        <td><?= $row['ketPulang'] ?></td>
+                                                    </tr>
+                                                <?php
+                                                }
+                                                ?>
 
-                                </tbody>
-                            </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
                         </div>
-                        <!-- /.card-body -->
                     </div>
                     <!-- /.card -->
                 </div>
@@ -240,22 +246,8 @@ $jam = mysqli_fetch_assoc($sql);
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
+        $(document).ready(function() {
+            $('#example1').DataTable();
         });
     </script>
 </body>

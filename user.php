@@ -110,60 +110,62 @@ if (isset($_POST['tambah'])) {
             <div class="card-body">
               <button type="button" class="btn btn-outline-success mb-2" data-toggle="modal"
                 data-target="#modal-tambah">[+] Tambah User</button>
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>ID User</th>
-                    <th>Username</th>
-                    <th>Level</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php
-                  $sql = getAlluser();
-                  $no = 0;
-                  while ($row = mysqli_fetch_array($sql)) {
-                    $no++
-                  ?>
+              <div class="table-responsive">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
                     <tr>
-                      <td><?= $no; ?></td>
-                      <td><?= $row['userID'] ?></td>
-                      <td><?= $row['username']; ?></td>
-                      <td><?= $row['level']; ?></td>
-                      <td>
-                        <button class="btn btn-outline-warning" data-toggle="modal"
-                          data-target="#modal-default" data-username="<?= $row['username'] ?>"
-                          data-level="<?= $row['level'] ?>" data-userid="<?= $row['userID'] ?>">
-                          Edit
-                        </button>
-
-                        <!-- modal -->
-
-                        <a href="user.php?hapus=<?= $row['userID'] ?>"
-                          class="btn btn-outline-danger">
-                          Hapus
-                        </a>
-                      </td>
+                      <th>No</th>
+                      <th>ID User</th>
+                      <th>Username</th>
+                      <th>Level</th>
+                      <th>Aksi</th>
                     </tr>
-                  <?php
-                  }
+                  </thead>
+                  <tbody>
+                    <?php
+                    $sql = getAlluser();
+                    $no = 0;
+                    while ($row = mysqli_fetch_array($sql)) {
+                      $no++
+                    ?>
+                      <tr>
+                        <td><?= $no; ?></td>
+                        <td><?= $row['userID'] ?></td>
+                        <td><?= $row['username']; ?></td>
+                        <td><?= $row['level']; ?></td>
+                        <td>
+                          <button class="btn btn-outline-warning" data-toggle="modal"
+                            data-target="#modal-default" data-username="<?= $row['username'] ?>"
+                            data-level="<?= $row['level'] ?>" data-userid="<?= $row['userID'] ?>">
+                            Edit
+                          </button>
 
-                  if (isset($_POST['edit'])) {
-                    if (edituser($_POST)) {
-                      echo "
-                      <script>
-                      alert('Data berhasil di edit!');
-                      document.location.href = 'user.php';
-                      </script>";
+                          <!-- modal -->
+
+                          <a href="user.php?hapus=<?= $row['userID'] ?>"
+                            class="btn btn-outline-danger">
+                            Hapus
+                          </a>
+                        </td>
+                      </tr>
+                    <?php
                     }
-                  }
 
-                  ?>
+                    if (isset($_POST['edit'])) {
+                      if (edituser($_POST)) {
+                        echo "
+                        <script>
+                        alert('Data berhasil di edit!');
+                        document.location.href = 'user.php';
+                        </script>";
+                      }
+                    }
 
-                </tbody>
-              </table>
+                    ?>
+
+                  </tbody>
+                </table>
+              </div>
             </div>
             <!-- /.card-body -->
           </div>
@@ -336,22 +338,8 @@ if (isset($_POST['tambah'])) {
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="dist/js/pages/dashboard2.js"></script>
   <script>
-    $(function() {
-      $("#example1").DataTable({
-        "responsive": true,
-        "lengthChange": false,
-        "autoWidth": false,
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-      $('#example2').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": false,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
+    $(document).ready(function() {
+      $('#example1').DataTable();
     });
 
     $(document).on('click', '.btn-outline-warning', function() {

@@ -23,20 +23,18 @@ $halaman = 'terlambat';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Data Siswa Terlambat | AgendaKelas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="dist/css/adminlte.min.css">
+    <!-- CSS SELECT 2 -->
+    <link rel="stylesheet" href="dist/css/select2.css">
 </head>
 
 <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -95,52 +93,53 @@ $halaman = 'terlambat';
                         <div class="card-body">
                             <button type="button" class="btn btn-danger mb-2" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal" class="btn btn-danger mb-2"><i
-                                    class="fa-solid fa-file-pdf"></i> PDF
+                                    class="fas fa-file-pdf"></i> PDF
                             </button>
-
-                            <table id="example1" class="table table-dark">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>ID Siswa</th>
-                                        <th>Nama Siswa</th>
-                                        <th>Kelas</th>
-                                        <th>Jenis Kelamin</th>
-                                        <th>Jam Hadir</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    if (isset($_POST['set'])) {
-                                        $waktuawal = mysqli_real_escape_string($conn, $_POST['waktuawal']);
-                                        $waktuakhir = mysqli_real_escape_string($conn, $_POST['waktuakhir']);
-                                        $sql = getWaktuAntara($waktuawal, $waktuakhir);
-                                    } elseif (isset($_POST['clear'])) {
-                                        $sql = getAllSiswaTerlambat();
-                                    } else {
-                                        $sql = getAllSiswaTerlambat();
-                                    }
-                                    $no = 0;
-                                    while ($row = mysqli_fetch_array($sql)) {
-                                        $idsiswa = $row['siswaID'];
-                                        $s = mysqli_query($conn, "SELECT * FROM siswa WHERE siswaID = $idsiswa");
-                                        $siswa = mysqli_fetch_assoc($s);
-                                        $no++;
-                                    ?>
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
                                         <tr>
-                                            <td><?= $no; ?></td>
-                                            <td><?= $row['siswaID']; ?></td>
-                                            <td><?= $siswa['nama']; ?></td>
-                                            <td><?= $siswa['kelas']; ?></td>
-                                            <td><?= $siswa['jk'] ?></td>
-                                            <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
+                                            <th>No</th>
+                                            <th>ID Siswa</th>
+                                            <th>Nama Siswa</th>
+                                            <th>Kelas</th>
+                                            <th>Jenis Kelamin</th>
+                                            <th>Jam Hadir</th>
                                         </tr>
-                                    <?php
-                                    }
-                                    ?>
-                                </tbody>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        if (isset($_POST['set'])) {
+                                            $waktuawal = mysqli_real_escape_string($conn, $_POST['waktuawal']);
+                                            $waktuakhir = mysqli_real_escape_string($conn, $_POST['waktuakhir']);
+                                            $sql = getWaktuAntara($waktuawal, $waktuakhir);
+                                        } elseif (isset($_POST['clear'])) {
+                                            $sql = getAllSiswaTerlambat();
+                                        } else {
+                                            $sql = getAllSiswaTerlambat();
+                                        }
+                                        $no = 0;
+                                        while ($row = mysqli_fetch_array($sql)) {
+                                            $idsiswa = $row['siswaID'];
+                                            $s = mysqli_query($conn, "SELECT * FROM siswa WHERE siswaID = $idsiswa");
+                                            $siswa = mysqli_fetch_assoc($s);
+                                            $no++;
+                                        ?>
+                                            <tr>
+                                                <td><?= $no; ?></td>
+                                                <td><?= $row['siswaID']; ?></td>
+                                                <td><?= $siswa['nama']; ?></td>
+                                                <td><?= $siswa['kelas']; ?></td>
+                                                <td><?= $siswa['jk'] ?></td>
+                                                <td><?= date("d M Y H:i:s", strtotime($row['jamHadir'])) ?></td>
+                                            </tr>
+                                        <?php
+                                        }
+                                        ?>
+                                    </tbody>
 
-                            </table>
+                                </table>
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -226,8 +225,6 @@ $halaman = 'terlambat';
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="dist/js/adminlte.min.js"></script>
 
     <!-- PAGE PLUGINS -->
     <!-- jQuery Mapael -->
@@ -244,6 +241,12 @@ $halaman = 'terlambat';
 
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#example1').DataTable();
+        });
+    </script>
 </body>
 
 </html>

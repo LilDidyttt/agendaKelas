@@ -39,6 +39,7 @@ if (isset($_POST['login'])) {
             if (password_verify($password, $passwordhash)) {
                 $_SESSION['iduser'] = $row['userID'];
                 $_SESSION['level']  = $row['level'];
+                $_SESSION['kelas'] = null;
                 $_SESSION['login']  = true;
 
                 header("Location: index.php");

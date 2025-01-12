@@ -164,60 +164,62 @@ if (isset($_POST['tambahakun'])) {
                         <!-- /.card-header -->
                         <div class="card-body">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#tambahModal"><button class="btn btn-outline-success mb-2">+ Tambah Guru</button></a>
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>ID Guru</th>
-                                        <th>Nama Guru</th>
-                                        <th>NIP</th>
-                                        <th>Jenis Kelamin</th>
-                                        <th>ID User</th>
-                                        <th>Username</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $sql = getAllGuru();
-                                    $no = 0;
-                                    while ($row = mysqli_fetch_array($sql)) {
-                                        $iduser = $row['userID'];
-                                        $query = mysqli_query($conn, "SELECT * from user where userID =  '$iduser'");
-                                        $ambilusername = mysqli_fetch_array($query);
-                                        $no++
-                                    ?>
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
                                         <tr>
-                                            <td><?= $no; ?></td>
-                                            <td><?= $row['guruID']; ?></td>
-                                            <td><?= $row['nama']; ?></td>
-                                            <td><?= $row['nip'] ?></td>
-                                            <td><?= $row['jk'] ?></td>
-                                            <td><?= (empty($row['userID'])) ? "Tidak ada akun" : $row['userID'] ?></td>
-                                            <td><?= (empty($ambilusername['username'])) ? "Tidak ada akun" : $ambilusername['username'] ?></td>
-                                            <td>
-                                                <a href="hapus-guru.php?guruID=<?= $row['guruID'] ?>" onclick="return confirm('Menghapus guru <?= $row['nama'] ?> ')"><button class="btn btn-outline-danger">Hapus</button></a>
-                                                <button
-                                                    class="btn btn-outline-warning"
-                                                    data-guru-id="<?= $row['guruID']; ?>"
-                                                    data-nama="<?= $row['nama']; ?>"
-                                                    data-nip="<?= $row['nip']; ?>"
-                                                    data-jk="<?= $row['jk']; ?>"
-                                                    onclick="editGuru(this)">
-                                                    Edit
-                                                </button>
-
-                                                <?php if (empty($row['userID'])) : ?>
-                                                    <button class="btn btn-outline-info" data-idguru="<?= $row['guruID'] ?>" data-namaguru="<?= $row['nama'] ?>">Tambah Akun</button>
-                                                <?php endif; ?>
-                                            </td>
+                                            <th>No</th>
+                                            <th>ID Guru</th>
+                                            <th>Nama Guru</th>
+                                            <th>NIP</th>
+                                            <th>Jenis Kelamin</th>
+                                            <th>ID User</th>
+                                            <th>Username</th>
+                                            <th>Aksi</th>
                                         </tr>
-                                    <?php
-                                    }
-                                    ?>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $sql = getAllGuru();
+                                        $no = 0;
+                                        while ($row = mysqli_fetch_array($sql)) {
+                                            $iduser = $row['userID'];
+                                            $query = mysqli_query($conn, "SELECT * from user where userID =  '$iduser'");
+                                            $ambilusername = mysqli_fetch_array($query);
+                                            $no++
+                                        ?>
+                                            <tr>
+                                                <td><?= $no; ?></td>
+                                                <td><?= $row['guruID']; ?></td>
+                                                <td><?= $row['nama']; ?></td>
+                                                <td><?= $row['nip'] ?></td>
+                                                <td><?= $row['jk'] ?></td>
+                                                <td><?= (empty($row['userID'])) ? "Tidak ada akun" : $row['userID'] ?></td>
+                                                <td><?= (empty($ambilusername['username'])) ? "Tidak ada akun" : $ambilusername['username'] ?></td>
+                                                <td>
+                                                    <a href="hapus-guru.php?guruID=<?= $row['guruID'] ?>" onclick="return confirm('Menghapus guru <?= $row['nama'] ?> ')"><button class="btn btn-outline-danger">Hapus</button></a>
+                                                    <button
+                                                        class="btn btn-outline-warning"
+                                                        data-guru-id="<?= $row['guruID']; ?>"
+                                                        data-nama="<?= $row['nama']; ?>"
+                                                        data-nip="<?= $row['nip']; ?>"
+                                                        data-jk="<?= $row['jk']; ?>"
+                                                        onclick="editGuru(this)">
+                                                        Edit
+                                                    </button>
 
-                                </tbody>
-                            </table>
+                                                    <?php if (empty($row['userID'])) : ?>
+                                                        <button class="btn btn-outline-info" data-idguru="<?= $row['guruID'] ?>" data-namaguru="<?= $row['nama'] ?>">Tambah Akun</button>
+                                                    <?php endif; ?>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                        }
+                                        ?>
+
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -397,8 +399,6 @@ if (isset($_POST['tambahakun'])) {
     <script src="plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="dist/js/adminlte.min.js"></script>
 
     <!-- PAGE PLUGINS -->
     <!-- jQuery Mapael -->
@@ -412,22 +412,8 @@ if (isset($_POST['tambahakun'])) {
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
+        $(document).ready(function() {
+            $('#example1').DataTable();
         });
 
         function editGuru(button) {

@@ -2,6 +2,8 @@
 
 ob_start(); // Start output buffering
 
+$halaman = 'sekretaris';
+
 
 include 'function.php';
 
@@ -10,8 +12,6 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
 
     exit();
 }
-
-$halaman = 'user';
 
 if ($_SESSION['level'] == 'Sekretaris') {
     header("Location: siswa.php");
@@ -116,74 +116,76 @@ if (isset($_POST['tambahsekretaris'])) {
                         <?php endif; ?>
 
                         <div class="card-header">
-                            <h3 class="card-title">Data Sekretaris</h3>
+                            <h3 class="card-title">Data Akun Sekretaris</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
                             <button type="button" class="btn btn-outline-success mb-2" data-toggle="modal"
-                                data-target="#modal-tambah">[+] Tambah Sekretaris</button>
-                            <table id="example1" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>ID Sekretaris</th>
-                                        <th>Username</th>
-                                        <th>Nama Lengkap</th>
-                                        <th>Kelas</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $sql = getAllSekretaris();
-                                    $no = 0;
-                                    while ($row = mysqli_fetch_array($sql)) {
-                                        $no++;
-                                        $idkelas = $row['kelasID'];
-                                        $idsiswa = $row['siswaID'];
-                                        $getkelas = mysqli_query(
-                                            $conn,
-                                            "SELECT kelasmaster.nama_kelas from kelasmaster inner join sekretaris on kelasmaster.kelasID = '$idkelas'"
-                                        );
-
-                                        $getnama = mysqli_query(
-                                            $conn,
-                                            "SELECT siswa.nama from siswa inner join sekretaris on siswa.siswaID = '$idsiswa'"
-                                        );
-
-                                        $nama = mysqli_fetch_array($getnama)['nama'];
-
-                                        $kelas = mysqli_fetch_array($getkelas)['nama_kelas'];
-
-                                    ?>
+                                data-target="#modal-tambah">[+] Tambah Akun Sekretaris</button>
+                            <div class="table-responsive">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
                                         <tr>
-                                            <td><?= $no; ?></td>
-                                            <td>ID <?= $row['sekretarisID'] ?></td>
-                                            <td><?= $row['username']; ?></td>
-                                            <td><?= $nama ?></td>
-                                            <td><?= $kelas; ?></td>
-                                            <td>
-                                                <button
-                                                    class="btn btn-outline-warning"
-                                                    data-toggle="modal"
-                                                    data-target="#modal-edit"
-                                                    data-username="<?= $row['username'] ?>"
-                                                    data-level="<?= $row['level'] ?>"
-                                                    data-userid="<?= $row['userID'] ?>">
-                                                    Edit
-                                                </button>
-
-                                                <!-- modal -->
-
-                                                <a href="user.php?hapus=<?= $row['userID'] ?>"
-                                                    class="btn btn-outline-danger">
-                                                    Hapus
-                                                </a>
-                                            </td>
+                                            <th>No</th>
+                                            <th>ID Sekretaris</th>
+                                            <th>Username</th>
+                                            <th>Nama Lengkap</th>
+                                            <th>Kelas</th>
+                                            <th>Aksi</th>
                                         </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $sql = getAllSekretaris();
+                                        $no = 0;
+                                        while ($row = mysqli_fetch_array($sql)) {
+                                            $no++;
+                                            $idkelas = $row['kelasID'];
+                                            $idsiswa = $row['siswaID'];
+                                            $getkelas = mysqli_query(
+                                                $conn,
+                                                "SELECT kelasmaster.nama_kelas from kelasmaster inner join sekretaris on kelasmaster.kelasID = '$idkelas'"
+                                            );
+
+                                            $getnama = mysqli_query(
+                                                $conn,
+                                                "SELECT siswa.nama from siswa inner join sekretaris on siswa.siswaID = '$idsiswa'"
+                                            );
+
+                                            $nama = mysqli_fetch_array($getnama)['nama'];
+
+                                            $kelas = mysqli_fetch_array($getkelas)['nama_kelas'];
+
+                                        ?>
+                                            <tr>
+                                                <td><?= $no; ?></td>
+                                                <td>ID <?= $row['sekretarisID'] ?></td>
+                                                <td><?= $row['username']; ?></td>
+                                                <td><?= $nama ?></td>
+                                                <td><?= $kelas; ?></td>
+                                                <td>
+                                                    <button
+                                                        class="btn btn-outline-warning"
+                                                        data-toggle="modal"
+                                                        data-target="#modal-edit"
+                                                        data-username="<?= $row['username'] ?>"
+                                                        data-level="<?= $row['level'] ?>"
+                                                        data-userid="<?= $row['userID'] ?>">
+                                                        Edit
+                                                    </button>
+
+                                                    <!-- modal -->
+
+                                                    <a href="user.php?hapus=<?= $row['userID'] ?>"
+                                                        class="btn btn-outline-danger">
+                                                        Hapus
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
