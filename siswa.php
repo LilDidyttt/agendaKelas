@@ -173,7 +173,7 @@ if (isset($_POST['hapusdata'])) {
                                 if ($_SESSION['level'] == 'Admin') {
                                     $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as totalsiswa from siswa");
                                 } else {
-                                    $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as totalsiswa from siswa WHERE kelas = '$kelas'");
+                                    $sql = mysqli_query($conn, "SELECT COUNT(siswaID) as totalsiswa from siswa WHERE kelasID = '$kelas'");
                                 }
 
                                 $total = mysqli_fetch_array($sql);
@@ -209,7 +209,7 @@ if (isset($_POST['hapusdata'])) {
                                     JOIN siswa s ON k.siswaID = s.siswaID
                                     WHERE k.keterangan = 'Sakit' 
                                       AND DATE(k.tanggal) = CURDATE()
-                                      AND s.kelas = '$kelas'
+                                      AND s.kelasID = '$kelas'
                                 ");
                                 }
 
@@ -247,7 +247,7 @@ if (isset($_POST['hapusdata'])) {
                                     JOIN siswa s ON k.siswaID = s.siswaID
                                     WHERE k.keterangan = 'Izin' 
                                       AND DATE(k.tanggal) = CURDATE()
-                                      AND s.kelas = '$kelas'
+                                      AND s.kelasID = '$kelas'
                                 ");
                                 }
 
@@ -283,13 +283,19 @@ if (isset($_POST['hapusdata'])) {
                                     JOIN siswa s ON k.siswaID = s.siswaID
                                     WHERE k.keterangan = 'Alpha' 
                                       AND DATE(k.tanggal) = CURDATE()
-                                      AND s.kelas = '$kelas'
+                                      AND s.kelasID = '$kelas'
                                 ");
                                 }
 
 
                                 $total = mysqli_fetch_array($sql);
-                                $ambilsiswa = mysqli_query($conn, "SELECT * FROM siswa WHERE siswaID NOT IN (SELECT siswaID FROM kehadiran WHERE DATE(jamHadir) = CURDATE())");
+
+                                if ($_SESSION['level'] == 'Admin') {
+                                    $ambilsiswa = mysqli_query($conn, "SELECT * FROM siswa WHERE siswaID NOT IN (SELECT siswaID FROM kehadiran WHERE DATE(jamHadir) = CURDATE())");
+                                } else {
+                                    $ambilsiswa = mysqli_query($conn, "SELECT * FROM siswa WHERE siswaID NOT IN (SELECT siswaID FROM kehadiran WHERE DATE(jamHadir) = CURDATE()) AND kelasID = '$kelas'");
+                                }
+
                                 $totalalpha = mysqli_num_rows($ambilsiswa) + $total['siswaalpha'] - $izin['siswaizin'] - $sakit['siswasakit'];
                                 ?>
                                 <div class="info-box-content">

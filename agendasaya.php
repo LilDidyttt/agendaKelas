@@ -2,6 +2,8 @@
 
 include 'function.php';
 
+$halaman = "agenda saya";
+
 if ($_SESSION['level'] == 'Sekretaris' && $_SESSION['level'] == 'Admin') {
     header("Location: siswa.php");
 }

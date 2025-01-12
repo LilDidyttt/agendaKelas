@@ -100,23 +100,31 @@ function tambahuser($data)
     $password = $data['password'];
     $level    = $data['level'];
 
-    // Cek apakah username sudah ada di database
-    $checkQuery = "SELECT * FROM user WHERE username = '$username'";
-    $result = mysqli_query($conn, $checkQuery);
+    $ceksekretaris = mysqli_query($conn, "SELECT * from sekretaris where username = '$username' );");
 
-    if (mysqli_num_rows($result) > 0) {
-        // Username sudah ada
-        return -1; // Kode untuk menandakan bahwa username sudah ada
+    if (mysqli_num_rows($ceksekretaris) == 0) {
+        $checkQuery = "SELECT * FROM user WHERE username = '$username'";
+        $result = mysqli_query($conn, $checkQuery);
+
+        if (mysqli_num_rows($result) > 0) {
+            // Username sudah ada
+            return -1; // Kode untuk menandakan bahwa username sudah ada
+        }
+
+        // Enkripsi password
+        $enkripsi = password_hash($password, PASSWORD_BCRYPT);
+
+        // Query untuk menambahkan user baru
+        $sql = "INSERT INTO user VALUES(NULL, '$username', '$enkripsi', '$level')";
+        $query = mysqli_query($conn, $sql);
+
+        return mysqli_affected_rows($conn);
+    } else {
+        return -1;
     }
 
-    // Enkripsi password
-    $enkripsi = password_hash($password, PASSWORD_BCRYPT);
+    // Cek apakah username sudah ada di database
 
-    // Query untuk menambahkan user baru
-    $sql = "INSERT INTO user VALUES(NULL, '$username', '$enkripsi', '$level')";
-    $query = mysqli_query($conn, $sql);
-
-    return mysqli_affected_rows($conn);
 }
 
 function tambahsiswa($data)
@@ -262,6 +270,50 @@ function tambahsekretaris($data)
     $query = mysqli_query($conn, $sql);
 
     if ($query) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function editsekretaris($data)
+{
+    global $conn;
+    $id = $data['id'];
+    $username = $data['username'];
+    $kelasID  = $data['kelas'];
+    $siswaID  = $data['siswa'];
+
+    // Query untuk menambahkan user baru
+    $sql = "UPDATE sekretaris set username = '$username', kelasID = '$kelasID', siswaID = '$siswaID' where sekretarisID = '$id'";
+    $query = mysqli_query($conn, $sql);
+
+    if ($query) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function hapussekretaris($id)
+{
+    global $conn;
+    $sql = mysqli_query($conn, "DELETE FROM sekretaris WHERE sekretarisID=$id");
+    if ($sql) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function resetpassword($data)
+{
+    global $conn;
+    $id = $data['id'];
+    $password = $data['password-baru'];
+
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+
+    if (mysqli_query($conn, "UPDATE sekretaris SET password = '$hash' WHERE sekretarisID = '$id'")) {
         return true;
     } else {
         return false;

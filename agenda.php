@@ -28,6 +28,11 @@ $halaman = 'agenda';
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
 
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet">
+    <!-- CSS SELECT 2 -->
+    <link rel="stylesheet" href="dist/css/select2.css">
+
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
@@ -78,15 +83,23 @@ $halaman = 'agenda';
                     <div class="container-fluid">
                         <div class="card shadow mb-4">
                             <div class="card-header">
+                                <?php
+                                $idkelas = $_SESSION['kelas'];
+                                $getnamakelas = mysqli_query(
+                                    $conn,
+                                    "SELECT kelasmaster.nama_kelas from kelasmaster inner join siswa on kelasmaster.kelasID = '$idkelas'"
+                                );
+                                $namaKelas = mysqli_fetch_array($getnamakelas)['nama_kelas'];
+                                ?>
                                 <h3 class="card-title">Data Agenda Kelas
-                                    <?= (isset($_SESSION['kelas'])) ? $_SESSION["kelas"] : "" ?>
+                                    <?= (isset($_SESSION['kelas'])) ? $namaKelas : "" ?>
                                 </h3>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <?php if ($_SESSION['level'] == 'Sekretaris') : ?>
-                                    <button class="btn btn-outline-success mb-2" data-bs-toggle="modal"
-                                        data-bs-target="#tambahModal">+ Tambah Agenda</button>
+                                    <button class="btn btn-outline-success mb-2" data-toggle="modal"
+                                        data-target="#modal-tambah">+ Tambah Agenda</button>
                                 <?php endif; ?>
                                 <div class="table-responsive">
                                     <table id="example1" class="table table-bordered table-striped">
@@ -171,92 +184,77 @@ $halaman = 'agenda';
             </div>
         </footer>
     </div>
-    <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
+
+    <div class="modal fade" id="modal-tambah">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tambahModalLabel">Tambah Agenda</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title">Tambah Siswa</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <form id="tambahMapelForm" action="" method="post">
-                        <div class="mb-3">
-                            <label for="namaGuru" class="form-label">Nama Guru</label>
-                            <select name="guru" id="namaGuru" class="form-control">
-                                <option value="">Pilih Guru</option>
+                    <div class="card card-primary">
+                        <!-- form start -->
+                        <form action="" method="post">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="exampleInputNama">Nama</label>
+                                    <input type="text" id="exampleInputNama" class="form-control" name="nama">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="kelas" class="form-label">Kelas</label>
+                                    <select name="kelas" id="kelas" class="form-control">
+                                        <option value="" disabled selected>Pilih Kelas</option>
+                                        <?php
+                                        $ambilkelas = mysqli_query($conn, "SELECT * FROM kelasmaster");
+                                        while ($row = mysqli_fetch_array($ambilkelas)) { ?>
+                                            <option value="<?php echo $row['kelasID']; ?>"> <?php echo htmlspecialchars($row['nama_kelas'], ENT_QUOTES, 'UTF-8'); ?> </option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="exampleInputUID">UID</label>
+                                    <input type="text" id="exampleInputUID" class="form-control" name="UID" placeholder="Boleh dikosongkan.">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputNISN">NISN</label>
+                                    <input type="number" id="exampleInputNISN" class="form-control" name="NISN">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputNIPD">NIPD</label>
+                                    <input type="text" id="exampleInputNIPD" class="form-control" name="NIPD">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputJK">Jenis Kelamin</label>
+                                    <div class="form-check">
+                                        <input type="radio" name="jk" value="L" id="laki" class="form-check-input">
+                                        <label for="laki" class="form-check-label">Laki-laki</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" name="jk" value="P" id="perempuan" class="form-check-input">
+                                        <label for="perempuan" class="form-check-label">Perempuan</label>
+                                    </div>
+                                </div>
 
 
-                                <?php
-                                $sql = getAllGuru();
-
-                                ?>
-                                <?php
-                                while ($row = mysqli_fetch_assoc($sql)) :
-                                ?>
-                                    <option value="<?= $row["guruID"] ?>">
-                                        <?= $row["nama"] ?>
-                                    </option>
-                                <?php endwhile ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="kelas" class="form-label">Kelas</label>
-                            <select name="kelas" class="form-control" id="kelas">
-                                <?php
-                                $sql = selectKelas();
-                                $kelas = mysqli_fetch_assoc($sql);
-                                do { ?>
-                                    <option value="<?php echo $kelas['kelas'] ?>"><?php echo $kelas['kelas'] ?></option>
-                                <?php } while ($kelas = mysqli_fetch_assoc($sql)); ?>
-
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="mapel" class="form-label">Mapel</label>
-                            <select name="mapel" class="form-control" id="mapel">
-                                <?php $sql = getAllMapel();
-                                while ($row = mysqli_fetch_assoc($sql)): ?>
-                                    <option value="<?php echo $row['KodeMapel'] ?>"><?php echo $row['namaMapel'] ?></option>
-                                <?php endwhile; ?>
-
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="materi" class="form-label">Materi</label>
-                            <input type="text" class="form-control" id="materi" name="materi" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="keterangan" class="form-label">keterangan</label>
-                            <select name="keterangan" id="keterangan" class="form-control">
-                                <option value=""></option>
-                                <option value="Hadir">Hadir</option>
-                                <option value="Tidak Hadir">Tidak Hadir</option>
-                                <option value="Tugas">Tugas</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="jampelajaran" class="form-label">jam pelajaran</label>
-                            <select name="jampelajaran" id="jampelajaran" class="form-control">
-                                <option value=""></option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <button type="submit" name="tambah" class="btn btn-primary">Tambah Agenda</button>
-                        </div>
-                    </form>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" name="tambahsiswa">Save</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
+
             </div>
+            <!-- /.modal-content -->
         </div>
+        <!-- /.modal-dialog -->
     </div>
     <!-- ./wrapper -->
 
@@ -286,6 +284,9 @@ $halaman = 'agenda';
     <!-- ChartJS -->
     <script src="plugins/chart.js/Chart.min.js"></script>
 
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+
     <!-- AdminLTE for demo purposes -->
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
@@ -305,6 +306,11 @@ $halaman = 'agenda';
 
         $(document).ready(function() {
             $('#example1').DataTable();
+
+            $("#kelas").select2({
+                placeholder: "Pilih Kelas", // Placeholder untuk dropdown
+                allowClear: true, // Tambahkan opsi clear
+            });
         });
     </script>
 

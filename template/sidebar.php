@@ -93,13 +93,13 @@
 
                  <?php elseif ($_SESSION['level'] == 'Sekretaris'): ?>
                      <li class="nav-item">
-                         <a href="agenda.php" class="nav-link">
+                         <a href="agenda.php" class="nav-link <?= ($halaman == 'agenda') ? 'active' : '' ?>">
                              <i class="nav-icon fas fa-book-open"></i>
                              <p>Agenda Kelas</p>
                          </a>
                      </li>
                      <li class="nav-item">
-                         <a href="siswa.php" class="nav-link">
+                         <a href="siswa.php" class="nav-link <?= ($halaman == 'siswa') ? 'active' : '' ?>">
                              <i class="nav-icon fas fa-graduation-cap"></i>
                              <p>Siswa</p>
                          </a>
@@ -113,7 +113,7 @@
 
                  <?php elseif ($_SESSION['level'] == 'Guru'): ?>
                      <li class="nav-item">
-                         <a href="agendasaya.php" class="nav-link">
+                         <a href="agendasaya.php" class="nav-link <?= ($halaman == 'agenda saya') ? 'active' : '' ?>">
                              <i class="nav-icon fas fa-book-open"></i>
                              <p>Agenda Saya</p>
                          </a>
@@ -128,7 +128,7 @@
 
                  <?php elseif ($_SESSION['level'] == 'Kepala Sekolah' || $_SESSION['level'] == 'Wakil Kepala Sekolah'): ?>
                      <li class="nav-item">
-                         <a href="siswa-terlambat.php" class="nav-link">
+                         <a href="siswa-terlambat.php" class="nav-link <?= ($halaman == 'terlambat') ? 'active' : '' ?>">
                              <i class="nav-icon fas fa-exclamation-circle"></i>
                              <p>Siswa Terlambat</p>
                          </a>

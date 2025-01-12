@@ -28,6 +28,7 @@ if (isset($_GET['hapus'])) {
     </script>";
     }
 }
+
 if (isset($_POST['tambahsekretaris'])) {
     if (tambahsekretaris($_POST) == true) {
         $message = "Sekretaris berhasil ditambahkan!";
@@ -37,6 +38,42 @@ if (isset($_POST['tambahsekretaris'])) {
         $alertClass = "alert-danger";
     }
 }
+
+if (isset($_POST['editsekretaris'])) {
+    if (editsekretaris($_POST) == true) {
+        $message = "Sekretaris berhasil diupdate!";
+        $alertClass = "alert-success";
+    } else {
+        $message = "Sekretaris gagal diupdate!";
+        $alertClass = "alert-danger";
+    }
+}
+
+if (isset($_GET['hapusid'])) {
+    $id = $_GET['hapusid'];
+
+    if (hapussekretaris($id)) {
+        $message = "Sekretaris berhasil dihapus!";
+        $alertClass = "alert-success";
+    } else {
+        $message = "Gagal menghapus sekretaris!";
+        $alertClass = "alert-danger";
+    }
+}
+
+if (isset($_POST['resetpassword'])) {
+    if (empty($_POST['id'])) {
+        $message = "ID atau password baru tidak boleh kosong!";
+        $alertClass = "alert-warning";
+    } else if (resetpassword($_POST)) {
+        $message = "Berhasil mereset password sekretaris!";
+        $alertClass = "alert-success";
+    } else {
+        $message = "Gagal mereset password sekretaris!";
+        $alertClass = "alert-danger";
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -84,7 +121,7 @@ if (isset($_POST['tambahsekretaris'])) {
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="#">admin</a></li>
+                                <li class="breadcrumb-item"><a href="#">Admin</a></li>
                                 <li class="breadcrumb-item active">user</li>
                             </ol>
                         </div><!-- /.col -->
@@ -111,7 +148,7 @@ if (isset($_POST['tambahsekretaris'])) {
                                 </button>
                             </div>
 
-                            <?php header("refresh:5;url=siswa.php") ?>
+                            <?php header("refresh:5;url=sekretaris.php") ?>
 
                         <?php endif; ?>
 
@@ -164,22 +201,34 @@ if (isset($_POST['tambahsekretaris'])) {
                                                 <td><?= $nama ?></td>
                                                 <td><?= $kelas; ?></td>
                                                 <td>
-                                                    <button
-                                                        class="btn btn-outline-warning"
-                                                        data-toggle="modal"
-                                                        data-target="#modal-edit"
-                                                        data-username="<?= $row['username'] ?>"
-                                                        data-level="<?= $row['level'] ?>"
-                                                        data-userid="<?= $row['userID'] ?>">
-                                                        Edit
-                                                    </button>
+                                                    <div class="grid gap-3" style="display: grid;">
+                                                        <button
+                                                            class="btn btn-outline-warning mb-2 edit-sekretaris"
+                                                            data-toggle="modal"
+                                                            data-target="#modal-edit"
+                                                            data-id="<?= $row['sekretarisID'] ?>"
+                                                            data-idkelas="<?= $idkelas ?>"
+                                                            data-username="<?= $row['username']; ?>"
+                                                            data-idsiswa="<?= $idsiswa ?>">
+                                                            Edit
+                                                        </button>
 
-                                                    <!-- modal -->
+                                                        <button
+                                                            class="btn btn-outline-danger mb-2 hapus-sekretaris"
+                                                            data-id="<?= $row['sekretarisID'] ?>"
+                                                            data-nama="<?= $nama ?>">
+                                                            Hapus
+                                                        </button>
 
-                                                    <a href="user.php?hapus=<?= $row['userID'] ?>"
-                                                        class="btn btn-outline-danger">
-                                                        Hapus
-                                                    </a>
+                                                        <button
+                                                            class="btn btn-outline-info mb-2 reset-password"
+                                                            data-toggle="modal"
+                                                            data-target="#modal-reset"
+                                                            data-id="<?= $row['sekretarisID'] ?>"
+                                                            data-nama="<?= $nama ?>">
+                                                            Reset Password
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php } ?>
@@ -206,7 +255,7 @@ if (isset($_POST['tambahsekretaris'])) {
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Tambah Siswa</h4>
+                        <h4 class="modal-title">Tambah Akun Sekretaris</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -221,7 +270,7 @@ if (isset($_POST['tambahsekretaris'])) {
                                         <select name="kelas" id="inputkelas" class="form-control">
                                             <option value="" disabled selected>Pilih Kelas</option>
                                             <?php
-                                            $ambilkelas = mysqli_query($conn, "SELECT * FROM kelasmaster");
+                                            $ambilkelas = mysqli_query($conn, "SELECT * FROM kelasmaster order by nama_kelas asc");
                                             while ($row = mysqli_fetch_array($ambilkelas)) { ?>
                                                 <option value="<?php echo $row['kelasID']; ?>">
                                                     <?php echo htmlspecialchars($row['nama_kelas'], ENT_QUOTES, 'UTF-8'); ?>
@@ -260,11 +309,11 @@ if (isset($_POST['tambahsekretaris'])) {
             <!-- /.modal-dialog -->
         </div>
 
-        <div class="modal fade" id="modal-default">
+        <div class="modal fade" id="modal-edit">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title">Edit User</h4>
+                        <h4 class="modal-title">Edit Akun Sekretaris</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -278,33 +327,37 @@ if (isset($_POST['tambahsekretaris'])) {
                             <form action="" method="post">
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">ID</label>
-                                        <input type="text" readonly class="form-control" id="iduser" name="id">
+                                        <label for="exampleInputEmail1">ID : <span id="span-id">-</span></label>
+                                        <input type="hidden" readonly class="form-control" id="id-edit" name="id" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Username</label>
-                                        <input type="text" class="form-control" id="username" name="username">
+                                        <input type="text" class="form-control" id="username-edit" name="username">
                                     </div>
-                                    <div class=" form-group">
-                                        <label for="level">Level</label>
-                                        <select name="level" id="level" class="form-control">
-                                            <option value=""></option>
-                                            <option value="Kepala Sekolah" id="kepalasekolah">Kepala Sekolah</option>
-                                            <option value="Admin" id="admin">Admin</option>
-                                            <option value="Sekretaris" id="sek">Sekretaris</option>
-                                            <option value="Wakil Kepala Sekolah" id="waka">Wakil Kepala Sekolah</option>
-                                            <option value="Guru" id="guru">Guru</option>
+                                    <div class="mb-3">
+                                        <label for="kelas" class="form-label">Kelas</label>
+                                        <select name="kelas" id="kelas-edit" class="form-control">
+                                            <option value="" disabled selected>Pilih Kelas</option>
+                                            <?php
+                                            $ambilkelas = mysqli_query($conn, "SELECT * FROM kelasmaster order by nama_kelas asc");
+                                            while ($row = mysqli_fetch_array($ambilkelas)) { ?>
+                                                <option value="<?php echo $row['kelasID']; ?>">
+                                                    <?php echo htmlspecialchars($row['nama_kelas'], ENT_QUOTES, 'UTF-8'); ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="siswa" class="form-label">Pilih Siswa</label>
+                                        <select name="siswa" id="siswa-edit" class="form-control">
+                                            <option value="" disabled selected>-- Pilih Siswa</option>
                                         </select>
                                     </div>
 
                                 </div>
-                                <!-- /.card-body -->
-
-
-
                                 <div class="modal-footer justify-content-between">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary" name="edit">Save changes</button>
+                                    <button type="submit" class="btn btn-primary" name="editsekretaris">Save changes</button>
                                 </div>
                         </div>
                         </form>
@@ -316,6 +369,53 @@ if (isset($_POST['tambahsekretaris'])) {
             <!-- /.modal-dialog -->
         </div>
         <!-- /.modal -->
+
+        <!-- modal ganti password -->
+        <div class="modal fade" id="modal-reset">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Reset Password</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="card card-primary">
+
+
+                            <!-- form start -->
+                            <form action="" method="post">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="input-id">ID : <span id="spanid">-</span></label>
+                                        <input type="hidden" class="form-control" id="input-id" name="id">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-nama">Nama Sekretaris : <span id="span-nama">-</span></label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-password">Password Baru</label>
+                                        <input type="password" class="form-control" id="input-password" name="password-baru">
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" name="resetpassword">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
         <!-- Main Footer -->
         <footer class="main-footer">
             <strong>Copyright &copy; 2014-2021 AgendaKelas.</strong>
@@ -359,6 +459,9 @@ if (isset($_POST['tambahsekretaris'])) {
     <!-- Select2 JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
 
+    <!-- Sweet Alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <script>
@@ -373,6 +476,52 @@ if (isset($_POST['tambahsekretaris'])) {
             $("#inputsiswa").select2({
                 placeholder: "Pilih Siswa", // Placeholder untuk dropdown
                 allowClear: true, // Tambahkan opsi clear
+            });
+
+            $("#kelas-edit").select2({
+                placeholder: "Pilih Kelas", // Placeholder untuk dropdown
+                allowClear: true, // Tambahkan opsi clear
+            });
+
+            $("#siswa-edit").select2({
+                placeholder: "Pilih Siswa", // Placeholder untuk dropdown
+                allowClear: true, // Tambahkan opsi clear
+            });
+
+            // Tangkap tombol hapus
+            $(document).on('click', '.hapus-sekretaris', function() {
+                var id = $(this).data('id');
+                var nama = $(this).data('nama');
+
+                // Tampilkan dialog konfirmasi
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: `Data dengan nama ${nama} akan dihapus.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Jika pengguna menekan tombol "Ya, hapus!", arahkan ke URL
+                        window.location.href = `sekretaris.php?hapusid=${id}`;
+                    }
+                });
+            });
+
+            $(document).on('click', '.reset-password', function() {
+                var id = $(this).data('id');
+                var nama = $(this).data('nama');
+
+                if (id && nama) {
+                    $('#input-id').val(id);
+                    $('#spanid').text(id);
+                    $('#span-nama').text(nama);
+                } else {
+                    alert('ID atau nama tidak ditemukan!');
+                }
             });
 
             $('#inputkelas').on('change', function() {
@@ -399,6 +548,66 @@ if (isset($_POST['tambahsekretaris'])) {
                 } else {
                     $('#inputsiswa').empty();
                     $('#inputsiswa').append('<option value="" disabled selected>-- Pilih Siswa</option>');
+                }
+            });
+
+            $(document).on('click', '.edit-sekretaris', function() {
+                var id = $(this).data('id');
+                var idkelas = $(this).data('idkelas');
+                var username = $(this).data('username');
+                var idsiswa = $(this).data('idsiswa');
+
+                var spanid = document.getElementById('span-id');
+
+                spanid.textContent = id;
+                $('#username-edit').val(username);
+                $('#id-edit').val(id);
+
+                $('#kelas-edit').val(idkelas).trigger('change');
+
+                $('#siswa-edit').data('selected', idsiswa);
+            });
+
+            $('#kelas-edit').on('change', function() {
+                let kelasID = $(this).val(); // Ambil value kelas yang dipilih
+
+                if (kelasID) {
+                    $.ajax({
+                        url: 'ajax/get_siswa.php', // File PHP untuk mengambil data siswa
+                        type: 'GET',
+                        data: {
+                            kelasID: kelasID
+                        }, // Kirim kelasID ke server
+                        dataType: 'json',
+                        success: function(data) {
+                            $('#siswa-edit').empty(); // Kosongkan dropdown siswa
+                            $('#siswa-edit').append('<option value="" disabled selected>-- Pilih Siswa</option>');
+
+                            let selectedSiswaID = $('#siswa-edit').data('selected'); // Ambil siswa yang akan di-*select*
+
+                            $.each(data, function(key, value) {
+                                if (value.siswaID == selectedSiswaID) {
+                                    // Tambahkan atribut 'selected' jika siswa cocok
+                                    $('#siswa-edit').append('<option value="' + value.siswaID + '" selected>' + value.nama + '</option>');
+                                } else {
+                                    $('#siswa-edit').append('<option value="' + value.siswaID + '">' + value.nama + '</option>');
+                                }
+                            });
+
+                            // Pastikan nilai dropdown siswa terset
+                            if (selectedSiswaID) {
+                                $('#siswa-edit').val(selectedSiswaID);
+                            }
+                        },
+                        error: function() {
+                            alert('Gagal mengambil data siswa.');
+                            $('#siswa-edit').empty();
+                            $('#siswa-edit').append('<option value="" disabled selected>-- Pilih Siswa</option>');
+                        }
+                    });
+                } else {
+                    $('#siswa-edit').empty();
+                    $('#siswa-edit').append('<option value="" disabled selected>-- Pilih Siswa</option>');
                 }
             });
         });
