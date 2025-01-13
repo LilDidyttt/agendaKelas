@@ -13,6 +13,16 @@ if ($_SESSION['level'] == 'Kepala Sekolah' && $_SESSION['level'] == 'Wakil Kepal
 
 $halaman = 'agenda';
 
+if (isset($_POST['tambahagenda'])) {
+    if (tambahagenda($_POST)) {
+        $message = "Tambah agenda berhasil!";
+        $alertClass = 'alert-success';
+    } else {
+        $message = "Gagal menambahkan agenda.";
+        $alertClass = 'alert-danger';
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -120,6 +130,12 @@ $halaman = 'agenda';
                                         <tbody>
                                             <?php
                                             $sql = getAllAgenda();
+                                            $idkelas = $_SESSION['kelas'];
+                                            $getnamakelas = mysqli_query(
+                                                $conn,
+                                                "SELECT kelasmaster.nama_kelas from kelasmaster inner join siswa on kelasmaster.kelasID = '$idkelas'"
+                                            );
+                                            $namaKelas = mysqli_fetch_array($getnamakelas)['nama_kelas'];
                                             $no = 0;
                                             while ($row = mysqli_fetch_array($sql)) {
                                                 $idguru = $row['guruID'];
@@ -133,20 +149,19 @@ $halaman = 'agenda';
                                                 <tr>
                                                     <td><?= $no; ?></td>
 
-                                                    <td><?= $row["agendaID"] ?></td>
+                                                    <td>ID <?= $row["agendaID"] ?></td>
                                                     <td><?= $g['nama']; ?></td>
-                                                    <td><?= $row["kelas"] ?></td>
+                                                    <td><?= $namaKelas ?></td>
                                                     <td><?= $m["namaMapel"] ?></td>
                                                     <td><?= $row["materi"] ?></td>
                                                     <td><?= $row["keterangan"] ?></td>
                                                     <td><?= $row["jamPelajaran"] ?></td>
                                                     <td><?= date("d M Y H:i:s", strtotime($row['tanggal'])) ?></td>
                                                     <td>
-                                                        <a href="?h=<?= $row["agendaID"] ?>" class="btn btn-danger"><i
-                                                                class="fas fa-trash"></i>
-                                                        </a>
-                                                        <a href="editagenda.php?id=<?= $row['agendaID'] ?>"
-                                                            class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                                                        <div class="grid gap-3" style="display: grid;">
+                                                            <button class="btn btn-outline-warning mb-2">Edit Agenda</button>
+                                                            <button class="btn btn-outline-danger mb-2">Hapus Agenda</button>
+                                                        </div>
                                                     </td>
 
                                                 </tr>
@@ -209,11 +224,11 @@ $halaman = 'agenda';
                                     $namaKelas = mysqli_fetch_array($getnamakelas)['nama_kelas'];
                                     ?>
                                     <label for="input-kelas">Kelas : <?= $namaKelas ?></label>
-                                    <input type="hidden" id="input-kelas" value="<?= $_SESSION['kelas'] ?>" class="form-control" name="nama">
+                                    <input type="hidden" id="input-kelas" value="<?= $_SESSION['kelas'] ?>" class="form-control" required name="kelas">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="kelas" class="form-label">Guru</label>
-                                    <select name="kelas" id="kelas" class="form-control">
+                                    <label for="guru" class="form-label">Guru</label>
+                                    <select name="guru" required id="guru" class="form-control">
                                         <option value="" disabled selected>Pilih Guru</option>
                                         <?php
                                         $ambilguru = mysqli_query($conn, "SELECT * FROM guru");
@@ -225,35 +240,58 @@ $halaman = 'agenda';
                                     </select>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="exampleInputUID">UID</label>
-                                    <input type="text" id="exampleInputUID" class="form-control" name="UID" placeholder="Boleh dikosongkan.">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputNISN">NISN</label>
-                                    <input type="number" id="exampleInputNISN" class="form-control" name="NISN">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputNIPD">NIPD</label>
-                                    <input type="text" id="exampleInputNIPD" class="form-control" name="NIPD">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputJK">Jenis Kelamin</label>
-                                    <div class="form-check">
-                                        <input type="radio" name="jk" value="L" id="laki" class="form-check-input">
-                                        <label for="laki" class="form-check-label">Laki-laki</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input type="radio" name="jk" value="P" id="perempuan" class="form-check-input">
-                                        <label for="perempuan" class="form-check-label">Perempuan</label>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="mapel" class="form-label">Mapel</label>
+                                    <select name="mapel" required id="mapel" class="form-control">
+                                        <option value="" disabled selected>Pilih Mapel</option>
+                                        <?php
+                                        $ambilmapel = mysqli_query($conn, "SELECT * FROM mapel");
+                                        while ($row = mysqli_fetch_array($ambilmapel)) { ?>
+                                            <option value="<?php echo $row['KodeMapel']; ?>"> <?php echo htmlspecialchars($row['namaMapel'], ENT_QUOTES, 'UTF-8'); ?> </option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
                                 </div>
 
+                                <div class="mb-3">
+                                    <label for="jam" class="form-label">Jam Pelajaran</label>
+                                    <select name="jam" required id="jam" class="form-control">
+                                        <option value="" disabled selected>Pilih jam pelajaran</option>
+                                        <?php
+                                        for ($i = 1; $i <= 10; $i++) { ?>
+                                            <option value="<?php echo $i ?>"><?php echo "Jam ke - " . $i ?></option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+
+                                <div class="mb-3">
+                                    <label for="materi" class="form-label">Materi</label>
+                                    <textarea id="materi" required class="form-control" rows="3" name="materi"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Keterangan</label>
+                                    <div class="form-check">
+                                        <input type="radio" value="Hadir" required name="keterangan" class="form-check-input" id="hadir">
+                                        <label for="hadir" class="form-check-label">Hadir</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" value="Tidak Hadir" required name="keterangan" class="form-check-input" id="tidak">
+                                        <label for="tidak" class="form-check-label">Tidak Hadir</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" value="Tugas" required name="keterangan" class="form-check-input" id="tugas">
+                                        <label for="tugas" class="form-check-label">Tugas</label>
+                                    </div>
+                                </div>
 
                             </div>
                             <div class="modal-footer justify-content-between">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary" name="tambahsiswa">Save</button>
+                                <button type="submit" class="btn btn-primary" name="tambahagenda">Save</button>
                             </div>
                         </form>
                     </div>
@@ -319,32 +357,21 @@ $halaman = 'agenda';
                 placeholder: "Pilih Kelas", // Placeholder untuk dropdown
                 allowClear: true, // Tambahkan opsi clear
             });
+            $("#guru").select2({
+                placeholder: "Pilih guru", // Placeholder untuk dropdown
+                allowClear: true, // Tambahkan opsi clear
+            });
+            $("#mapel").select2({
+                placeholder: "Pilih Mapel", // Placeholder untuk dropdown
+                allowClear: true, // Tambahkan opsi clear
+            });
+            $("#jam").select2({
+                placeholder: "Pilih jam", // Placeholder untuk dropdown
+                allowClear: true, // Tambahkan opsi clear
+            });
         });
     </script>
 
 </body>
 
 </html>
-<?php
-if (isset($_POST['tambah'])) {
-
-    $idGuru = $_POST['guru'];
-    $kelas = $_POST['kelas'];
-    $mapel = $_POST['mapel'];
-    $materi = $_POST['materi'];
-    $keterangan = $_POST['keterangan'];
-    $jamPelajaran = $_POST['jampelajaran'];
-    $sql = mysqli_query($conn, "INSERT INTO agenda(guruID, kelas, KodeMapel, materi, keterangan, jamPelajaran) VALUES ('$idGuru','$kelas','$mapel','$materi','$keterangan','$jamPelajaran')");
-    echo "<script>
- window.location.href = 'agenda.php';
- </script>";
-}
-if (isset($_GET['h'])) {
-
-    $id = $_GET['h'];
-    mysqli_query($conn, "DELETE FROM agenda WHERE agendaID = $id");
-    echo "<script>
-    window.location.href = 'agenda.php';
-    </script>";
-}
-?>

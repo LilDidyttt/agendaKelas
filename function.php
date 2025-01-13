@@ -183,6 +183,26 @@ function getAllAgenda()
     $sql = mysqli_query($conn, "SELECT * FROM agenda");
     return $sql;
 }
+
+function tambahagenda($data)
+{
+    global $conn;
+    $kelas = $data['kelas'];
+    $guru = $data['guru'];
+    $mapel = $data['mapel'];
+    $keterangan = $data['keterangan'];
+    $jam =  $data['jam'];
+    $materi = $data['materi'];
+
+    $insertagenda = mysqli_query($conn, "INSERT INTO agenda (guruID, kelasID, KodeMapel, materi, keterangan, jamPelajaran) values ('$guru', '$kelas', '$mapel', '$materi', '$keterangan', '$jam')");
+
+    if ($insertagenda) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function getAgendaGuru()
 {
     global $conn;
