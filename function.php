@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$conn = mysqli_connect("localhost", "root", "", "db_agenda");
+$conn = mysqli_connect("sql105.byethost22.com", "b22_38103024", "komikanestar", "if0_38102915_db_agenda");
 
 if (!$conn) {
     echo "Koneksi error";
