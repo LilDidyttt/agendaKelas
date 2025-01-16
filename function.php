@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$conn = mysqli_connect("sql105.byethost22.com", "b22_38103024", "komikanestar", "if0_38102915_db_agenda");
+$conn = mysqli_connect("localhost", "root", "", "db_agenda");
 
 if (!$conn) {
     echo "Koneksi error";
@@ -180,7 +180,8 @@ function hapussiswa($id)
 function getAllAgenda()
 {
     global $conn;
-    $sql = mysqli_query($conn, "SELECT * FROM agenda");
+    $tanggal = date("Y-m-d");
+    $sql = mysqli_query($conn, "SELECT * FROM agenda where date(tanggal) = CURDATE()");
     return $sql;
 }
 
@@ -197,6 +198,44 @@ function tambahagenda($data)
     $insertagenda = mysqli_query($conn, "INSERT INTO agenda (guruID, kelasID, KodeMapel, materi, keterangan, jamPelajaran) values ('$guru', '$kelas', '$mapel', '$materi', '$keterangan', '$jam')");
 
     if ($insertagenda) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function editagenda($data)
+{
+    global $conn;
+    $agendaID = mysqli_real_escape_string($conn, $data['id']);
+    $guru = mysqli_real_escape_string($conn, $data['guru']);
+    $mapel = mysqli_real_escape_string($conn, $data['mapel']);
+    $jam = mysqli_real_escape_string($conn, $data['jam']);
+    $materi = mysqli_real_escape_string($conn, $data['materi']);
+    $keterangan = mysqli_real_escape_string($conn, $data['keterangan']);
+
+    // Query untuk update data
+    $sql = mysqli_query($conn, "UPDATE agenda SET 
+                guruID = '$guru',
+                KodeMapel = '$mapel',
+                jamPelajaran = '$jam',
+                materi = '$materi',
+                keterangan = '$keterangan'
+            WHERE agendaID = '$agendaID'");
+
+    if ($sql) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function hapusagenda($id)
+{
+    global $conn;
+    $sql = mysqli_query($conn, "DELETE FROM agenda WHERE agendaID=$id");
+
+    if ($sql) {
         return true;
     } else {
         return false;

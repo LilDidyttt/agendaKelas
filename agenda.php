@@ -1,5 +1,8 @@
 <?php
 
+ob_start(); // Start output buffering
+
+
 include 'function.php';
 
 if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
@@ -19,6 +22,27 @@ if (isset($_POST['tambahagenda'])) {
         $alertClass = 'alert-success';
     } else {
         $message = "Gagal menambahkan agenda.";
+        $alertClass = 'alert-danger';
+    }
+}
+
+if (isset($_POST['editagenda'])) {
+    if (editagenda($_POST)) {
+        $message = "Agenda berhasil diubah!";
+        $alertClass = 'alert-success';
+    } else {
+        $message = "Gagal mengubah agenda.";
+        $alertClass = 'alert-danger';
+    }
+}
+
+if (isset($_POST['hapusagenda'])) {
+    $idagenda = $_POST['idagenda'];
+    if (hapusagenda($idagenda)) {
+        $message = "Agenda berhasil dihapus.";
+        $alertClass = 'alert-success';
+    } else {
+        $message = "Gagal menghapus agenda.";
         $alertClass = 'alert-danger';
     }
 }
@@ -93,6 +117,19 @@ if (isset($_POST['tambahagenda'])) {
                     <div class="container-fluid">
                         <div class="card shadow mb-4">
                             <div class="card-header">
+                                <?php if (isset($message) && !empty($message)) : ?>
+
+                                    <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert" id="autoHideAlert">
+                                        <?= $message ?>
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+                                    <?php header("refresh:5;url=agenda.php") ?>
+
+                                <?php endif; ?>
+
                                 <?php
                                 $idkelas = $_SESSION['kelas'];
                                 $getnamakelas = mysqli_query(
@@ -142,6 +179,9 @@ if (isset($_POST['tambahagenda'])) {
                                                 $kodeMapel = $row['KodeMapel'];
                                                 $guru = mysqli_query($conn, "select * from guru where guruID = '$idguru'");
                                                 $mapel = mysqli_query($conn, "select * from mapel where KodeMapel = '$kodeMapel'");
+                                                $idkelas = $row['kelasID'];
+                                                $getNamaKelas = mysqli_query($conn, "SELECT * from kelasmaster where kelasID = '$idkelas'");
+                                                $namaKelas = mysqli_fetch_array($getNamaKelas)['nama_kelas'];
                                                 $g = mysqli_fetch_array($guru);
                                                 $m = mysqli_fetch_array($mapel);
                                                 $no++
@@ -159,8 +199,25 @@ if (isset($_POST['tambahagenda'])) {
                                                     <td><?= date("d M Y H:i:s", strtotime($row['tanggal'])) ?></td>
                                                     <td>
                                                         <div class="grid gap-3" style="display: grid;">
-                                                            <button class="btn btn-outline-warning mb-2">Edit Agenda</button>
-                                                            <button class="btn btn-outline-danger mb-2">Hapus Agenda</button>
+                                                            <button
+                                                                class="btn btn-outline-warning mb-2 edit-agenda"
+                                                                data-toggle="modal"
+                                                                data-target="#modal-edit"
+                                                                data-idagenda="<?= $row['agendaID'] ?>"
+                                                                data-idguru="<?= $row['guruID'] ?>"
+                                                                data-namakelas="<?= $namaKelas ?>"
+                                                                data-kodemapel="<?= $row['KodeMapel'] ?>"
+                                                                data-materi="<?= $row['materi'] ?>"
+                                                                data-keterangan="<?= $row['keterangan'] ?>"
+                                                                data-jampelajaran="<?= $row['jamPelajaran'] ?>">
+                                                                Edit Agenda
+                                                            </button>
+                                                            <form action="" method="post">
+                                                                <div class="grid gap-3" style="display: grid;">
+                                                                    <input type="hidden" name="idagenda" value="<?= $row['agendaID'] ?>">
+                                                                    <button type="submit" onclick="return confirm('Ingin menghapus data agenda jam ke - <?= $row['jamPelajaran'] ?>')" name="hapusagenda" class="btn btn-outline-danger">Hapus Data</button>
+                                                                </div>
+                                                            </form>
                                                         </div>
                                                     </td>
 
@@ -302,6 +359,98 @@ if (isset($_POST['tambahagenda'])) {
         </div>
         <!-- /.modal-dialog -->
     </div>
+
+    <div class="modal fade" id="modal-edit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Data Agenda</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card card-primary">
+                        <form action="" method="post">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="input-kelas">Kelas : <span id="spanKelas">-</span></label>
+                                    <input type="hidden" id="input-kelas" class="form-control" required name="kelas">
+                                    <input type="hidden" id="input-id" class="form-control" required name="id">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="guru" class="form-label">Guru</label>
+                                    <select name="guru" required id="edit-guru" class="form-control">
+                                        <option value="" disabled selected>Pilih Guru</option>
+                                        <?php
+                                        $ambilguru = mysqli_query($conn, "SELECT * FROM guru");
+                                        while ($row = mysqli_fetch_array($ambilguru)) { ?>
+                                            <option value="<?php echo $row['guruID']; ?>"> <?php echo htmlspecialchars($row['nama'], ENT_QUOTES, 'UTF-8'); ?> </option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="mapel" class="form-label">Mapel</label>
+                                    <select name="mapel" required id="edit-mapel" class="form-control">
+                                        <option value="" disabled selected>Pilih Mapel</option>
+                                        <?php
+                                        $ambilmapel = mysqli_query($conn, "SELECT * FROM mapel");
+                                        while ($row = mysqli_fetch_array($ambilmapel)) { ?>
+                                            <option value="<?php echo $row['KodeMapel']; ?>"> <?php echo htmlspecialchars($row['namaMapel'], ENT_QUOTES, 'UTF-8'); ?> </option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="jam" class="form-label">Jam Pelajaran</label>
+                                    <select name="jam" required id="edit-jam" class="form-control">
+                                        <option value="" disabled selected>Pilih jam pelajaran</option>
+                                        <?php
+                                        for ($i = 1; $i <= 10; $i++) { ?>
+                                            <option value="<?php echo $i ?>"><?php echo "Jam ke - " . $i ?></option>
+                                        <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+
+                                <div class="mb-3">
+                                    <label for="materi" class="form-label">Materi</label>
+                                    <textarea id="edit-materi" required class="form-control" rows="3" name="materi"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Keterangan</label>
+                                    <div class="form-check">
+                                        <input type="radio" value="Hadir" required name="keterangan" class="form-check-input" id="edit-hadir">
+                                        <label for="hadir" class="form-check-label">Hadir</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" value="Tidak Hadir" required name="keterangan" class="form-check-input" id="edit-tidak">
+                                        <label for="tidak" class="form-check-label">Tidak Hadir</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" value="Tugas" required name="keterangan" class="form-check-input" id="edit-tugas">
+                                        <label for="tugas" class="form-check-label">Tugas</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" name="editagenda">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- ./wrapper -->
 
     <!-- REQUIRED SCRIPTS -->
@@ -350,6 +499,28 @@ if (isset($_POST['tambahagenda'])) {
             // Set ID hidden di form agar nanti dikirim saat submit
         });
 
+        $(document).on('click', '.edit-agenda', function() {
+            var idAgenda = $(this).data('idagenda'); // huruf kecil
+            var idGuru = $(this).data('idguru'); // huruf kecil
+            var namaKelas = $(this).data('namakelas'); // huruf kecil
+            var kodeMapel = $(this).data('kodemapel'); // huruf kecil
+            var materi = $(this).data('materi'); // huruf kecil
+            var keterangan = $(this).data('keterangan'); // huruf kecil
+            var jamPelajaran = $(this).data('jampelajaran'); // huruf kecil
+
+            var spankelas = document.getElementById('spanKelas');
+            spankelas.textContent = namaKelas;
+
+
+            $('#edit-materi').val(materi);
+            $('#input-id').val(idAgenda);
+            $('#edit-guru').val(idGuru).trigger('change');
+            $('#edit-mapel').val(kodeMapel).trigger('change');
+            $('#edit-jam').val(jamPelajaran).trigger('change');
+
+            $('input[name="keterangan"][value="' + keterangan + '"]').prop('checked', true);
+        });
+
         $(document).ready(function() {
             $('#example1').DataTable();
 
@@ -361,11 +532,23 @@ if (isset($_POST['tambahagenda'])) {
                 placeholder: "Pilih guru", // Placeholder untuk dropdown
                 allowClear: true, // Tambahkan opsi clear
             });
+            $("#edit-guru").select2({
+                placeholder: "Pilih guru", // Placeholder untuk dropdown
+                allowClear: true, // Tambahkan opsi clear
+            });
             $("#mapel").select2({
                 placeholder: "Pilih Mapel", // Placeholder untuk dropdown
                 allowClear: true, // Tambahkan opsi clear
             });
+            $("#edit-mapel").select2({
+                placeholder: "Pilih Mapel", // Placeholder untuk dropdown
+                allowClear: true, // Tambahkan opsi clear
+            });
             $("#jam").select2({
+                placeholder: "Pilih jam", // Placeholder untuk dropdown
+                allowClear: true, // Tambahkan opsi clear
+            });
+            $("#edit-jam").select2({
                 placeholder: "Pilih jam", // Placeholder untuk dropdown
                 allowClear: true, // Tambahkan opsi clear
             });
@@ -375,3 +558,7 @@ if (isset($_POST['tambahagenda'])) {
 </body>
 
 </html>
+
+<?php
+ob_end_flush();  // Send the output to the browser
+?>
