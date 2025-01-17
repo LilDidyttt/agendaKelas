@@ -78,6 +78,51 @@ function getAllMapel()
     $sql = mysqli_query($conn, "SELECT * from mapel");
     return $sql;
 }
+
+function tambahjurusan($data)
+{
+    global $conn;
+    $nama_jurusan = $data['nama_jurusan'];
+    $sql = mysqli_query($conn, "INSERT INTO jurusan (nama_jurusan) VALUES ('$nama_jurusan')");
+    if ($sql) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function hapusjurusan($id)
+{
+    global $conn;
+    $sql = mysqli_query($conn, "DELETE FROM jurusan WHERE jurusanID=$id");
+
+    if ($sql) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function editjurusan($data)
+{
+    global $conn;
+    $id = $data['id_jurusan'];
+    $nama = $data['nama'];
+    $sql = mysqli_query($conn, "UPDATE jurusan SET nama_jurusan = '$nama' WHERE jurusan.jurusanID = '$id'");
+
+    if ($sql) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function getAllJurusan()
+{
+    global $conn;
+    $sql = mysqli_query($conn, "SELECT * from jurusan");
+    return $sql;
+}
 function getAllUser()
 {
     global $conn;
@@ -301,6 +346,48 @@ function getAllKelas()
     global $conn;
     $getdata = mysqli_query($conn, "SELECT * from kelasmaster");
     return $getdata;
+}
+
+function tambahkelas($data)
+{
+    global $conn;
+    $nama = $data['nama_kelas'];
+    $jurusan = $data['jurusan'];
+
+    $sql = mysqli_query($conn, "INSERT INTO kelasmaster (nama_kelas, jurusanID) values ('$nama', '$jurusan') ");
+
+    if ($sql) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function hapuskelas($id)
+{
+    global $conn;
+    $sql = mysqli_query($conn, "DELETE FROM kelasmaster WHERE kelasID='$id'");
+    if ($sql) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function editkelas($data)
+{
+    global $conn;
+    $id = $data['id_kelas'];
+    $nama = $data['nama'];
+    $jurusan = $data['jurusan'];
+
+    $sql = mysqli_query($conn, "UPDATE kelasmaster SET nama_kelas='$nama', jurusanID='$jurusan' WHERE kelasID='$id'");
+
+    if ($sql) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function tambahsekretaris($data)
