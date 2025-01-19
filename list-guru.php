@@ -93,9 +93,7 @@ if (isset($_POST['tambahakun'])) {
 
         if ($query) {
 
-            $query = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username'");
-            $getID = mysqli_fetch_array($query);
-            $iduser = $getID['userID'];
+            $iduser = mysqli_insert_id($conn);
 
             $queryupdate = mysqli_query($conn, "UPDATE guru SET userID = '$iduser' where guruID = '$idguru'");
 

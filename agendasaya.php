@@ -85,7 +85,7 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                             $result = mysqli_fetch_array($ambildata);
 
                             ?>
-                            <p>Nama Guru : <?= $result['nama']; ?></p>
+                            <p>Nama Guru : <?= $result['nama'] ?></p>
                             <div class="table-responsive">
                                 <table id="example1" class="table table-bordered table-striped">
                                     <thead>
@@ -112,14 +112,16 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
                                             $mapel = mysqli_query($conn, "select * from mapel where KodeMapel = '$kodeMapel'");
                                             $g = mysqli_fetch_array($guru);
                                             $m = mysqli_fetch_array($mapel);
-                                            $no++
+                                            $no++;
+                                            $getnamakelas = mysqli_query($conn, "SELECT * from kelasmaster where kelasID = {$row['kelasID']}");
+                                            $namakelas = mysqli_fetch_array($getnamakelas)['nama_kelas'];
                                         ?>
                                             <tr>
                                                 <td><?= $no; ?></td>
 
                                                 <td><?= $row["agendaID"] ?></td>
                                                 <td><?= $g['nama']; ?></td>
-                                                <td><?= $row["kelas"] ?></td>
+                                                <td><?= $namakelas ?></td>
                                                 <td><?= $m["namaMapel"] ?></td>
                                                 <td><?= $row["materi"] ?></td>
                                                 <td><?= $row["keterangan"] ?></td>
