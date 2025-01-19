@@ -53,11 +53,15 @@ function editGuru($data)
     }
 }
 
-function hapusGuru($id)
+function hapusguru($id)
 {
     global $conn;
     $sql = mysqli_query($conn, "DELETE FROM guru WHERE guruID=$id");
-    return $sql;
+    if ($sql) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function getAllSiswaFromKelas()
@@ -460,6 +464,17 @@ function resetpassword($data)
     $hash = password_hash($password, PASSWORD_BCRYPT);
 
     if (mysqli_query($conn, "UPDATE sekretaris SET password = '$hash' WHERE sekretarisID = '$id'")) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function hapusmapel($id)
+{
+    global $conn;
+    $sql = mysqli_query($conn, "DELETE FROM mapel WHERE mapelID=$id");
+    if ($sql) {
         return true;
     } else {
         return false;

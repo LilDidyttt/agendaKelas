@@ -24,10 +24,33 @@ if (isset($_POST['edit'])) {
 
     if (mysqli_query($conn, $sql)) {
         // Jika berhasil
-        echo "<script>alert('Data berhasil diupdate'); window.location.href='mapel.php';</script>";
+        $message = "Data mapel berhasil diupdate!";
+        $alertClass = "alert-success";
+        header("Location: mapel.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit();
     } else {
         // Jika gagal
-        echo "<script>alert('Gagal memperbarui data');</script>";
+        $message = "Data mapel gagal diupdate!";
+        $alertClass = "alert-danger";
+        header("Location: mapel.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit();
+    }
+}
+
+if (isset($_POST['hapusdata'])) {
+    // Ambil data yang dikirim dari form
+    $kodeMapel = $_POST['idmapel'];
+
+    if (hapusmapel($kodeMapel)) {
+        $message = "Data mapel berhasil dihapus!";
+        $alertClass = "alert-success";
+        header("Location: mapel.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit();
+    } else {
+        $message = "Data mapel gagal dihapus!";
+        $alertClass = "alert-danger";
+        header("Location: mapel.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit();
     }
 }
 
@@ -36,15 +59,26 @@ if (isset($_POST['tambah'])) {
     $namaMapel = $_POST['namaMapel'];
 
     // Insert data ke database
-    $sql = "INSERT INTO mapel (KodeMapel, namaMapel) VALUES ('$kodeMapel', '$namaMapel')";
+    $sql = "INSERT INTO mapel (namaMapel) VALUES ('$namaMapel')";
 
     if (mysqli_query($conn, $sql)) {
         // Jika berhasil
-        echo "<script>alert('Mata Pelajaran berhasil ditambahkan'); window.location.href='mapel.php';</script>";
+        $message = "Mata pelajaran berhasil ditambahkan!";
+        $alertClass = "alert-success";
+        header("Location: mapel.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit();
     } else {
         // Jika gagal
-        echo "<script>alert('Gagal menambahkan mata pelajaran');</script>";
+        $message = "Gagal menambahkan mata pelajaran!";
+        $alertClass = "alert-danger";
+        header("Location: mapel.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit();
     }
+}
+
+if (isset($_GET['message']) && isset($_GET['alertClass'])) {
+    $message = urldecode($_GET['message']);
+    $alertClass = urldecode($_GET['alertClass']);
 }
 
 ?>
@@ -114,6 +148,32 @@ if (isset($_POST['tambah'])) {
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <?php if (isset($message) && !empty($message)) : ?>
+                                <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert" id="autoHideAlert">
+                                    <?= $message ?>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+
+                                <script>
+                                    // Menghilangkan alert setelah 5 detik
+                                    setTimeout(function() {
+                                        var alertElement = document.getElementById('autoHideAlert');
+                                        if (alertElement) {
+                                            alertElement.style.display = 'none'; // Sembunyikan elemen
+                                        }
+                                    }, 5000); // 5000ms = 5 detik
+
+                                    // Menghapus parameter GET dari URL setelah 5 detik
+                                    setTimeout(function() {
+                                        const url = new URL(window.location.href);
+                                        url.searchParams.delete('message');
+                                        url.searchParams.delete('alertClass');
+                                        window.history.replaceState({}, document.title, url.toString());
+                                    }, 5000); // Sesuaikan waktu dengan alert menghilang
+                                </script>
+                            <?php endif; ?>
                             <a href="#" data-bs-toggle="modal" data-bs-target="#tambahModal"><button
                                     class="btn btn-outline-success mb-2">+ Tambah Mapel</button></a>
                             <div class="table-responsive">
@@ -135,12 +195,15 @@ if (isset($_POST['tambah'])) {
                                         ?>
                                             <tr>
                                                 <td><?= $no; ?></td>
-                                                <td><?= $row['KodeMapel']; ?></td>
+                                                <td>ID <?= $row['KodeMapel']; ?></td>
                                                 <td><?= $row['namaMapel']; ?></td>
                                                 <td>
-                                                    <a href="hapusmapel.php?mapel=<?= $row['KodeMapel'] ?>"
-                                                        onclick="return confirm('Menghapus mapel <?= $row['namaMapel'] ?> ')"><button
-                                                            class="btn btn-outline-danger">Hapus</button></a>
+                                                    <form action="" method="post">
+                                                        <div>
+                                                            <input type="hidden" name="idmapel" value="<?= $row['KodeMapel'] ?>">
+                                                            <button type="submit" onclick="return confirm('Ingin menghapus data mapel <?= $row['namaMapel'] ?>')" name="hapusdata" class="btn btn-outline-danger mb-2">Hapus Data</button>
+                                                        </div>
+                                                    </form>
                                                     <button class="btn btn-outline-warning"
                                                         data-kode="<?= $row['KodeMapel']; ?>"
                                                         data-nama="<?= $row['namaMapel']; ?>">Edit</button>
@@ -166,12 +229,12 @@ if (isset($_POST['tambah'])) {
         <!-- /.content-wrapper -->
 
         <!-- Edit Modal -->
-        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal fade" id="editModal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editModalLabel">Edit Mata Pelajaran</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="editMapelForm" action="" method="post">
@@ -194,12 +257,12 @@ if (isset($_POST['tambah'])) {
         </div>
 
         <!-- Modal untuk Tambah Mata Pelajaran -->
-        <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
+        <div class="modal fade" id="tambahModal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="tambahModalLabel">Tambah Mata Pelajaran</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="tambahMapelForm" action="" method="post">

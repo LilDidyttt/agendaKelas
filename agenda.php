@@ -20,9 +20,13 @@ if (isset($_POST['tambahagenda'])) {
     if (tambahagenda($_POST)) {
         $message = "Tambah agenda berhasil!";
         $alertClass = 'alert-success';
+        header("Location: agenda.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     } else {
         $message = "Gagal menambahkan agenda.";
         $alertClass = 'alert-danger';
+        header("Location: agenda.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     }
 }
 
@@ -30,9 +34,13 @@ if (isset($_POST['editagenda'])) {
     if (editagenda($_POST)) {
         $message = "Agenda berhasil diubah!";
         $alertClass = 'alert-success';
+        header("Location: agenda.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     } else {
         $message = "Gagal mengubah agenda.";
         $alertClass = 'alert-danger';
+        header("Location: agenda.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     }
 }
 
@@ -41,10 +49,19 @@ if (isset($_POST['hapusagenda'])) {
     if (hapusagenda($idagenda)) {
         $message = "Agenda berhasil dihapus.";
         $alertClass = 'alert-success';
+        header("Location: agenda.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     } else {
         $message = "Gagal menghapus agenda.";
         $alertClass = 'alert-danger';
+        header("Location: agenda.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     }
+}
+
+if (isset($_GET['message']) && isset($_GET['alertClass'])) {
+    $message = urldecode($_GET['message']);
+    $alertClass = urldecode($_GET['alertClass']);
 }
 
 ?>
@@ -118,7 +135,6 @@ if (isset($_POST['hapusagenda'])) {
                         <div class="card shadow mb-4">
                             <div class="card-header">
                                 <?php if (isset($message) && !empty($message)) : ?>
-
                                     <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert" id="autoHideAlert">
                                         <?= $message ?>
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -126,8 +142,23 @@ if (isset($_POST['hapusagenda'])) {
                                         </button>
                                     </div>
 
-                                    <?php header("refresh:5;url=agenda.php") ?>
+                                    <script>
+                                        // Menghilangkan alert setelah 5 detik
+                                        setTimeout(function() {
+                                            var alertElement = document.getElementById('autoHideAlert');
+                                            if (alertElement) {
+                                                alertElement.style.display = 'none'; // Sembunyikan elemen
+                                            }
+                                        }, 5000); // 5000ms = 5 detik
 
+                                        // Menghapus parameter GET dari URL setelah 5 detik
+                                        setTimeout(function() {
+                                            const url = new URL(window.location.href);
+                                            url.searchParams.delete('message');
+                                            url.searchParams.delete('alertClass');
+                                            window.history.replaceState({}, document.title, url.toString());
+                                        }, 5000); // Sesuaikan waktu dengan alert menghilang
+                                    </script>
                                 <?php endif; ?>
 
                                 <?php

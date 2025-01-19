@@ -20,17 +20,22 @@ if (isset($_POST['edit'])) {
     $guruID = $_POST['guruID'];
     $nama = $_POST['nama'];
     $nip = $_POST['nip'];
+    $nuptk = $_POST['nuptk'];
     $jk = $_POST['jk'];
 
     // Update data di database
-    $sql = "UPDATE guru SET nama = '$nama', nip = '$nip', jk = '$jk' WHERE guruID = '$guruID'";
+    $sql = "UPDATE guru SET nama = '$nama', nip = '$nip', nuptk = '$nuptk' jk = '$jk' WHERE guruID = '$guruID'";
 
     if (mysqli_query($conn, $sql)) {
-        // Jika berhasil
-        echo "<script>alert('Data berhasil diupdate'); window.location.href='list-guru.php';</script>";
+        $message = "Data guru berhasil diupdate!";
+        $alertClass = 'alert-success';
+        header("Location: list-guru.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     } else {
-        // Jika gagal
-        echo "<script>alert('Gagal memperbarui data');</script>";
+        $message = "Gagal mengupdate data guru.";
+        $alertClass = 'alert-danger';
+        header("Location: list-guru.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     }
 }
 
@@ -38,17 +43,38 @@ if (isset($_POST['tambah'])) {
     // Ambil data dari form
     $nama = $_POST['nama'];
     $nip = $_POST['nip'];
+    $nuptk = $_POST['nuptk'];
     $jk = $_POST['jk'];
 
     // Insert data ke database
-    $sql = "INSERT INTO guru (nama, nip, jk) VALUES ('$nama', '$nip', '$jk')";
+    $sql = "INSERT INTO guru (nama, nip, nuptk, jk) VALUES ('$nama', '$nip', '$nuptk', '$jk')";
 
     if (mysqli_query($conn, $sql)) {
-        // Jika berhasil
-        echo "<script>alert('guru berhasil ditambahkan'); window.location.href='list-guru.php';</script>";
+        $message = "Data guru berhasil ditambahkan!";
+        $alertClass = 'alert-success';
+        header("Location: list-guru.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     } else {
-        // Jika gagal
-        echo "<script>alert('Gagal menambahkan guru');</script>";
+        $message = "Gagal menambahkan data guru.";
+        $alertClass = 'alert-danger';
+        header("Location: list-guru.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
+    }
+}
+
+if (isset($_POST['hapusdata'])) {
+    $guruID = $_POST['idguru'];
+
+    if (hapusguru($guruID)) {
+        $message = "Data guru berhasil dihapus!";
+        $alertClass = 'alert-success';
+        header("Location: list-guru.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
+    } else {
+        $message = "Gagal menghapus data guru.";
+        $alertClass = 'alert-danger';
+        header("Location: list-guru.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     }
 }
 
@@ -76,17 +102,30 @@ if (isset($_POST['tambahakun'])) {
             if ($queryupdate) {
                 $message = "Tambah akun guru berhasil!";
                 $alertClass = "alert-success";
+                header("Location: list-guru.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+                exit;
             } else {
                 $message = "Gagal mengupdate data guru.";
                 $alertClass = "alert-danger";
+                header("Location: list-guru.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+                exit;
             }
         } else {
             $message = "Gagal menambahkan akun guru.";
             $alertClass = "alert-danger";
+            header("Location: list-guru.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+            exit;
         }
     } else {
         $message = "Username sudah terpakai.";
         $alertClass = "alert-danger";
+        header("Location: list-guru.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
+    }
+
+    if (isset($_GET['message']) && isset($_GET['alertClass'])) {
+        $message = urldecode($_GET['message']);
+        $alertClass = urldecode($_GET['alertClass']);
     }
 }
 
@@ -145,7 +184,6 @@ if (isset($_POST['tambahakun'])) {
             <section class="content">
                 <div class="container-fluid">
                     <?php if (isset($message) && !empty($message)) : ?>
-
                         <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert" id="autoHideAlert">
                             <?= $message ?>
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -153,8 +191,23 @@ if (isset($_POST['tambahakun'])) {
                             </button>
                         </div>
 
-                        <?php header("refresh:5;url=siswa.php") ?>
+                        <script>
+                            // Menghilangkan alert setelah 5 detik
+                            setTimeout(function() {
+                                var alertElement = document.getElementById('autoHideAlert');
+                                if (alertElement) {
+                                    alertElement.style.display = 'none'; // Sembunyikan elemen
+                                }
+                            }, 5000); // 5000ms = 5 detik
 
+                            // Menghapus parameter GET dari URL setelah 5 detik
+                            setTimeout(function() {
+                                const url = new URL(window.location.href);
+                                url.searchParams.delete('message');
+                                url.searchParams.delete('alertClass');
+                                window.history.replaceState({}, document.title, url.toString());
+                            }, 5000); // Sesuaikan waktu dengan alert menghilang
+                        </script>
                     <?php endif; ?>
                     <!-- tabel kehadiran -->
                     <div class="card">
@@ -172,6 +225,7 @@ if (isset($_POST['tambahakun'])) {
                                             <th>ID Guru</th>
                                             <th>Nama Guru</th>
                                             <th>NIP</th>
+                                            <th>NUPTK</th>
                                             <th>Jenis Kelamin</th>
                                             <th>ID User</th>
                                             <th>Username</th>
@@ -193,24 +247,31 @@ if (isset($_POST['tambahakun'])) {
                                                 <td><?= $row['guruID']; ?></td>
                                                 <td><?= $row['nama']; ?></td>
                                                 <td><?= $row['nip'] ?></td>
+                                                <td><?= $row['nuptk'] ?></td>
                                                 <td><?= $row['jk'] ?></td>
                                                 <td><?= (empty($row['userID'])) ? "Tidak ada akun" : $row['userID'] ?></td>
                                                 <td><?= (empty($ambilusername['username'])) ? "Tidak ada akun" : $ambilusername['username'] ?></td>
                                                 <td>
-                                                    <a href="hapus-guru.php?guruID=<?= $row['guruID'] ?>" onclick="return confirm('Menghapus guru <?= $row['nama'] ?> ')"><button class="btn btn-outline-danger">Hapus</button></a>
-                                                    <button
-                                                        class="btn btn-outline-warning"
-                                                        data-guru-id="<?= $row['guruID']; ?>"
-                                                        data-nama="<?= $row['nama']; ?>"
-                                                        data-nip="<?= $row['nip']; ?>"
-                                                        data-jk="<?= $row['jk']; ?>"
-                                                        onclick="editGuru(this)">
-                                                        Edit
-                                                    </button>
+                                                    <div class="grid gap-3" style="display: grid;">
+                                                        <form action="" method="post">
+                                                            <input type="hidden" name="idguru" value="<?= $row['guruID'] ?>">
+                                                            <button type="submit" onclick="return confirm('Ingin menghapus data guru <?= $row['nama'] ?>')" name="hapusdata" class="btn btn-outline-danger mb-2">Hapus Data</button>
+                                                        </form>
+                                                        <button
+                                                            class="btn btn-outline-warning mb-2"
+                                                            data-guru-id="<?= $row['guruID']; ?>"
+                                                            data-nama="<?= $row['nama']; ?>"
+                                                            data-nip="<?= $row['nip']; ?>"
+                                                            data-nuptk="<?= $row['nuptk']; ?>"
+                                                            data-jk="<?= $row['jk']; ?>"
+                                                            onclick="editGuru(this)">
+                                                            Edit
+                                                        </button>
 
-                                                    <?php if (empty($row['userID'])) : ?>
-                                                        <button class="btn btn-outline-info" data-idguru="<?= $row['guruID'] ?>" data-namaguru="<?= $row['nama'] ?>">Tambah Akun</button>
-                                                    <?php endif; ?>
+                                                        <?php if (empty($row['userID'])) : ?>
+                                                            <button class="btn btn-outline-info mb-2" data-idguru="<?= $row['guruID'] ?>" data-namaguru="<?= $row['nama'] ?>">Tambah Akun</button>
+                                                        <?php endif; ?>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php
@@ -231,7 +292,7 @@ if (isset($_POST['tambahakun'])) {
         <!-- /.content-wrapper -->
 
         <!-- Modal untuk Edit Guru -->
-        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal fade" id="editModal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -248,6 +309,10 @@ if (isset($_POST['tambahakun'])) {
                             <div class="mb-3">
                                 <label for="nip" class="form-label">NIP</label>
                                 <input type="text" class="form-control" id="nip" name="nip" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nuptk" class="form-label">NUPTK</label>
+                                <input type="text" class="form-control" id="nuptk" name="nuptk" required>
                             </div>
                             <div class="form-group">
                                 <label for="jk">Jenis Kelamin</label>
@@ -320,12 +385,12 @@ if (isset($_POST['tambahakun'])) {
         </div>
 
         <!-- Modal untuk Tambah Guru -->
-        <div class="modal fade" id="tambahModal" tabindex="-1" aria-labelledby="tambahModalLabel" aria-hidden="true">
+        <div class="modal fade" id="tambahModal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="tambahModalLabel">Tambah Mata Pelajaran</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="tambahMapelForm" action="" method="post">
@@ -336,6 +401,10 @@ if (isset($_POST['tambahakun'])) {
                             <div class="mb-3">
                                 <label for="nip" class="form-label">NIP</label>
                                 <input type="text" class="form-control" id="nip" name="nip" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nuptk" class="form-label">NUPTK</label>
+                                <input type="text" class="form-control" id="nuptk" name="nuptk" required>
                             </div>
                             <div class="form-group">
                                 <label for="jk">Jenis Kelamin</label>
@@ -420,11 +489,13 @@ if (isset($_POST['tambahakun'])) {
             var guruID = $(button).data('guru-id');
             var nama = $(button).data('nama');
             var nip = $(button).data('nip');
+            var nuptk = $(button).data('nuptk')
             var jk = $(button).data('jk');
 
             // Isi form di modal dengan data yang sudah diambil
             $('#guruID').val(guruID);
             $('#nama').val(nama);
+            $('#nuptk').val(nuptk);
             $('#nip').val(nip);
 
             // Set radio button berdasarkan nilai jk

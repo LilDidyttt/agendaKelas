@@ -11,6 +11,7 @@ if (!isset($_SESSION['login']) && $_SESSION['login'] != true) {
 
 if ($_SESSION['level'] == 'Sekretaris') {
     header("Location: siswa.php");
+    exit();
 }
 
 $halaman = 'kelas';
@@ -19,9 +20,13 @@ if (isset($_POST['tambah'])) {
     if (tambahkelas($_POST)) {
         $message = "Kelas berhasil ditambahkan!";
         $alertClass = "alert-success";
+        header("Location: kelas.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     } else {
         $message = "Kelas gagal ditambahkan!";
         $alertClass = "alert-danger";
+        header("Location: kelas.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     }
 }
 
@@ -31,9 +36,13 @@ if (isset($_POST['hapusdata'])) {
     if (hapuskelas($idkelas)) {
         $message = "Kelas berhasil dihapus.";
         $alertClass = "alert-success";
+        header("Location: kelas.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     } else {
         $message = "Kelas gagal dihapus.";
         $alertClass = "alert-danger";
+        header("Location: kelas.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     }
 }
 
@@ -41,9 +50,18 @@ if (isset($_POST['edit'])) {
     if (editkelas($_POST)) {
         $message = "Kelas berhasil diupdate!";
         $alertClass = "alert-success";
+        header("Location: kelas.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
     } else {
         $message = "Kelas gagal diupdate!";
         $alertClass = "alert-danger";
+        header("Location: kelas.php?message=" . urlencode($message) . "&alertClass=" . urlencode($alertClass));
+        exit;
+    }
+
+    if (isset($_GET['message']) && isset($_GET['alertClass'])) {
+        $message = urldecode($_GET['message']);
+        $alertClass = urldecode($_GET['alertClass']);
     }
 }
 
@@ -119,7 +137,6 @@ if (isset($_POST['edit'])) {
                         <!-- /.card-header -->
                         <div class="card-body">
                             <?php if (isset($message) && !empty($message)) : ?>
-
                                 <div class="alert <?= $alertClass ?> alert-dismissible fade show" role="alert" id="autoHideAlert">
                                     <?= $message ?>
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -127,8 +144,23 @@ if (isset($_POST['edit'])) {
                                     </button>
                                 </div>
 
-                                <?php header("refresh:5;url=kelas.php") ?>
+                                <script>
+                                    // Menghilangkan alert setelah 5 detik
+                                    setTimeout(function() {
+                                        var alertElement = document.getElementById('autoHideAlert');
+                                        if (alertElement) {
+                                            alertElement.style.display = 'none'; // Sembunyikan elemen
+                                        }
+                                    }, 5000); // 5000ms = 5 detik
 
+                                    // Menghapus parameter GET dari URL setelah 5 detik
+                                    setTimeout(function() {
+                                        const url = new URL(window.location.href);
+                                        url.searchParams.delete('message');
+                                        url.searchParams.delete('alertClass');
+                                        window.history.replaceState({}, document.title, url.toString());
+                                    }, 5000); // Sesuaikan waktu dengan alert menghilang
+                                </script>
                             <?php endif; ?>
                             <a href="#" data-toggle="modal" data-target="#tambahModal"><button
                                     class="btn btn-outline-success mb-2">+ Tambah Kelas</button></a>
